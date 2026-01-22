@@ -1,0 +1,405 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc,matrix}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{multirow}
+\usepackage{longtable}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Câu 6: Network-on-Chip}
+\fancyhead[R]{1.5 điểm}
+\fancyfoot[C]{\thepage}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{resultbox}{RGB}{220,255,220}
+\definecolor{conceptbox}{RGB}{255,245,220}
+\definecolor{packet1}{RGB}{255,180,180}
+\definecolor{packet2}{RGB}{180,255,180}
+\definecolor{packet3}{RGB}{180,180,255}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{CÂU HỎI 6: NETWORK-ON-CHIP - WORMHOLE SWITCHING}\\[0.3cm]
+\large Learning Outcome: L.O.6 | Điểm: 1.5
+\end{center}
+
+\section{Đề bài}
+
+Xem xét mạng chuyển mạch gói (packet switching) 2×2 router sử dụng phương pháp Wormhole switching. Có 3 gói dữ liệu cần được gửi gồm:
+\begin{itemize}
+    \item Gói 1: 4 flit '\texttt{abcd}', từ A đến F
+    \item Gói 2: 4 flit '\texttt{efgh}', từ C đến D
+    \item Gói 3: 4 flit '\texttt{ijkl}', từ E đến H
+\end{itemize}
+
+Các router sử dụng bộ đệm (buffer) để lưu các flit. Giả sử mỗi bộ đệm lưu tối đa 2 flit khi đường truyền bị tắc nghẽn. Trường hợp kênh truyền không tắc nghẽn thì buffer chỉ lưu 1 flit. Gọi T là thời gian cần xử lý 1 flit.
+
+Ban đầu cả 3 gói 1, 2 và 3 đều gửi flit đầu tiên (header flit), lần lượt là 'a', 'e' và 'i' đến bộ đệm tương ứng. Sau khoảng thời gian T, flit kế tiếp được xử lý. Hãy mô tả hoạt động của mạng ở các thời điểm tiếp theo. Sau bao nhiêu T thì cả 3 gói dữ liệu đến được đích?
+
+\section{Kiến thức nền tảng}
+
+\subsection{Network-on-Chip (NoC) là gì?}
+
+\begin{tcolorbox}[colback=conceptbox,title=Tổng quan NoC]
+\textbf{Network-on-Chip (NoC)} là kiến trúc giao tiếp sử dụng mạng để kết nối các thành phần (IP cores) trong SoC, thay thế cho bus truyền thống.
+
+\textbf{Ưu điểm của NoC:}
+\begin{itemize}
+    \item Scalability tốt hơn bus
+    \item Băng thông cao hơn
+    \item Truyền song song nhiều gói
+    \item Dễ dàng mở rộng số cores
+\end{itemize}
+
+\textbf{Các thành phần chính:}
+\begin{itemize}
+    \item \textbf{Router:} Điều hướng gói tin
+    \item \textbf{Link:} Kết nối giữa các router
+    \item \textbf{Network Interface (NI):} Giao tiếp giữa core và router
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Các phương pháp Switching}
+
+\begin{tcolorbox}[colback=formulabox,title=So sánh các kỹ thuật switching]
+\textbf{1. Store-and-Forward:}
+\begin{itemize}
+    \item Toàn bộ packet được lưu tại router trước khi forward
+    \item Latency cao, buffer lớn
+\end{itemize}
+
+\textbf{2. Virtual Cut-Through:}
+\begin{itemize}
+    \item Forward ngay khi có header, nhưng vẫn cần buffer toàn bộ packet
+    \item Latency trung bình
+\end{itemize}
+
+\textbf{3. Wormhole Switching:}
+\begin{itemize}
+    \item Packet được chia thành các \textbf{flit} (flow control unit)
+    \item Header flit mở đường, body flits theo sau như ``con sâu''
+    \item Buffer nhỏ (chỉ vài flit), latency thấp
+    \item Nhược điểm: Blocking khi congestion
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Wormhole Switching chi tiết}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{Cấu trúc Packet trong Wormhole:}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \draw[fill=red!30] (0,0) rectangle (2,1);
+    \node at (1,0.5) {Header};
+    \draw[fill=yellow!30] (2,0) rectangle (4,1);
+    \node at (3,0.5) {Body 1};
+    \draw[fill=yellow!30] (4,0) rectangle (6,1);
+    \node at (5,0.5) {Body 2};
+    \draw[fill=blue!30] (6,0) rectangle (8,1);
+    \node at (7,0.5) {Tail};
+    
+    \node at (1,-0.3) {\tiny Routing};
+    \node at (3,-0.3) {\tiny Data};
+    \node at (5,-0.3) {\tiny Data};
+    \node at (7,-0.3) {\tiny Release};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Hoạt động:}
+\begin{enumerate}
+    \item \textbf{Header flit} chứa routing info, mở đường qua các router
+    \item \textbf{Body flits} theo sau header, không cần routing
+    \item \textbf{Tail flit} giải phóng các channel đã dùng
+    \item Khi bị block, cả ``con sâu'' dừng lại và ``giữ chỗ'' trên đường đi
+\end{enumerate}
+\end{tcolorbox}
+
+\section{Phân tích topology mạng}
+
+\subsection{Cấu trúc mạng 2×2}
+
+Dựa trên hình trong đề bài, mạng có dạng như sau:
+
+\begin{center}
+\begin{tikzpicture}[scale=1.2]
+    % Nodes - Left mesh
+    \node[draw,circle,fill=packet1!50] (A) at (0,2) {A};
+    \node[draw,circle,fill=white] (Z) at (2,2) {Z};
+    \node[draw,circle,fill=packet2!50] (C) at (0,0) {C};
+    \node[draw,circle,fill=white] (W) at (2,0) {W};
+    \node[draw,circle,fill=white] (B) at (4,2) {B};
+    \node[draw,circle,fill=white] (D) at (4,0) {D};
+    
+    % Connections left mesh
+    \draw[thick] (A) -- (Z);
+    \draw[thick] (C) -- (W);
+    \draw[thick] (A) -- (C);
+    \draw[thick] (Z) -- (W);
+    \draw[thick] (Z) -- (B);
+    \draw[thick] (W) -- (D);
+    
+    % Connection between meshes
+    \draw[thick,dashed] (4.5,1) -- (5.5,1);
+    
+    % Nodes - Right mesh
+    \node[draw,circle,fill=packet3!50] (E) at (6,2) {E};
+    \node[draw,circle,fill=white] (Y) at (8,2) {Y};
+    \node[draw,circle,fill=white] (G) at (6,0) {G};
+    \node[draw,circle,fill=white] (X) at (8,0) {X};
+    \node[draw,circle,fill=white] (F) at (10,2) {F};
+    \node[draw,circle,fill=white] (H) at (10,0) {H};
+    
+    % Connections right mesh
+    \draw[thick] (E) -- (Y);
+    \draw[thick] (G) -- (X);
+    \draw[thick] (E) -- (G);
+    \draw[thick] (Y) -- (X);
+    \draw[thick] (Y) -- (F);
+    \draw[thick] (X) -- (H);
+    
+    % Labels for paths
+    \node at (1,2.5) {\tiny Gói 1};
+    \node at (0,-0.5) {\tiny Gói 2};
+    \node at (6,2.5) {\tiny Gói 3};
+    
+    % Destinations
+    \node[draw,rectangle,fill=packet1!30] at (10,2.7) {\tiny Đích Gói 1};
+    \node[draw,rectangle,fill=packet2!30] at (4,-0.7) {\tiny Đích Gói 2};
+    \node[draw,rectangle,fill=packet3!30] at (10,-0.7) {\tiny Đích Gói 3};
+\end{tikzpicture}
+\end{center}
+
+\subsection{Đường đi của các gói}
+
+\begin{tcolorbox}[colback=white]
+\textbf{Gói 1 (A $\rightarrow$ F):}
+\begin{center}
+A $\rightarrow$ Z $\rightarrow$ (link) $\rightarrow$ Y $\rightarrow$ F
+\end{center}
+Số hop: 3
+
+\textbf{Gói 2 (C $\rightarrow$ D):}
+\begin{center}
+C $\rightarrow$ W $\rightarrow$ D
+\end{center}
+Số hop: 2
+
+\textbf{Gói 3 (E $\rightarrow$ H):}
+\begin{center}
+E $\rightarrow$ Y $\rightarrow$ X $\rightarrow$ H
+\end{center}
+Số hop: 3
+
+\textbf{Điểm xung đột:} Router Y (cả Gói 1 và Gói 3 đều cần đi qua Y)
+\end{tcolorbox}
+
+\section{Lời giải chi tiết - Mô phỏng từng thời điểm}
+
+\subsection{Quy tắc}
+\begin{itemize}
+    \item Buffer tại mỗi router: 2 flit (khi tắc nghẽn), 1 flit (bình thường)
+    \item Thời gian xử lý 1 flit: T
+    \item Header flit có ưu tiên cao hơn
+    \item Gói 1 gửi trước (ưu tiên khi conflict)
+\end{itemize}
+
+\subsection{Trạng thái theo từng thời điểm}
+
+\begin{tcolorbox}[colback=white,title=T = 0 (Khởi tạo)]
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Gói} & \textbf{Nguồn} & \textbf{Buffer} & \textbf{Đang di chuyển} \\
+\hline
+1 (abcd) & A & a & - \\
+\hline
+2 (efgh) & C & e & - \\
+\hline
+3 (ijkl) & E & i & - \\
+\hline
+\end{tabular}
+\end{center}
+Tất cả header flits ('a', 'e', 'i') đang tại buffer nguồn.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet1!20,title=T = 1]
+\begin{itemize}
+    \item 'a' di chuyển A $\rightarrow$ Z; 'b' vào buffer A
+    \item 'e' di chuyển C $\rightarrow$ W; 'f' vào buffer C
+    \item 'i' di chuyển E $\rightarrow$ Y; 'j' vào buffer E
+\end{itemize}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+\hline
+Buffer & A & Z & C & W & E & Y & ... \\
+\hline
+Flit & b & a & f & e & j & i & \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet1!20,title=T = 2]
+\begin{itemize}
+    \item 'a' di chuyển Z $\rightarrow$ Y; 'b' Z $\rightarrow$ Z (chờ); 'c' vào A
+    \item 'e' di chuyển W $\rightarrow$ D; 'f' $\rightarrow$ W; 'g' vào C
+    \item 'i' \textbf{bị block tại Y} (vì 'a' đang đến Y)
+    \item 'j' không thể tiến vào Y (buffer Y có 'i', 'a' đang đến)
+\end{itemize}
+
+\textbf{Conflict!} Cả 'a' và 'i' đều cần sử dụng router Y.
+\begin{itemize}
+    \item Gói 1 có ưu tiên (gửi trước) $\Rightarrow$ 'a' chiếm Y
+    \item 'i' phải chờ tại buffer Y
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet1!20,title=T = 3]
+\begin{itemize}
+    \item 'a' di chuyển Y $\rightarrow$ F; 'b' $\rightarrow$ Y; 'c' $\rightarrow$ Z; 'd' vào A
+    \item 'f' di chuyển W $\rightarrow$ D; 'g' $\rightarrow$ W; 'h' vào C
+    \item 'i' vẫn chờ (Y bận với 'a', 'b')
+\end{itemize}
+
+\textbf{Trạng thái:}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+Node & A & Z & Y & F & C & W & D & E \\
+\hline
+Flit & d & c & b,i & a & h & g & f & j,k \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet1!20,title=T = 4]
+\begin{itemize}
+    \item 'a' đến F (first flit of packet 1 arrives!)
+    \item 'b' $\rightarrow$ F; 'c' $\rightarrow$ Y; 'd' $\rightarrow$ Z
+    \item 'g' $\rightarrow$ D; 'h' $\rightarrow$ W
+    \item 'i' vẫn chờ (cần chờ Gói 1 rời Y hoàn toàn)
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet1!20,title=T = 5]
+\begin{itemize}
+    \item 'b' đến F
+    \item 'c' $\rightarrow$ F; 'd' $\rightarrow$ Y
+    \item 'h' $\rightarrow$ D (Gói 2 sắp hoàn thành)
+    \item 'i' có thể bắt đầu di chuyển sau khi Gói 1 rời Y
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet2!20,title=T = 6]
+\begin{itemize}
+    \item 'c' đến F
+    \item 'd' $\rightarrow$ F (Gói 1 hoàn thành!)
+    \item 'h' đến D (Gói 2 hoàn thành!)
+    \item 'i' $\rightarrow$ X (giờ Y đã trống); 'j' $\rightarrow$ Y; 'k' vào buffer
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet3!20,title=T = 7]
+\begin{itemize}
+    \item 'd' đến F
+    \item 'i' $\rightarrow$ H; 'j' $\rightarrow$ X; 'k' $\rightarrow$ Y; 'l' vào E
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=packet3!20,title=T = 8]
+\begin{itemize}
+    \item 'i' đến H (first flit of packet 3 arrives!)
+    \item 'j' $\rightarrow$ H; 'k' $\rightarrow$ X; 'l' $\rightarrow$ Y
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=resultbox,title=T = 9]
+\begin{itemize}
+    \item 'j' đến H
+    \item 'k' $\rightarrow$ H; 'l' $\rightarrow$ X
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=resultbox,title=T = 10]
+\begin{itemize}
+    \item 'k' đến H
+    \item 'l' $\rightarrow$ H
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=resultbox,title=T = 11]
+\begin{itemize}
+    \item 'l' đến H
+    \item \textbf{Gói 3 hoàn thành!}
+\end{itemize}
+\end{tcolorbox}
+
+\section{Tổng kết kết quả}
+
+\begin{tcolorbox}[colback=resultbox,title=Kết quả cuối cùng]
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Gói} & \textbf{Đường đi} & \textbf{Hoàn thành tại} & \textbf{Độ trễ} \\
+\hline
+Gói 1 (A$\rightarrow$F) & A-Z-Y-F & T = 6 & 6T \\
+\hline
+Gói 2 (C$\rightarrow$D) & C-W-D & T = 6 & 6T \\
+\hline
+Gói 3 (E$\rightarrow$H) & E-Y-X-H & T = 11 & 11T \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Thời gian để cả 3 gói đến được đích:}
+\[
+\boxed{T_{total} = 11T}
+\]
+
+\textbf{Lý do Gói 3 chậm:}
+\begin{itemize}
+    \item Bị block tại router Y do conflict với Gói 1
+    \item Phải chờ Gói 1 đi qua Y hoàn toàn mới có thể tiếp tục
+    \item Đây là nhược điểm của Wormhole switching: blocking effect
+\end{itemize}
+\end{tcolorbox}
+
+\section{Phân tích thêm}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{Latency lý tưởng (không conflict):}
+\begin{itemize}
+    \item Gói 1: 3 hops + 4 flits - 1 = 6T
+    \item Gói 2: 2 hops + 4 flits - 1 = 5T
+    \item Gói 3: 3 hops + 4 flits - 1 = 6T
+\end{itemize}
+
+\textbf{Latency thực tế:}
+\begin{itemize}
+    \item Gói 1: 6T (không bị ảnh hưởng)
+    \item Gói 2: 6T (gần như lý tưởng)
+    \item Gói 3: 11T (thêm 5T do blocking)
+\end{itemize}
+
+\textbf{Công thức latency Wormhole:}
+\[
+\text{Latency} = H + L - 1 + \text{Blocking Delay}
+\]
+Trong đó: H = số hops, L = số flits
+\end{tcolorbox}
+
+\end{document}

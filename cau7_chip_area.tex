@@ -1,0 +1,337 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{multirow}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Câu 7: Chip Area Calculation}
+\fancyhead[R]{1.0 điểm}
+\fancyfoot[C]{\thepage}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{resultbox}{RGB}{220,255,220}
+\definecolor{conceptbox}{RGB}{255,245,220}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{CÂU HỎI 7: TÍNH DIỆN TÍCH CHIP}\\[0.3cm]
+\large Learning Outcome: L.O.6 | Điểm: 1.0
+\end{center}
+
+\section{Đề bài}
+
+Phân tích hệ thống SoC được thiết kế với công nghệ 65nm, bao gồm các thành phần trên 1 die như sau:
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Thành phần} & \textbf{Diện tích (Đơn vị: A)} \\
+\hline
+CPU core & 750 \\
+\hline
+GPU core & 300 \\
+\hline
+DMA controller & 100 \\
+\hline
+Peripheral I/O (UART, SPI, I2C) & 350 \\
+\hline
+Bus và control unit & 500 \\
+\hline
+Internal SRAM (1 MB) & 4096 \\
+\hline
+L2 cache (256 KB) & 1024 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Công thức:} $1\,A = 1481\,\text{rbe} = 10^6 \times f^2$ ($f$: feature size in $\mu$m)
+
+Biết rằng 15\% diện tích chip dành cho IO pads và diện tích khung cần thiết. Tính diện tích chip khi chưa đóng gói (gross chip area) theo đơn vị mm².
+
+\section{Kiến thức nền tảng}
+
+\subsection{Các đơn vị đo diện tích chip}
+
+\begin{tcolorbox}[colback=conceptbox,title=Đơn vị diện tích trong thiết kế chip]
+\textbf{1. rbe (relative bit equivalent):}
+\begin{itemize}
+    \item Đơn vị chuẩn hóa để so sánh diện tích
+    \item 1 rbe = diện tích tương đương lưu 1 bit (SRAM cell đơn giản)
+\end{itemize}
+
+\textbf{2. A (Area Unit):}
+\begin{itemize}
+    \item Đơn vị quy ước theo công nghệ
+    \item $1\,A = 1481\,\text{rbe}$
+    \item Phụ thuộc vào feature size: $A \propto f^2$
+\end{itemize}
+
+\textbf{3. Đơn vị vật lý:}
+\begin{itemize}
+    \item $\mu m^2$ (micromet vuông)
+    \item $mm^2$ (milimet vuông) - thường dùng cho chip
+    \item $1\,mm^2 = 10^6\,\mu m^2$
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Cấu trúc diện tích chip}
+
+\begin{tcolorbox}[colback=formulabox]
+\textbf{Gross Chip Area} = Core Area + IO Pad Area + Seal Ring
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    % Outer rectangle (Gross Area)
+    \draw[thick] (0,0) rectangle (8,6);
+    \node at (4,6.3) {Gross Chip Area};
+    
+    % IO Pad ring
+    \draw[fill=gray!30] (0.5,0.5) rectangle (7.5,5.5);
+    \node at (4,0.25) {\tiny IO Pads};
+    
+    % Core area
+    \draw[fill=blue!20] (1,1) rectangle (7,5);
+    \node at (4,3) {Core Area};
+    \node at (4,2.5) {\tiny (Logic + Memory)};
+    
+    % Labels
+    \draw[<->] (8.3,0) -- (8.3,6);
+    \node at (8.6,3) {\rotatebox{90}{Gross}};
+    
+    \draw[<->] (7.2,1) -- (7.2,5);
+    \node at (6.9,3) {\rotatebox{90}{\tiny Core}};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Công thức:}
+\[
+\text{Core Area} = (1 - \text{IO ratio}) \times \text{Gross Area}
+\]
+\[
+\text{Gross Area} = \frac{\text{Core Area}}{1 - \text{IO ratio}}
+\]
+\end{tcolorbox}
+
+\subsection{Công nghệ 65nm}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{Feature size (f) = 65nm:}
+\begin{itemize}
+    \item Minimum gate length = 65nm = 0.065 $\mu$m = 0.000065 mm
+    \item Đây là node công nghệ khá phổ biến (2005-2010)
+    \item Transistor density: $\sim$2-3 million gates/mm²
+\end{itemize}
+
+\textbf{Ý nghĩa của công thức $A = 10^6 \times f^2$:}
+\begin{itemize}
+    \item Diện tích scale theo bình phương feature size
+    \item Khi công nghệ nhỏ hơn (shrink), diện tích giảm theo $f^2$
+\end{itemize}
+\end{tcolorbox}
+
+\section{Lời giải chi tiết}
+
+\subsection{Bước 1: Tính tổng diện tích các thành phần (Core Area) theo đơn vị A}
+
+\begin{tcolorbox}[colback=formulabox,title=Cộng diện tích tất cả components]
+\begin{center}
+\begin{tabular}{|l|r|l|}
+\hline
+\textbf{Thành phần} & \textbf{Diện tích (A)} & \textbf{Ghi chú} \\
+\hline
+CPU core & 750 & Logic processing \\
+\hline
+GPU core & 300 & Graphics processing \\
+\hline
+DMA controller & 100 & Data transfer \\
+\hline
+Peripheral I/O & 350 & UART, SPI, I2C \\
+\hline
+Bus \& control & 500 & Interconnect \\
+\hline
+SRAM (1 MB) & 4096 & Internal memory \\
+\hline
+L2 cache (256 KB) & 1024 & Cache memory \\
+\hline
+\hline
+\textbf{Tổng Core Area} & \textbf{7120 A} & \\
+\hline
+\end{tabular}
+\end{center}
+
+\[
+A_{core} = 750 + 300 + 100 + 350 + 500 + 4096 + 1024 = \mathbf{7120\,A}
+\]
+\end{tcolorbox}
+
+\subsection{Bước 2: Tính giá trị của 1 A theo đơn vị vật lý}
+
+Theo đề bài: $1\,A = 10^6 \times f^2$ với $f$ tính bằng $\mu$m
+
+\begin{tcolorbox}[colback=formulabox,title=Chuyển đổi đơn vị]
+\textbf{Feature size:}
+\[
+f = 65\,nm = 65 \times 10^{-3}\,\mu m = 0.065\,\mu m
+\]
+
+\textbf{Tính 1 A theo $\mu m^2$:}
+\[
+1\,A = 10^6 \times f^2 = 10^6 \times (0.065)^2\,\mu m^2
+\]
+\[
+1\,A = 10^6 \times 0.004225\,\mu m^2 = 4225\,\mu m^2
+\]
+
+\textbf{Chuyển sang $mm^2$:}
+\[
+1\,\mu m = 10^{-3}\,mm \Rightarrow 1\,\mu m^2 = 10^{-6}\,mm^2
+\]
+\[
+1\,A = 4225 \times 10^{-6}\,mm^2 = \mathbf{0.004225\,mm^2}
+\]
+\end{tcolorbox}
+
+\subsection{Bước 3: Tính Core Area theo mm²}
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+\text{Core Area} = A_{core} \times (\text{1 A in } mm^2)
+\]
+\[
+\text{Core Area} = 7120 \times 0.004225\,mm^2
+\]
+\[
+\text{Core Area} = \mathbf{30.082\,mm^2}
+\]
+\end{tcolorbox}
+
+\subsection{Bước 4: Tính Gross Chip Area}
+
+\begin{tcolorbox}[colback=resultbox,title=Tính diện tích chip chưa đóng gói]
+Theo đề bài: 15\% diện tích dành cho IO pads và khung
+
+$\Rightarrow$ Core Area chiếm 85\% Gross Area
+
+\[
+\text{Core Area} = 85\% \times \text{Gross Area}
+\]
+\[
+\text{Gross Area} = \frac{\text{Core Area}}{0.85}
+\]
+\[
+\text{Gross Area} = \frac{30.082}{0.85} = \boxed{\mathbf{35.39\,mm^2}}
+\]
+\end{tcolorbox}
+
+\subsection{Kiểm tra kết quả}
+
+\begin{tcolorbox}[colback=white,title=Verification]
+\textbf{Phân bổ diện tích:}
+\begin{itemize}
+    \item Core Area: $35.39 \times 0.85 = 30.08\,mm^2$ ✓
+    \item IO Pads + Frame: $35.39 \times 0.15 = 5.31\,mm^2$
+    \item Tổng: $30.08 + 5.31 = 35.39\,mm^2$ ✓
+\end{itemize}
+
+\textbf{Kích thước tương đương:}
+\[
+\text{Die size} \approx \sqrt{35.39} \approx 5.95\,mm \times 5.95\,mm
+\]
+Hoặc dạng chữ nhật: khoảng $6\,mm \times 6\,mm$
+\end{tcolorbox}
+
+\section{Phân tích thêm}
+
+\subsection{Phân bổ diện tích theo thành phần}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \pie[
+        text=legend,
+        radius=3,
+        color={red!60, orange!60, yellow!60, green!60, blue!60, purple!60, cyan!60}
+    ]{
+        10.5/CPU (750A),
+        4.2/GPU (300A),
+        1.4/DMA (100A),
+        4.9/Peripheral (350A),
+        7.0/Bus (500A),
+        57.5/SRAM (4096A),
+        14.4/L2 Cache (1024A)
+    }
+\end{tikzpicture}
+\end{center}
+
+\begin{tcolorbox}[colback=conceptbox,title=Nhận xét]
+\textbf{Phân tích phân bổ diện tích:}
+\begin{itemize}
+    \item \textbf{Memory chiếm chủ đạo:} SRAM + L2 cache = 5120A = \textbf{71.9\%} core area
+    \item \textbf{Logic (CPU+GPU):} 1050A = \textbf{14.7\%}
+    \item \textbf{Peripherals + Bus:} 950A = \textbf{13.3\%}
+\end{itemize}
+
+\textbf{Đây là đặc điểm điển hình của SoC:}
+\begin{itemize}
+    \item Memory-dominated design
+    \item SRAM density quyết định phần lớn diện tích
+    \item Logic scale tốt hơn memory khi shrink technology
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{So sánh với các technology nodes khác}
+
+\begin{tcolorbox}[colback=formulabox]
+Giả sử cùng thiết kế 7120A, với các technology nodes khác:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Node} & \textbf{f ($\mu$m)} & \textbf{1 A ($\mu m^2$)} & \textbf{Core Area (mm²)} \\
+\hline
+180nm & 0.18 & 32400 & 230.7 \\
+\hline
+130nm & 0.13 & 16900 & 120.3 \\
+\hline
+90nm & 0.09 & 8100 & 57.7 \\
+\hline
+\textbf{65nm} & \textbf{0.065} & \textbf{4225} & \textbf{30.08} \\
+\hline
+45nm & 0.045 & 2025 & 14.4 \\
+\hline
+28nm & 0.028 & 784 & 5.6 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Quy luật:} Diện tích giảm theo $f^2$ khi shrink technology.
+\end{tcolorbox}
+
+\section{Tổng kết}
+
+\begin{tcolorbox}[colback=resultbox,title=Kết quả cuối cùng]
+\textbf{Cho SoC với công nghệ 65nm:}
+\begin{itemize}
+    \item Tổng Core Area: 7120 A = \textbf{30.08 mm²}
+    \item IO Pads + Frame (15\%): 5.31 mm²
+    \item \textbf{Gross Chip Area: 35.39 mm²}
+\end{itemize}
+
+\textbf{Công thức tổng quát:}
+\[
+\boxed{\text{Gross Area} = \frac{\sum A_i \times 10^6 \times f^2}{(1-\text{IO ratio}) \times 10^6}}
+\]
+\end{tcolorbox}
+
+\end{document}
