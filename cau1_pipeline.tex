@@ -1,0 +1,351 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Câu 1: CPU Pipeline}
+\fancyhead[R]{1.5 điểm}
+\fancyfoot[C]{\thepage}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{resultbox}{RGB}{220,255,220}
+\definecolor{conceptbox}{RGB}{255,245,220}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{CÂU HỎI 1: CPU PIPELINE}\\[0.3cm]
+\large Learning Outcome: L.O.1 | Điểm: 1.5
+\end{center}
+
+\section{Đề bài}
+
+Cho CPU với thời gian xử lý các tác vụ cho 1 lệnh (instruction) Load như sau:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Instruction Fetch} & \textbf{Instruction Decode} & \textbf{Execute} & \textbf{Memory Access} & \textbf{Write back} \\
+\hline
+180ps & 140ps & 160ps & 220ps & 120ps \\
+\hline
+\end{tabular}
+\end{center}
+
+Tính các thông số: Cycle time, Latency, Throughput, Speed-up trong 2 trường hợp:
+\begin{enumerate}
+\item Không sử dụng pipeline.
+\item Sử dụng pipeline 5 tầng. Giả sử ở mỗi tầng pipeline phát sinh thêm thời gian trễ 15ps (do thanh ghi pipeline).
+\end{enumerate}
+
+\section{Kiến thức nền tảng}
+
+\subsection{Pipeline là gì?}
+
+\begin{tcolorbox}[colback=conceptbox,title=Khái niệm Pipeline]
+\textbf{Pipeline (đường ống)} là kỹ thuật cho phép CPU thực hiện nhiều lệnh đồng thời bằng cách chia quá trình thực thi thành các giai đoạn (stages) và xử lý song song các lệnh ở các giai đoạn khác nhau.
+
+\textbf{Ví dụ tương đồng:} Giống như dây chuyền sản xuất trong nhà máy - thay vì hoàn thành một sản phẩm rồi mới bắt đầu sản phẩm tiếp theo, nhiều sản phẩm được xử lý đồng thời ở các giai đoạn khác nhau.
+\end{tcolorbox}
+
+\subsection{5 giai đoạn của MIPS Pipeline}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.5cm, auto,
+    stage/.style={rectangle, draw, fill=blue!20, text width=2.5cm, text centered, minimum height=1cm}]
+    
+    \node[stage] (IF) {IF\\Instruction Fetch};
+    \node[stage, right=0.3cm of IF] (ID) {ID\\Instruction Decode};
+    \node[stage, right=0.3cm of ID] (EX) {EX\\Execute};
+    \node[stage, right=0.3cm of EX] (MEM) {MEM\\Memory Access};
+    \node[stage, right=0.3cm of MEM] (WB) {WB\\Write Back};
+    
+    \draw[->,thick] (IF) -- (ID);
+    \draw[->,thick] (ID) -- (EX);
+    \draw[->,thick] (EX) -- (MEM);
+    \draw[->,thick] (MEM) -- (WB);
+\end{tikzpicture}
+\end{center}
+
+\begin{itemize}
+    \item \textbf{IF (Instruction Fetch - 180ps):} Đọc lệnh từ bộ nhớ instruction cache
+    \item \textbf{ID (Instruction Decode - 140ps):} Giải mã lệnh, đọc thanh ghi nguồn
+    \item \textbf{EX (Execute - 160ps):} Thực hiện tính toán ALU hoặc tính địa chỉ
+    \item \textbf{MEM (Memory Access - 220ps):} Đọc/ghi bộ nhớ data cache
+    \item \textbf{WB (Write Back - 120ps):} Ghi kết quả về thanh ghi đích
+\end{itemize}
+
+\subsection{Các thông số quan trọng}
+
+\begin{tcolorbox}[colback=formulabox,title=Định nghĩa các thông số]
+\begin{enumerate}
+    \item \textbf{Cycle time (Thời gian chu kỳ):}
+    \begin{itemize}
+        \item Non-pipeline: Thời gian hoàn thành 1 lệnh = tổng thời gian tất cả giai đoạn
+        \item Pipeline: Thời gian của giai đoạn chậm nhất (+ overhead thanh ghi)
+    \end{itemize}
+    
+    \item \textbf{Latency (Độ trễ):} Thời gian từ khi bắt đầu đến khi hoàn thành 1 lệnh
+    
+    \item \textbf{Throughput (Thông lượng):} Số lệnh hoàn thành trong một đơn vị thời gian
+    \[
+    \text{Throughput} = \frac{1}{\text{Cycle time}}
+    \]
+    
+    \item \textbf{Speed-up (Tăng tốc):} Tỷ lệ cải thiện hiệu suất khi dùng pipeline
+    \[
+    \text{Speed-up} = \frac{\text{Throughput}_{\text{pipeline}}}{\text{Throughput}_{\text{non-pipeline}}}
+    \]
+\end{enumerate}
+\end{tcolorbox}
+
+\section{Lời giải chi tiết}
+
+\subsection{Trường hợp 1: Không sử dụng Pipeline}
+
+\begin{tcolorbox}[colback=white,title=Phân tích Non-Pipeline]
+Khi KHÔNG dùng pipeline, CPU phải hoàn thành tất cả 5 giai đoạn của 1 lệnh trước khi bắt đầu lệnh tiếp theo.
+
+\textbf{Timeline cho 1 lệnh:}
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    \draw[->] (0,0) -- (12,0) node[right] {Thời gian (ps)};
+    \draw[fill=red!30] (0,0.5) rectangle (1.8,1) node[midway] {IF};
+    \draw[fill=orange!30] (1.8,0.5) rectangle (3.2,1) node[midway] {ID};
+    \draw[fill=yellow!30] (3.2,0.5) rectangle (4.8,1) node[midway] {EX};
+    \draw[fill=green!30] (4.8,0.5) rectangle (7,1) node[midway] {MEM};
+    \draw[fill=blue!30] (7,0.5) rectangle (8.2,1) node[midway] {WB};
+    
+    \foreach \x/\label in {0/0, 1.8/180, 3.2/320, 4.8/480, 7/700, 8.2/820} {
+        \draw (\x,0.1) -- (\x,-0.1) node[below] {\label};
+    }
+\end{tikzpicture}
+\end{center}
+\end{tcolorbox}
+
+\textbf{Bước 1: Tính Cycle time}
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+T_{cycle} = T_{IF} + T_{ID} + T_{EX} + T_{MEM} + T_{WB}
+\]
+\[
+T_{cycle} = 180 + 140 + 160 + 220 + 120 = \mathbf{820\,ps}
+\]
+\end{tcolorbox}
+
+\textbf{Bước 2: Tính Latency}
+
+Vì không có pipeline, latency bằng cycle time:
+\begin{tcolorbox}[colback=resultbox]
+\[
+\text{Latency} = T_{cycle} = \mathbf{820\,ps}
+\]
+\end{tcolorbox}
+
+\textbf{Bước 3: Tính Throughput}
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+\text{Throughput} = \frac{1}{T_{cycle}} = \frac{1}{820 \times 10^{-12}\,s}
+\]
+\[
+\text{Throughput} = 1.2195 \times 10^9 \text{ lệnh/s} = \mathbf{1.22\,GIPS}
+\]
+\end{tcolorbox}
+
+\textbf{GIPS} = Giga Instructions Per Second (tỷ lệnh mỗi giây)
+
+\subsection{Trường hợp 2: Sử dụng Pipeline 5 tầng}
+
+\begin{tcolorbox}[colback=white,title=Phân tích Pipeline]
+Khi dùng pipeline, các lệnh được xử lý song song ở các giai đoạn khác nhau.
+
+\textbf{Quy tắc quan trọng:}
+\begin{itemize}
+    \item Cycle time = thời gian của giai đoạn \textbf{chậm nhất} + overhead
+    \item Tất cả các giai đoạn phải hoạt động đồng bộ với cùng một clock
+    \item Mỗi tầng có thanh ghi pipeline (pipeline register) để lưu dữ liệu
+\end{itemize}
+\end{tcolorbox}
+
+\textbf{Bước 1: Xác định giai đoạn chậm nhất}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Giai đoạn & IF & ID & EX & MEM & WB \\
+\hline
+Thời gian (ps) & 180 & 140 & 160 & \textcolor{red}{\textbf{220}} & 120 \\
+\hline
+\end{tabular}
+\end{center}
+
+$\Rightarrow$ Giai đoạn \textbf{MEM (Memory Access)} là chậm nhất với 220ps
+
+\textbf{Bước 2: Tính Cycle time (có tính overhead)}
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+T_{cycle,pipeline} = \max(T_{IF}, T_{ID}, T_{EX}, T_{MEM}, T_{WB}) + T_{overhead}
+\]
+\[
+T_{cycle,pipeline} = \max(180, 140, 160, 220, 120) + 15 = 220 + 15 = \mathbf{235\,ps}
+\]
+\end{tcolorbox}
+
+\textbf{Tại sao cần thêm overhead 15ps?}
+\begin{itemize}
+    \item Thanh ghi pipeline (flip-flops) cần thời gian để latch dữ liệu
+    \item Setup time và propagation delay của flip-flops
+    \item Clock skew compensation
+\end{itemize}
+
+\textbf{Bước 3: Tính Latency}
+
+Latency = thời gian để 1 lệnh đi qua tất cả 5 giai đoạn:
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+\text{Latency} = n \times T_{cycle,pipeline} = 5 \times 235 = \mathbf{1175\,ps}
+\]
+\end{tcolorbox}
+
+\textbf{Chú ý:} Latency của pipeline \textbf{lớn hơn} non-pipeline (1175ps > 820ps) do overhead từ thanh ghi pipeline ở mỗi tầng!
+
+\textbf{Bước 4: Tính Throughput (khi pipeline đầy)}
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+\text{Throughput} = \frac{1}{T_{cycle,pipeline}} = \frac{1}{235 \times 10^{-12}\,s}
+\]
+\[
+\text{Throughput} = 4.255 \times 10^9 \text{ lệnh/s} = \mathbf{4.26\,GIPS}
+\]
+\end{tcolorbox}
+
+\textbf{Timeline của Pipeline (với 5 lệnh):}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    \draw[->] (0,0) -- (12,0) node[right] {Chu kỳ};
+    \draw[->] (0,0) -- (0,6) node[above] {Lệnh};
+    
+    % Labels
+    \foreach \y/\label in {1/I1, 2/I2, 3/I3, 4/I4, 5/I5} {
+        \node at (-0.5,\y) {\label};
+    }
+    \foreach \x in {1,...,9} {
+        \node at (\x,-0.3) {\x};
+    }
+    
+    % Instruction 1
+    \draw[fill=red!30] (1,1) rectangle (2,1.5); \node at (1.5,1.25) {\tiny IF};
+    \draw[fill=orange!30] (2,1) rectangle (3,1.5); \node at (2.5,1.25) {\tiny ID};
+    \draw[fill=yellow!30] (3,1) rectangle (4,1.5); \node at (3.5,1.25) {\tiny EX};
+    \draw[fill=green!30] (4,1) rectangle (5,1.5); \node at (4.5,1.25) {\tiny MEM};
+    \draw[fill=blue!30] (5,1) rectangle (6,1.5); \node at (5.5,1.25) {\tiny WB};
+    
+    % Instruction 2
+    \draw[fill=red!30] (2,2) rectangle (3,2.5);
+    \draw[fill=orange!30] (3,2) rectangle (4,2.5);
+    \draw[fill=yellow!30] (4,2) rectangle (5,2.5);
+    \draw[fill=green!30] (5,2) rectangle (6,2.5);
+    \draw[fill=blue!30] (6,2) rectangle (7,2.5);
+    
+    % Instruction 3
+    \draw[fill=red!30] (3,3) rectangle (4,3.5);
+    \draw[fill=orange!30] (4,3) rectangle (5,3.5);
+    \draw[fill=yellow!30] (5,3) rectangle (6,3.5);
+    \draw[fill=green!30] (6,3) rectangle (7,3.5);
+    \draw[fill=blue!30] (7,3) rectangle (8,3.5);
+    
+    % Instruction 4
+    \draw[fill=red!30] (4,4) rectangle (5,4.5);
+    \draw[fill=orange!30] (5,4) rectangle (6,4.5);
+    \draw[fill=yellow!30] (6,4) rectangle (7,4.5);
+    \draw[fill=green!30] (7,4) rectangle (8,4.5);
+    \draw[fill=blue!30] (8,4) rectangle (9,4.5);
+    
+    % Instruction 5
+    \draw[fill=red!30] (5,5) rectangle (6,5.5);
+    \draw[fill=orange!30] (6,5) rectangle (7,5.5);
+    \draw[fill=yellow!30] (7,5) rectangle (8,5.5);
+    \draw[fill=green!30] (8,5) rectangle (9,5.5);
+    \draw[fill=blue!30] (9,5) rectangle (10,5.5);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Bước 5: Tính Speed-up}
+
+\begin{tcolorbox}[colback=resultbox,title=Kết quả Speed-up]
+\textbf{Cách 1: Dựa trên Throughput}
+\[
+\text{Speed-up} = \frac{\text{Throughput}_{\text{pipeline}}}{\text{Throughput}_{\text{non-pipeline}}} = \frac{4.26}{1.22} = \mathbf{3.49}
+\]
+
+\textbf{Cách 2: Dựa trên Cycle time}
+\[
+\text{Speed-up} = \frac{T_{cycle,\text{non-pipeline}}}{T_{cycle,\text{pipeline}}} = \frac{820}{235} = \mathbf{3.49}
+\]
+\end{tcolorbox}
+
+\section{Tổng kết kết quả}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Thông số} & \textbf{Non-Pipeline} & \textbf{Pipeline 5 tầng} \\
+\hline
+Cycle time & 820 ps & 235 ps \\
+\hline
+Latency & 820 ps & 1175 ps \\
+\hline
+Throughput & 1.22 GIPS & 4.26 GIPS \\
+\hline
+Speed-up & 1× (baseline) & 3.49× \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Phân tích thêm}
+
+\subsection{Tại sao Speed-up không đạt lý tưởng 5×?}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{Speed-up lý tưởng} với n giai đoạn là n×. Ở đây với 5 tầng, lý tưởng là 5×.
+
+\textbf{Tại sao chỉ đạt 3.49×?}
+\begin{enumerate}
+    \item \textbf{Các giai đoạn không cân bằng:} MEM = 220ps, WB = 120ps $\Rightarrow$ lãng phí thời gian ở các giai đoạn nhanh hơn
+    \item \textbf{Pipeline overhead:} 15ps × 5 tầng = 75ps thêm vào tổng latency
+    \item \textbf{Công thức thực tế:}
+    \[
+    \text{Speed-up}_{\text{max}} = \frac{\sum T_i}{\max(T_i) + T_{overhead}} = \frac{820}{235} = 3.49
+    \]
+\end{enumerate}
+\end{tcolorbox}
+
+\subsection{Làm sao để cải thiện Speed-up?}
+
+\begin{enumerate}
+    \item \textbf{Cân bằng các giai đoạn:} Chia nhỏ giai đoạn MEM hoặc gộp các giai đoạn ngắn
+    \item \textbf{Giảm overhead:} Sử dụng flip-flops nhanh hơn
+    \item \textbf{Super-pipelining:} Chia thành nhiều giai đoạn nhỏ hơn
+\end{enumerate}
+
+\end{document}

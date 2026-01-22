@@ -1,0 +1,429 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{circuits.ee.IEC,shapes,arrows,positioning}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{multirow}
+\usepackage{circuitikz}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Câu 4: Dynamic Power}
+\fancyhead[R]{1.5 điểm}
+\fancyfoot[C]{\thepage}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{resultbox}{RGB}{220,255,220}
+\definecolor{conceptbox}{RGB}{255,245,220}
+\definecolor{warningbox}{RGB}{255,230,230}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{CÂU HỎI 4: DYNAMIC POWER}\\[0.3cm]
+\large Learning Outcome: L.O.3 | Điểm: 1.5
+\end{center}
+
+\section{Đề bài}
+
+\begin{enumerate}
+    \item Dynamic power là gì (hình vẽ minh họa, giải thích, công thức tính)?
+    \item Trình bày chi tiết (về hình, công thức, giải thích) 2 kỹ thuật dùng để giảm Dynamic power?
+    \item Nhận xét ưu-khuyết điểm của 2 kỹ thuật đó.
+\end{enumerate}
+
+\section{Phần 1: Dynamic Power là gì?}
+
+\subsection{Tổng quan về Power trong CMOS}
+
+\begin{tcolorbox}[colback=conceptbox,title=Các thành phần công suất tiêu thụ]
+Tổng công suất tiêu thụ của chip CMOS:
+\[
+P_{total} = P_{dynamic} + P_{static} + P_{short-circuit}
+\]
+
+\begin{itemize}
+    \item \textbf{Dynamic Power ($P_{dynamic}$):} Công suất khi mạch chuyển trạng thái (switching)
+    \item \textbf{Static Power ($P_{static}$):} Công suất rò rỉ (leakage) khi mạch không hoạt động
+    \item \textbf{Short-circuit Power:} Công suất ngắn mạch trong quá trình chuyển đổi
+\end{itemize}
+
+Với công nghệ cũ (> 90nm): Dynamic power chiếm chủ đạo (70-90\%)\\
+Với công nghệ mới (< 45nm): Static power ngày càng quan trọng
+\end{tcolorbox}
+
+\subsection{Định nghĩa Dynamic Power}
+
+\begin{tcolorbox}[colback=formulabox,title=Định nghĩa]
+\textbf{Dynamic Power} (Công suất động) là công suất tiêu thụ khi các transistor trong mạch số \textbf{chuyển trạng thái} từ 0$\rightarrow$1 hoặc 1$\rightarrow$0.
+
+Công suất này phát sinh do quá trình \textbf{nạp và xả điện tụ tải} ($C_L$) thông qua các transistor.
+\end{tcolorbox}
+
+\subsection{Mạch CMOS Inverter - Minh họa}
+
+\begin{center}
+\begin{circuitikz}[scale=0.9]
+    % VDD
+    \draw (0,4) node[above]{$V_{DD}$} to[short] (0,3.5);
+    
+    % PMOS
+    \draw (0,3.5) to[Tpmos, n=pmos] (0,2);
+    \node at (-1.5,2.75) {PMOS};
+    
+    % NMOS
+    \draw (0,2) to[Tnmos, n=nmos] (0,0.5);
+    \node at (-1.5,1.25) {NMOS};
+    
+    % Ground
+    \draw (0,0.5) to[short] (0,0) node[ground]{};
+    
+    % Input
+    \draw (-2,1.75) node[left]{$V_{in}$} to[short] (-0.7,1.75);
+    \draw (-0.7,1.75) to[short] (-0.7,2.75);
+    \draw (-0.7,1.75) to[short] (-0.7,1.25);
+    
+    % Output
+    \draw (0,2) to[short] (1,2);
+    \draw (1,2) to[C, l=$C_L$] (1,0);
+    \draw (1,0) to[short] (0,0);
+    \draw (1,2) to[short] (2,2) node[right]{$V_{out}$};
+    
+    % Labels
+    \node at (3.5,3) {\textbf{Khi $V_{in} = 0$:}};
+    \node at (5,2.5) {PMOS ON, NMOS OFF};
+    \node at (5,2) {$V_{out} = V_{DD}$ (HIGH)};
+    \node at (5,1.5) {$C_L$ được nạp điện};
+    
+    \node at (3.5,0.5) {\textbf{Khi $V_{in} = V_{DD}$:}};
+    \node at (5,0) {PMOS OFF, NMOS ON};
+    \node at (5,-0.5) {$V_{out} = 0$ (LOW)};
+    \node at (5,-1) {$C_L$ xả điện qua GND};
+\end{circuitikz}
+\end{center}
+
+\subsection{Quá trình tiêu thụ năng lượng}
+
+\begin{tcolorbox}[colback=white,title=Phân tích năng lượng]
+\textbf{Chuyển từ 0 $\rightarrow$ 1 (Rising edge):}
+\begin{itemize}
+    \item PMOS dẫn, nạp điện cho $C_L$ từ $V_{DD}$
+    \item Năng lượng lấy từ nguồn: $E_{supply} = C_L \cdot V_{DD}^2$
+    \item Năng lượng lưu trong tụ: $E_{stored} = \frac{1}{2} C_L \cdot V_{DD}^2$
+    \item Năng lượng tiêu tán trên PMOS: $E_{dissipated} = \frac{1}{2} C_L \cdot V_{DD}^2$
+\end{itemize}
+
+\textbf{Chuyển từ 1 $\rightarrow$ 0 (Falling edge):}
+\begin{itemize}
+    \item NMOS dẫn, xả điện từ $C_L$ xuống GND
+    \item Năng lượng lưu trong tụ được xả: $E_{discharged} = \frac{1}{2} C_L \cdot V_{DD}^2$
+    \item Năng lượng tiêu tán trên NMOS: $\frac{1}{2} C_L \cdot V_{DD}^2$
+\end{itemize}
+
+\textbf{Tổng năng lượng cho 1 chu kỳ đầy đủ (0$\rightarrow$1$\rightarrow$0):}
+\[
+E_{cycle} = C_L \cdot V_{DD}^2
+\]
+\end{tcolorbox}
+
+\subsection{Công thức Dynamic Power}
+
+\begin{tcolorbox}[colback=resultbox,title=Công thức chính]
+\[
+\boxed{P_{dynamic} = \alpha \cdot C_L \cdot V_{DD}^2 \cdot f}
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\alpha$ = \textbf{Activity Factor} (Hệ số hoạt động)
+    \begin{itemize}
+        \item Xác suất node chuyển trạng thái trong 1 chu kỳ
+        \item Giá trị từ 0 đến 1
+        \item Ví dụ: Clock có $\alpha = 1$ (chuyển mỗi chu kỳ)
+        \item Data path thường có $\alpha = 0.1 \sim 0.3$
+    \end{itemize}
+    
+    \item $C_L$ = \textbf{Load Capacitance} (Điện dung tải)
+    \begin{itemize}
+        \item Bao gồm: capacitance của wire, gate input, drain junction
+        \item Đơn vị: Farad (thường là fF hoặc pF)
+    \end{itemize}
+    
+    \item $V_{DD}$ = \textbf{Supply Voltage} (Điện áp nguồn)
+    \begin{itemize}
+        \item Điện áp cung cấp cho chip
+        \item Đơn vị: Volt
+    \end{itemize}
+    
+    \item $f$ = \textbf{Clock Frequency} (Tần số xung nhịp)
+    \begin{itemize}
+        \item Số chu kỳ clock trong 1 giây
+        \item Đơn vị: Hz
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Ví dụ tính toán}
+
+\begin{tcolorbox}[colback=formulabox]
+\textbf{Cho:} Chip có $10^7$ transistors, mỗi transistor có $C_L = 10$ fF, $\alpha_{avg} = 0.1$, $V_{DD} = 1.2$V, $f = 3$ GHz.
+
+\textbf{Tính:}
+\begin{align*}
+P_{dynamic} &= \alpha \cdot C_{total} \cdot V_{DD}^2 \cdot f \\
+&= 0.1 \times (10^7 \times 10 \times 10^{-15}) \times (1.2)^2 \times (3 \times 10^9) \\
+&= 0.1 \times 10^{-7} \times 1.44 \times 3 \times 10^9 \\
+&= 43.2 \text{ W}
+\end{align*}
+\end{tcolorbox}
+
+\section{Phần 2: Các kỹ thuật giảm Dynamic Power}
+
+\subsection{Kỹ thuật 1: Voltage Scaling (Giảm điện áp nguồn)}
+
+\begin{tcolorbox}[colback=conceptbox,title=Nguyên lý Voltage Scaling]
+Vì $P_{dynamic} \propto V_{DD}^2$, việc giảm điện áp nguồn sẽ giảm công suất \textbf{theo bình phương}.
+
+\textbf{Nếu giảm $V_{DD}$ xuống còn $k$ lần ($0 < k < 1$):}
+\[
+P_{new} = \alpha \cdot C_L \cdot (k \cdot V_{DD})^2 \cdot f = k^2 \cdot P_{old}
+\]
+
+\textbf{Ví dụ:} Giảm $V_{DD}$ từ 1.2V xuống 0.9V (tỷ lệ $k = 0.75$):
+\[
+\frac{P_{new}}{P_{old}} = (0.75)^2 = 0.5625 \quad \Rightarrow \text{Giảm 43.75\% công suất!}
+\]
+\end{tcolorbox}
+
+\subsubsection{Dynamic Voltage and Frequency Scaling (DVFS)}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    \draw[->] (0,0) -- (8,0) node[right] {Workload};
+    \draw[->] (0,0) -- (0,5) node[above] {Power/Voltage};
+    
+    % High performance
+    \draw[fill=red!30] (0.5,4) rectangle (2.5,4.5);
+    \node at (1.5,4.25) {\tiny High Perf};
+    \node at (1.5,3.5) {$V_{DD} = 1.2V$};
+    \node at (1.5,3) {$f = 3$ GHz};
+    
+    % Medium
+    \draw[fill=yellow!30] (3,2.5) rectangle (5,3);
+    \node at (4,2.75) {\tiny Medium};
+    \node at (4,2) {$V_{DD} = 1.0V$};
+    \node at (4,1.5) {$f = 2$ GHz};
+    
+    % Low power
+    \draw[fill=green!30] (5.5,1) rectangle (7.5,1.5);
+    \node at (6.5,1.25) {\tiny Low Power};
+    \node at (6.5,0.6) {$V_{DD} = 0.8V$};
+    \node at (6.5,0.2) {$f = 1$ GHz};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{Ưu điểm và Nhược điểm}
+
+\begin{center}
+\begin{tabular}{|p{7cm}|p{7cm}|}
+\hline
+\textbf{Ưu điểm} & \textbf{Nhược điểm} \\
+\hline
+\begin{itemize}[leftmargin=*]
+    \item Hiệu quả rất cao (giảm theo $V^2$)
+    \item Có thể điều chỉnh động (DVFS)
+    \item Được hỗ trợ rộng rãi trong CPU/SoC hiện đại
+    \item Giảm cả dynamic và short-circuit power
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*]
+    \item Giảm tốc độ hoạt động (delay tăng)
+    \item Có giới hạn dưới ($V_{DD} > V_{th}$)
+    \item Giảm noise margin
+    \item Cần voltage regulator hiệu quả cao
+    \item Thời gian chuyển đổi voltage
+\end{itemize}
+\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Quan hệ Voltage - Delay}
+
+\begin{tcolorbox}[colback=warningbox,title=Trade-off quan trọng]
+Khi giảm $V_{DD}$, delay tăng theo công thức (gần đúng):
+\[
+t_{delay} \propto \frac{C_L \cdot V_{DD}}{(V_{DD} - V_{th})^2}
+\]
+
+Để duy trì timing correctness, phải \textbf{giảm tần số} tương ứng:
+\[
+f_{max} \propto \frac{(V_{DD} - V_{th})^2}{V_{DD}}
+\]
+\end{tcolorbox}
+
+\subsection{Kỹ thuật 2: Clock Gating (Khóa xung nhịp)}
+
+\begin{tcolorbox}[colback=conceptbox,title=Nguyên lý Clock Gating]
+Ngắt xung clock cho các module/block không hoạt động để loại bỏ switching activity.
+
+Khi clock bị tắt: $\alpha = 0 \Rightarrow P_{dynamic} = 0$ cho phần đó.
+
+\textbf{Ước tính:} Clock distribution network có thể tiêu thụ 30-50\% tổng dynamic power. Clock gating có thể giảm 30-60\% power.
+\end{tcolorbox}
+
+\subsubsection{Sơ đồ Clock Gating}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Without clock gating
+    \node at (-4,3) {\textbf{Không có Clock Gating:}};
+    \draw (-5,2) -- (-3,2) node[right] {CLK};
+    \draw[fill=blue!20] (-3,1) rectangle (-1,2.5);
+    \node at (-2,1.75) {Register};
+    \draw (-1,1.75) -- (0,1.75);
+    \node at (-2,0.5) {\textcolor{red}{Clock luôn chạy}};
+    \node at (-2,0) {\textcolor{red}{dù không cần}};
+    
+    % With clock gating
+    \node at (4,3) {\textbf{Có Clock Gating:}};
+    \draw (1,2) -- (2,2);
+    \node at (1.5,2.3) {\tiny CLK};
+    
+    % AND gate for clock gating
+    \draw (2,1.5) -- (2,2.5) -- (3,2) -- cycle;
+    \node at (2.5,2) {\tiny AND};
+    \draw (1.5,1.2) -- (2,1.7);
+    \node at (1.2,1.2) {\tiny EN};
+    
+    \draw (3,2) -- (4,2);
+    \draw[fill=blue!20] (4,1) rectangle (6,2.5);
+    \node at (5,1.75) {Register};
+    \draw (6,1.75) -- (7,1.75);
+    
+    \node at (5,0.5) {\textcolor{green!60!black}{Clock chỉ active}};
+    \node at (5,0) {\textcolor{green!60!black}{khi EN = 1}};
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{Clock Gating Cell (ICG)}
+
+\begin{tcolorbox}[colback=formulabox]
+\textbf{Integrated Clock Gating Cell} bao gồm:
+\begin{itemize}
+    \item Latch để giữ enable signal ổn định
+    \item AND gate để kết hợp clock với enable
+    \item Thiết kế đặc biệt để tránh glitch
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7]
+    \draw (0,0) rectangle (4,3);
+    \node at (2,2.5) {\textbf{ICG Cell}};
+    
+    % Inputs
+    \draw (-1,2) -- (0,2) node[left,xshift=-1cm] {CLK};
+    \draw (-1,1) -- (0,1) node[left,xshift=-1cm] {EN};
+    
+    % Latch inside
+    \draw[fill=yellow!30] (0.5,0.5) rectangle (2,1.5);
+    \node at (1.25,1) {\tiny Latch};
+    
+    % AND inside
+    \draw (2.5,1) -- (2.5,2.5) -- (3.5,1.75) -- cycle;
+    \node at (3,1.75) {\tiny AND};
+    
+    % Output
+    \draw (4,1.75) -- (5,1.75) node[right] {GCLK};
+\end{tikzpicture}
+\end{center}
+\end{tcolorbox}
+
+\subsubsection{Ưu điểm và Nhược điểm}
+
+\begin{center}
+\begin{tabular}{|p{7cm}|p{7cm}|}
+\hline
+\textbf{Ưu điểm} & \textbf{Nhược điểm} \\
+\hline
+\begin{itemize}[leftmargin=*]
+    \item Không ảnh hưởng đến performance khi hoạt động
+    \item Dễ triển khai trong RTL design
+    \item Có thể giảm 30-60\% dynamic power
+    \item Tự động được EDA tools hỗ trợ
+    \item Có thể áp dụng ở nhiều mức (module, register)
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*]
+    \item Thêm logic (ICG cells) = thêm diện tích, power
+    \item Có thể gây clock skew
+    \item Tăng độ phức tạp timing analysis
+    \item Cần xác định đúng điều kiện enable
+    \item Verification phức tạp hơn
+\end{itemize}
+\\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Phần 3: So sánh hai kỹ thuật}
+
+\begin{tcolorbox}[colback=resultbox,title=Bảng so sánh tổng hợp]
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Tiêu chí} & \textbf{Voltage Scaling} & \textbf{Clock Gating} \\
+\hline
+\hline
+Hiệu quả giảm power & Rất cao ($\propto V^2$) & Cao (30-60\%) \\
+\hline
+Ảnh hưởng performance & Giảm tốc độ & Không ảnh hưởng \\
+\hline
+Độ phức tạp thiết kế & Trung bình & Thấp-Trung bình \\
+\hline
+Overhead diện tích & Voltage regulator & ICG cells \\
+\hline
+Granularity & Toàn chip/domain & Module/Register \\
+\hline
+Dynamic adjustment & Có (DVFS) & Có (runtime enable) \\
+\hline
+Tool support & Tốt & Rất tốt \\
+\hline
+Verification effort & Cao & Trung bình \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\subsection{Khi nào nên dùng kỹ thuật nào?}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{Dùng Voltage Scaling khi:}
+\begin{itemize}
+    \item Có thể chấp nhận giảm performance
+    \item Workload thay đổi theo thời gian (DVFS)
+    \item Cần giảm power tối đa
+    \item Battery-powered devices
+\end{itemize}
+
+\textbf{Dùng Clock Gating khi:}
+\begin{itemize}
+    \item Không thể chấp nhận giảm performance
+    \item Có các modules hoạt động không thường xuyên
+    \item Thiết kế có nhiều peripheral blocks
+    \item Cần cân bằng power/performance
+\end{itemize}
+
+\textbf{Kết hợp cả hai:} Thực tế, các SoC hiện đại sử dụng \textbf{nhiều kỹ thuật kết hợp} bao gồm cả Voltage Scaling, Clock Gating, và Power Gating để tối ưu power ở mọi điều kiện hoạt động.
+\end{tcolorbox}
+
+\end{document}

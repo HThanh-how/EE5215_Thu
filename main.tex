@@ -1,0 +1,589 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\geometry{margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Thiết kế hệ thống trên chip nâng cao}
+\fancyhead[R]{Đáp án Thi Cuối Kỳ HK242}
+\fancyfoot[C]{\thepage}
+
+\title{\textbf{ĐÁP ÁN}\\
+\Large Môn: Thiết kế hệ thống trên chip nâng cao (EE5215)\\
+\large Thi Cuối Kỳ - Học kỳ 2, năm học 2024-2025}
+\author{Ngày thi: 18/05/2025}
+\date{}
+
+\begin{document}
+\maketitle
+
+% ============================================
+% CÂU HỎI 1: CPU Pipeline
+% ============================================
+\section*{Câu hỏi 1 (L.O.1) (1.5 điểm)}
+\textbf{Đề bài:} Cho CPU với thời gian xử lý các tác vụ cho 1 lệnh (instruction) Load như sau:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{Instruction Fetch} & \textbf{Instruction Decode} & \textbf{Execute} & \textbf{Memory Access} & \textbf{Write back} \\
+\hline
+180ps & 140ps & 160ps & 220ps & 120ps \\
+\hline
+\end{tabular}
+\end{center}
+
+Tính các thông số: Cycle time, Latency, Throughput, Speed-up trong 2 trường hợp:
+\begin{enumerate}
+\item Không sử dụng pipeline.
+\item Sử dụng pipeline 5 tầng. Giả sử ở mỗi tầng pipeline phát sinh thêm thời gian trễ 15ps (do thanh ghi pipeline).
+\end{enumerate}
+
+\subsection*{Lời giải:}
+
+\subsubsection*{Trường hợp 1: Không sử dụng pipeline}
+
+\begin{itemize}
+    \item \textbf{Cycle time} = Tổng thời gian thực hiện 1 lệnh:
+    \[
+    T_{cycle} = 180 + 140 + 160 + 220 + 120 = \boxed{820\,\text{ps}}
+    \]
+    
+    \item \textbf{Latency} (thời gian hoàn thành 1 lệnh):
+    \[
+    \text{Latency} = \boxed{820\,\text{ps}}
+    \]
+    
+    \item \textbf{Throughput} (số lệnh hoàn thành trong 1 giây):
+    \[
+    \text{Throughput} = \frac{1}{820 \times 10^{-12}} = \boxed{1.22 \times 10^9 \text{ lệnh/s} = 1.22\,\text{GIPS}}
+    \]
+\end{itemize}
+
+\subsubsection*{Trường hợp 2: Sử dụng pipeline 5 tầng}
+
+\begin{itemize}
+    \item \textbf{Cycle time} = Thời gian của tầng chậm nhất + thời gian trễ thanh ghi:
+    \[
+    T_{cycle} = \max(180, 140, 160, 220, 120) + 15 = 220 + 15 = \boxed{235\,\text{ps}}
+    \]
+    
+    \item \textbf{Latency} (thời gian hoàn thành 1 lệnh đầu tiên):
+    \[
+    \text{Latency} = 5 \times T_{cycle} = 5 \times 235 = \boxed{1175\,\text{ps}}
+    \]
+    
+    \item \textbf{Throughput} (khi pipeline đầy):
+    \[
+    \text{Throughput} = \frac{1}{235 \times 10^{-12}} = \boxed{4.26 \times 10^9 \text{ lệnh/s} = 4.26\,\text{GIPS}}
+    \]
+    
+    \item \textbf{Speed-up} (so với không dùng pipeline):
+    \[
+    \text{Speed-up} = \frac{\text{Throughput}_{\text{pipeline}}}{\text{Throughput}_{\text{non-pipeline}}} = \frac{4.26}{1.22} = \boxed{3.49}
+    \]
+    
+    Hoặc:
+    \[
+    \text{Speed-up} = \frac{T_{cycle,\text{non-pipeline}}}{T_{cycle,\text{pipeline}}} = \frac{820}{235} = \boxed{3.49}
+    \]
+\end{itemize}
+
+% ============================================
+% CÂU HỎI 2: Tần số CPU
+% ============================================
+\section*{Câu hỏi 2 (L.O.1) (1.0 điểm)}
+\textbf{Đề bài:} Máy tính A hoạt động ở tần số 2GHz thực thi một chương trình trong 10s. Các kỹ sư muốn thiết kế một máy tính B có khả năng thực thi chương trình đó chi trong thời gian 7s bằng cách tăng tần số so với máy tính A. Tuy nhiên, khi tăng tần số thì số chu kỳ cần thiết để thực thi chương trình trên máy tính B cũng tăng lên 1.4 lần so với số chu kỳ cần thiết để thực thi chương trình trên máy tính A. Hỏi tần số máy tính B phải là bao nhiêu để đạt được thời gian xử lý như mong muốn.
+
+\subsection*{Lời giải:}
+
+\textbf{Thông tin đã cho:}
+\begin{itemize}
+    \item Máy A: $f_A = 2\,\text{GHz}$, $T_A = 10\,\text{s}$
+    \item Máy B: $T_B = 7\,\text{s}$
+    \item Số chu kỳ máy B: $C_B = 1.4 \times C_A$
+\end{itemize}
+
+\textbf{Tính số chu kỳ của máy A:}
+\[
+C_A = f_A \times T_A = 2 \times 10^9 \times 10 = 20 \times 10^9 \text{ chu kỳ}
+\]
+
+\textbf{Tính số chu kỳ của máy B:}
+\[
+C_B = 1.4 \times C_A = 1.4 \times 20 \times 10^9 = 28 \times 10^9 \text{ chu kỳ}
+\]
+
+\textbf{Tính tần số máy B:}
+\[
+f_B = \frac{C_B}{T_B} = \frac{28 \times 10^9}{7} = 4 \times 10^9\,\text{Hz} = \boxed{4\,\text{GHz}}
+\]
+
+% ============================================
+% CÂU HỎI 3: Cache Memory
+% ============================================
+\section*{Câu hỏi 3 (L.O.3) (2.0 điểm)}
+\textbf{Đề bài:} Cho sơ đồ ánh xạ bộ nhớ giữa bộ nhớ chính (main memory) và bộ nhớ cache (cache memory) theo phương pháp "ánh xạ trực tiếp" (direct mapping) như hình bên.
+
+Cấu trúc địa chỉ bộ nhớ chính (main memory address): Tag ($t$-bit), Index ($i$-bit), Block offset ($b$-bit).
+
+Giả sử bộ nhớ chính (main memory) có dung lượng là 4GB, định địa chỉ theo byte (mỗi byte trong bộ nhớ có một địa chỉ xác định), được tổ chức thành các block, mỗi block có dung lượng là 64 byte. Bộ nhớ cache (cache memory) có dung lượng là 256KB; kích thước mỗi line trong bộ nhớ cache bằng với kích thước mỗi block trong bộ nhớ chính.
+
+\begin{enumerate}
+    \item (1.0đ) Xác định số bit tương ứng với các trường Tag ($t$), Index ($i$) và Block offset ($b$).
+    \item (1.0đ) Giả sử vi xử lý cần truy xuất từ nhớ có địa chỉ là 180525 (hệ thập phân) trong bộ nhớ chính. Xác định xem từ nhớ này thuộc vùng nào của bộ nhớ chính (thứ tự vùng nhớ được đếm bắt đầu từ 0). Nếu từ nhớ ở địa chỉ trên có tồn tại trong bộ nhớ cache thì sẽ thuộc line nào trong bộ nhớ cache?
+\end{enumerate}
+
+\subsection*{Lời giải:}
+
+\subsubsection*{Phần 1: Xác định số bit của các trường}
+
+\textbf{Thông tin đã cho:}
+\begin{itemize}
+    \item Main memory: 4GB = $4 \times 2^{30} = 2^{32}$ bytes $\Rightarrow$ Địa chỉ 32 bit
+    \item Block size = Line size = 64 bytes = $2^6$ bytes
+    \item Cache size = 256KB = $256 \times 2^{10} = 2^{18}$ bytes
+\end{itemize}
+
+\textbf{Tính Block offset ($b$):}
+\[
+b = \log_2(64) = \log_2(2^6) = \boxed{6\,\text{bit}}
+\]
+
+\textbf{Tính số line trong cache:}
+\[
+\text{Số line} = \frac{\text{Cache size}}{\text{Line size}} = \frac{2^{18}}{2^6} = 2^{12} = 4096 \text{ lines}
+\]
+
+\textbf{Tính Index ($i$):}
+\[
+i = \log_2(4096) = \log_2(2^{12}) = \boxed{12\,\text{bit}}
+\]
+
+\textbf{Tính Tag ($t$):}
+\[
+t = 32 - i - b = 32 - 12 - 6 = \boxed{14\,\text{bit}}
+\]
+
+\textbf{Tổng kết:} $t = 14$ bit, $i = 12$ bit, $b = 6$ bit.
+
+\subsubsection*{Phần 2: Xác định vùng nhớ và line trong cache}
+
+Địa chỉ cần truy xuất: $180525_{10}$
+
+\textbf{Bước 1: Chuyển địa chỉ sang hệ nhị phân (32 bit):}
+\[
+180525_{10} = 0000\,0000\,0000\,0010\,1100\,0001\,0010\,1101_2
+\]
+
+\textbf{Bước 2: Phân tích địa chỉ:}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Tag (14 bit)} & \textbf{Index (12 bit)} & \textbf{Block offset (6 bit)} \\
+\hline
+$00\,0000\,0000\,0010$ & $1100\,0001\,0010$ & $10\,1101$ \\
+\hline
+$0000\,0000\,0000\,10_2 = 2_{10}$ & $1100\,0001\,0010_2 = 3090_{10}$ & $101101_2 = 45_{10}$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Bước 3: Xác định vùng nhớ (block number trong main memory):}
+\[
+\text{Block number} = \lfloor \frac{180525}{64} \rfloor = \lfloor 2820.70 \rfloor = \boxed{2820}
+\]
+
+\textbf{Vùng nhớ chính:} Tag = 2 $\Rightarrow$ Thuộc \textbf{vùng 2}.
+
+\textbf{Bước 4: Xác định line trong cache (với Direct Mapping):}
+\[
+\text{Cache line} = \text{Index} = \boxed{3090}
+\]
+
+% ============================================
+% CÂU HỎI 4: Dynamic Power
+% ============================================
+\section*{Câu hỏi 4 (L.O.3) (1.5 điểm)}
+\textbf{Đề bài:} Dynamic power là gì (hình vẽ minh họa, giải thích, công thức tính)? Trình bày chi tiết (về hình, công thức, giải thích) 2 kỹ thuật dùng để giảm Dynamic power? Nhận xét ưu-khuyết điểm của 2 kỹ thuật đó.
+
+\subsection*{Lời giải:}
+
+\subsubsection*{1. Dynamic Power là gì?}
+
+\textbf{Định nghĩa:} Dynamic power (công suất động) là công suất tiêu thụ khi mạch số hoạt động, xảy ra khi các transistor chuyển trạng thái từ 0 sang 1 hoặc ngược lại.
+
+\textbf{Công thức:}
+\[
+\boxed{P_{dynamic} = \alpha \cdot C_L \cdot V_{DD}^2 \cdot f}
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $\alpha$: Activity factor (hệ số hoạt động, xác suất chuyển trạng thái)
+    \item $C_L$: Capacitance load (điện dung tải)
+    \item $V_{DD}$: Supply voltage (điện áp nguồn)
+    \item $f$: Clock frequency (tần số xung nhịp)
+\end{itemize}
+
+\textbf{Minh họa:} Khi cổng logic chuyển từ LOW sang HIGH:
+\begin{itemize}
+    \item PMOS dẫn, nạp điện cho tụ $C_L$ từ $V_{DD}$ $\rightarrow$ tiêu thụ năng lượng $\frac{1}{2}C_L V_{DD}^2$
+    \item Khi chuyển từ HIGH sang LOW, NMOS dẫn, xả điện $\rightarrow$ tiêu thụ năng lượng tương đương
+\end{itemize}
+
+\subsubsection*{2. Kỹ thuật giảm Dynamic Power}
+
+\paragraph{Kỹ thuật 1: Voltage Scaling (Giảm điện áp nguồn)}
+
+\textbf{Nguyên lý:} Giảm $V_{DD}$ vì $P_{dynamic} \propto V_{DD}^2$
+
+\textbf{Công thức:} Nếu giảm $V_{DD}$ xuống $k$ lần:
+\[
+P_{new} = \alpha \cdot C_L \cdot \left(\frac{V_{DD}}{k}\right)^2 \cdot f = \frac{P_{old}}{k^2}
+\]
+
+\textbf{Ưu điểm:}
+\begin{itemize}
+    \item Hiệu quả cao (giảm theo bình phương)
+    \item Có thể kết hợp với Dynamic Voltage and Frequency Scaling (DVFS)
+\end{itemize}
+
+\textbf{Khuyết điểm:}
+\begin{itemize}
+    \item Giảm tốc độ hoạt động (tăng delay)
+    \item Giảm noise margin
+    \item Có giới hạn dưới (threshold voltage)
+\end{itemize}
+
+\paragraph{Kỹ thuật 2: Clock Gating (Khóa xung nhịp)}
+
+\textbf{Nguyên lý:} Ngắt xung clock cho các module không hoạt động $\rightarrow$ $\alpha = 0$ cho phần đó.
+
+\textbf{Ưu điểm:}
+\begin{itemize}
+    \item Không ảnh hưởng đến hiệu suất khi module hoạt động
+    \item Dễ triển khai trong thiết kế RTL
+    \item Có thể giảm 30-60\% dynamic power
+\end{itemize}
+
+\textbf{Khuyết điểm:}
+\begin{itemize}
+    \item Cần thêm logic kiểm soát (clock gating cell)
+    \item Có thể gây ra clock skew
+    \item Tăng độ phức tạp thiết kế và verification
+\end{itemize}
+
+\paragraph{Bảng so sánh:}
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Tiêu chí} & \textbf{Voltage Scaling} & \textbf{Clock Gating} \\
+\hline
+Hiệu quả giảm power & Rất cao ($\propto V^2$) & Cao (30-60\%) \\
+\hline
+Ảnh hưởng performance & Giảm tốc độ & Không ảnh hưởng \\
+\hline
+Độ phức tạp & Trung bình & Thấp-Trung bình \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================
+% CÂU HỎI 5: I2C Communication
+% ============================================
+\section*{Câu hỏi 5 (L.O.3) (1.5 điểm)}
+\textbf{Đề bài:} Cho kết nối giữa Master và các Slave theo giao thức I2C như hình bên dưới. Mô tả quá trình Master muốn gửi liên tục 2 byte data 12H và 34H xuống Slave 2 từ lúc bắt đầu cho đến kết thúc khung truyền.
+
+\textbf{Slave addresses:}
+\begin{itemize}
+    \item Slave 1: \texttt{1101001}
+    \item Slave 2: \texttt{1001100}
+    \item Slave 3: \texttt{0100111}
+\end{itemize}
+
+\subsection*{Lời giải:}
+
+\subsubsection*{Quy trình truyền I2C từ Master đến Slave 2:}
+
+\textbf{1. Start Condition:}
+\begin{itemize}
+    \item Master kéo SDA từ HIGH xuống LOW trong khi SCL vẫn HIGH
+    \item Báo hiệu bắt đầu giao tiếp
+\end{itemize}
+
+\textbf{2. Address Frame (8 bit):}
+\begin{itemize}
+    \item 7 bit địa chỉ Slave 2: \texttt{1001100}
+    \item 1 bit R/W = 0 (Write - ghi dữ liệu)
+    \item Frame: \texttt{10011000} (0x98)
+\end{itemize}
+
+\textbf{3. ACK từ Slave 2:}
+\begin{itemize}
+    \item Slave 2 nhận ra địa chỉ của mình
+    \item Slave 2 kéo SDA xuống LOW (ACK = 0)
+\end{itemize}
+
+\textbf{4. Data Frame 1 (Byte 1 = 0x12):}
+\begin{itemize}
+    \item Master gửi 8 bit: \texttt{00010010}
+    \item MSB first: $0 \rightarrow 0 \rightarrow 0 \rightarrow 1 \rightarrow 0 \rightarrow 0 \rightarrow 1 \rightarrow 0$
+\end{itemize}
+
+\textbf{5. ACK từ Slave 2:}
+\begin{itemize}
+    \item Slave 2 kéo SDA xuống LOW để xác nhận đã nhận byte 1
+\end{itemize}
+
+\textbf{6. Data Frame 2 (Byte 2 = 0x34):}
+\begin{itemize}
+    \item Master gửi 8 bit: \texttt{00110100}
+    \item MSB first: $0 \rightarrow 0 \rightarrow 1 \rightarrow 1 \rightarrow 0 \rightarrow 1 \rightarrow 0 \rightarrow 0$
+\end{itemize}
+
+\textbf{7. ACK từ Slave 2:}
+\begin{itemize}
+    \item Slave 2 kéo SDA xuống LOW để xác nhận đã nhận byte 2
+\end{itemize}
+
+\textbf{8. Stop Condition:}
+\begin{itemize}
+    \item Master kéo SDA từ LOW lên HIGH trong khi SCL đang HIGH
+    \item Báo hiệu kết thúc giao tiếp
+\end{itemize}
+
+\subsubsection*{Sơ đồ thời gian (Timing Diagram):}
+
+\begin{verbatim}
+SCL: ‾‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|A|_|‾|_|‾|_|...|_|A|_|‾|_|...|_|A|‾‾
+SDA: ‾‾\_| 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 |ACK| 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 |ACK|...
+      S  |<----- Address (7 bit) ----->|R/W|   |<----- Data 0x12 ---------->|   |
+\end{verbatim}
+
+\textbf{Tổng số bit truyền:}
+\begin{itemize}
+    \item Start: 1
+    \item Address + R/W: 8 bit + 1 ACK = 9
+    \item Data 1: 8 bit + 1 ACK = 9
+    \item Data 2: 8 bit + 1 ACK = 9
+    \item Stop: 1
+    \item \textbf{Tổng: 29 clock cycles}
+\end{itemize}
+
+% ============================================
+% CÂU HỎI 6: Network-on-Chip Wormhole Switching
+% ============================================
+\section*{Câu hỏi 6 (L.O.6) (1.5 điểm)}
+\textbf{Đề bài:} Xem xét mạng chuyển mạch gói (packet switching) 2×2 router sử dụng phương pháp Wormhole switching. Có 3 gói dữ liệu cần được gửi gồm:
+\begin{itemize}
+    \item Gói 1: 4 flit 'abcd', từ A đến F
+    \item Gói 2: 4 flit 'efgh', từ C đến D
+    \item Gói 3: 4 flit 'ijkl', từ E đến H
+\end{itemize}
+
+Các router sử dụng bộ đệm (buffer) để lưu các flit. Giả sử mỗi bộ đệm lưu tối đa 2 flit khi đường truyền bị tắc nghẽn. Trường hợp kênh truyền không tắc nghẽn thì buffer chỉ lưu 1 flit. Gọi T là thời gian cần xử lý 1 flit.
+
+Ban đầu cả 3 gói 1, 2 và 3 đều gửi flit đầu tiên (header flit), lần lượt là 'a', 'e' và 'i' đến bộ đệm tương ứng. Sau khoảng thời gian T, flit kế tiếp được xử lý. Hãy mô tả hoạt động của mạng ở các thời điểm tiếp theo. Sau bao nhiêu T thì cả 3 gói dữ liệu đến được đích?
+
+\subsection*{Lời giải:}
+
+\subsubsection*{Phân tích topology mạng 2×2:}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+A --- Z --- B \\
+\hline
+C --- W --- D \\
+\hline
+\end{tabular}
+và
+\begin{tabular}{|c|c|}
+\hline
+E --- Y --- F \\
+\hline
+G --- X --- H \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Đường đi:}
+\begin{itemize}
+    \item Gói 1 (A$\rightarrow$F): A $\rightarrow$ Z $\rightarrow$ Y $\rightarrow$ F (3 hop)
+    \item Gói 2 (C$\rightarrow$D): C $\rightarrow$ W $\rightarrow$ D (2 hop)
+    \item Gói 3 (E$\rightarrow$H): E $\rightarrow$ Y $\rightarrow$ X $\rightarrow$ H (3 hop)
+\end{itemize}
+
+\subsubsection*{Hoạt động theo từng thời điểm T:}
+
+\textbf{T = 0 (Khởi tạo):}
+\begin{itemize}
+    \item Buffer A: 'a' (header gói 1)
+    \item Buffer C: 'e' (header gói 2)
+    \item Buffer E: 'i' (header gói 3)
+\end{itemize}
+
+\textbf{T = 1:}
+\begin{itemize}
+    \item 'a' $\rightarrow$ Z; Buffer A: 'b'
+    \item 'e' $\rightarrow$ W; Buffer C: 'f'
+    \item 'i' $\rightarrow$ Y; Buffer E: 'j'
+\end{itemize}
+
+\textbf{T = 2:}
+\begin{itemize}
+    \item 'a' $\rightarrow$ Y; 'b' $\rightarrow$ Z; Buffer A: 'c'
+    \item 'e' $\rightarrow$ D; 'f' $\rightarrow$ W; Buffer C: 'g'
+    \item 'i' tắc nghẽn tại Y (chờ 'a'); 'j' $\rightarrow$ buffer Y
+\end{itemize}
+
+\textbf{T = 3:}
+\begin{itemize}
+    \item 'a' $\rightarrow$ F (đến đích!); 'b' $\rightarrow$ Y; 'c' $\rightarrow$ Z; Buffer A: 'd'
+    \item 'f' $\rightarrow$ D; 'g' $\rightarrow$ W; Buffer C: 'h'
+    \item 'i' vẫn chờ tại buffer Y (ưu tiên gói 1 đang truyền)
+\end{itemize}
+
+\textbf{T = 4:}
+\begin{itemize}
+    \item 'b' $\rightarrow$ F; 'c' $\rightarrow$ Y; 'd' $\rightarrow$ Z
+    \item 'g' $\rightarrow$ D (đến đích!); 'h' $\rightarrow$ W
+    \item 'i' có thể bắt đầu di chuyển; 'j' chờ
+\end{itemize}
+
+\textbf{T = 5:}
+\begin{itemize}
+    \item 'c' $\rightarrow$ F; 'd' $\rightarrow$ Y
+    \item 'h' $\rightarrow$ D
+    \item 'i' $\rightarrow$ X; 'j' $\rightarrow$ Y; Buffer E: 'k'
+\end{itemize}
+
+\textbf{T = 6:}
+\begin{itemize}
+    \item 'd' $\rightarrow$ F (Gói 1 hoàn thành!)
+    \item Gói 2: 'h' đã đến D (Gói 2 hoàn thành!)
+    \item 'i' $\rightarrow$ H; 'j' $\rightarrow$ X; 'k' $\rightarrow$ Y; Buffer E: 'l'
+\end{itemize}
+
+\textbf{T = 7:}
+\begin{itemize}
+    \item 'j' $\rightarrow$ H; 'k' $\rightarrow$ X; 'l' $\rightarrow$ Y
+\end{itemize}
+
+\textbf{T = 8:}
+\begin{itemize}
+    \item 'k' $\rightarrow$ H; 'l' $\rightarrow$ X
+\end{itemize}
+
+\textbf{T = 9:}
+\begin{itemize}
+    \item 'l' $\rightarrow$ H (Gói 3 hoàn thành!)
+\end{itemize}
+
+\subsubsection*{Kết luận:}
+\[
+\boxed{\text{Tổng thời gian: } T_{total} = 9T}
+\]
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Gói} & \textbf{Thời điểm hoàn thành} & \textbf{Độ trễ} \\
+\hline
+Gói 1 (A$\rightarrow$F) & T = 6 & 6T \\
+\hline
+Gói 2 (C$\rightarrow$D) & T = 6 & 6T \\
+\hline
+Gói 3 (E$\rightarrow$H) & T = 9 & 9T \\
+\hline
+\end{tabular}
+\end{center}
+
+% ============================================
+% CÂU HỎI 7: Chip Area Calculation
+% ============================================
+\section*{Câu hỏi 7 (L.O.6) (1.0 điểm)}
+\textbf{Đề bài:} Phân tích hệ thống SoC được thiết kế với công nghệ 65nm, bao gồm các thành phần trên 1 die như sau:
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Thành phần} & \textbf{Diện tích (Đơn vị: A)} \\
+\hline
+CPU core & 750 \\
+\hline
+GPU core & 300 \\
+\hline
+DMA controller & 100 \\
+\hline
+Peripheral I/O (UART, SPI, I2C) & 350 \\
+\hline
+Bus và control unit & 500 \\
+\hline
+Internal SRAM (1 MB) & 4096 \\
+\hline
+L2 cache (256 KB) & 1024 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Công thức:} $1\,A = 1481\,\text{rbe} = 10^6 \times f^2$ ($f$: feature size in $\mu$m)
+
+Biết rằng 15\% diện tích chip dành cho IO pads và diện tích khung cần thiết. Tính diện tích chip khi chưa đóng gói (gross chip area) theo đơn vị mm².
+
+\subsection*{Lời giải:}
+
+\textbf{Bước 1: Tính tổng diện tích các thành phần (Core Area):}
+\[
+A_{core} = 750 + 300 + 100 + 350 + 500 + 4096 + 1024 = 7120\,A
+\]
+
+\textbf{Bước 2: Tính diện tích 1 A theo mm²:}
+
+Với công nghệ 65nm, $f = 0.065\,\mu m = 0.000065\,mm$
+\[
+1\,A = 10^6 \times f^2 = 10^6 \times (0.065)^2\,\mu m^2 = 10^6 \times 0.004225\,\mu m^2 = 4225\,\mu m^2
+\]
+
+Chuyển sang mm²:
+\[
+1\,A = 4225 \times 10^{-6}\,mm^2 = 0.004225\,mm^2
+\]
+
+\textbf{Bước 3: Tính Core Area theo mm²:}
+\[
+\text{Core Area} = 7120 \times 0.004225 = 30.082\,mm^2
+\]
+
+\textbf{Bước 4: Tính Gross Chip Area:}
+
+Core Area chiếm 85\% tổng diện tích (100\% - 15\% IO pads):
+\[
+\text{Gross Chip Area} = \frac{\text{Core Area}}{0.85} = \frac{30.082}{0.85} = \boxed{35.39\,mm^2}
+\]
+
+\textbf{Kiểm tra:}
+\begin{itemize}
+    \item IO pads \& frame: $35.39 \times 0.15 = 5.31\,mm^2$
+    \item Core: $35.39 \times 0.85 = 30.08\,mm^2$ ✓
+\end{itemize}
+
+\vfill
+\begin{center}
+\textbf{--- HẾT ĐÁP ÁN ---}
+\end{center}
+
+\end{document}

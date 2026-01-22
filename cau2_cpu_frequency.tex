@@ -1,0 +1,268 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Câu 2: Tần số CPU}
+\fancyhead[R]{1.0 điểm}
+\fancyfoot[C]{\thepage}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{resultbox}{RGB}{220,255,220}
+\definecolor{conceptbox}{RGB}{255,245,220}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{CÂU HỎI 2: TẦN SỐ CPU VÀ HIỆU NĂNG}\\[0.3cm]
+\large Learning Outcome: L.O.1 | Điểm: 1.0
+\end{center}
+
+\section{Đề bài}
+
+Máy tính A hoạt động ở tần số 2GHz thực thi một chương trình trong 10s. Các kỹ sư muốn thiết kế một máy tính B có khả năng thực thi chương trình đó chỉ trong thời gian 7s bằng cách tăng tần số so với máy tính A. 
+
+Tuy nhiên, khi tăng tần số thì số chu kỳ cần thiết để thực thi chương trình trên máy tính B cũng tăng lên \textbf{1.4 lần} so với số chu kỳ cần thiết để thực thi chương trình trên máy tính A. 
+
+Hỏi tần số máy tính B phải là bao nhiêu để đạt được thời gian xử lý như mong muốn?
+
+\section{Kiến thức nền tảng}
+
+\subsection{Mối quan hệ giữa Tần số, Chu kỳ và Thời gian thực thi}
+
+\begin{tcolorbox}[colback=conceptbox,title=Các khái niệm cơ bản]
+\textbf{1. Tần số (Frequency - f):}
+\begin{itemize}
+    \item Đơn vị: Hz (Hertz) = số chu kỳ trong 1 giây
+    \item 1 GHz = $10^9$ Hz = 1 tỷ chu kỳ/giây
+\end{itemize}
+
+\textbf{2. Chu kỳ clock (Clock Period - T):}
+\begin{itemize}
+    \item Thời gian của 1 chu kỳ xung nhịp
+    \item $T = \frac{1}{f}$
+    \item Ví dụ: $f = 2\,\text{GHz} \Rightarrow T = 0.5\,\text{ns}$
+\end{itemize}
+
+\textbf{3. Số chu kỳ thực thi (Clock Cycles - C):}
+\begin{itemize}
+    \item Tổng số chu kỳ cần để hoàn thành chương trình
+    \item Phụ thuộc vào: số lệnh, CPI (Cycles Per Instruction), kiến trúc
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Công thức CPU Performance}
+
+\begin{tcolorbox}[colback=formulabox,title=Công thức quan trọng]
+\textbf{Công thức chính:}
+\[
+\boxed{T_{execution} = C \times T_{cycle} = \frac{C}{f}}
+\]
+
+Trong đó:
+\begin{itemize}
+    \item $T_{execution}$: Thời gian thực thi chương trình (giây)
+    \item $C$: Số chu kỳ clock cần thiết
+    \item $T_{cycle}$: Thời gian 1 chu kỳ (giây)
+    \item $f$: Tần số CPU (Hz)
+\end{itemize}
+
+\textbf{Suy ra:}
+\[
+C = T_{execution} \times f
+\]
+\[
+f = \frac{C}{T_{execution}}
+\]
+\end{tcolorbox}
+
+\subsection{Tại sao tăng tần số lại tăng số chu kỳ?}
+
+\begin{tcolorbox}[colback=conceptbox,title=Giải thích hiện tượng]
+Khi tăng tần số CPU, một số yếu tố làm tăng số chu kỳ:
+
+\begin{enumerate}
+    \item \textbf{Độ trễ bộ nhớ tăng (Memory Stalls):}
+    \begin{itemize}
+        \item CPU nhanh hơn $\Rightarrow$ đợi bộ nhớ lâu hơn (relative)
+        \item Cache miss penalty tính bằng số chu kỳ tăng lên
+    \end{itemize}
+    
+    \item \textbf{Pipeline hazards tăng:}
+    \begin{itemize}
+        \item Data hazards, control hazards gây stall
+        \item Số chu kỳ stall tăng khi clock nhanh hơn
+    \end{itemize}
+    
+    \item \textbf{Thiết kế đơn giản hơn:}
+    \begin{itemize}
+        \item Để đạt tần số cao, có thể cần chia pipeline thành nhiều tầng hơn
+        \item Nhiều tầng $\Rightarrow$ nhiều chu kỳ hơn cho mỗi lệnh
+    \end{itemize}
+\end{enumerate}
+\end{tcolorbox}
+
+\section{Lời giải chi tiết}
+
+\subsection{Bước 1: Tổng hợp thông tin đã cho}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Thông số} & \textbf{Máy A} & \textbf{Máy B} \\
+\hline
+Tần số & $f_A = 2\,\text{GHz}$ & $f_B = ?$ \\
+\hline
+Thời gian thực thi & $T_A = 10\,\text{s}$ & $T_B = 7\,\text{s}$ \\
+\hline
+Số chu kỳ & $C_A$ & $C_B = 1.4 \times C_A$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Bước 2: Tính số chu kỳ của máy A ($C_A$)}
+
+Áp dụng công thức: $C = T_{execution} \times f$
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+C_A = T_A \times f_A
+\]
+\[
+C_A = 10\,\text{s} \times 2 \times 10^9\,\text{Hz}
+\]
+\[
+C_A = 20 \times 10^9 \text{ chu kỳ} = \mathbf{20 \text{ tỷ chu kỳ}}
+\]
+\end{tcolorbox}
+
+\textbf{Ý nghĩa:} Chương trình cần 20 tỷ chu kỳ clock để hoàn thành trên máy A.
+
+\subsection{Bước 3: Tính số chu kỳ của máy B ($C_B$)}
+
+Theo đề bài, số chu kỳ máy B tăng 1.4 lần so với máy A:
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+C_B = 1.4 \times C_A
+\]
+\[
+C_B = 1.4 \times 20 \times 10^9
+\]
+\[
+C_B = 28 \times 10^9 \text{ chu kỳ} = \mathbf{28 \text{ tỷ chu kỳ}}
+\]
+\end{tcolorbox}
+
+\textbf{Ý nghĩa:} Cùng một chương trình nhưng trên máy B (tần số cao hơn), cần thêm 8 tỷ chu kỳ do các stall từ memory và pipeline.
+
+\subsection{Bước 4: Tính tần số máy B ($f_B$)}
+
+Từ công thức: $f = \frac{C}{T_{execution}}$
+
+\begin{tcolorbox}[colback=resultbox,title=Kết quả cuối cùng]
+\[
+f_B = \frac{C_B}{T_B}
+\]
+\[
+f_B = \frac{28 \times 10^9}{7}
+\]
+\[
+f_B = 4 \times 10^9\,\text{Hz} = \boxed{\mathbf{4\,\text{GHz}}}
+\]
+\end{tcolorbox}
+
+\section{Kiểm tra lại kết quả}
+
+\begin{tcolorbox}[colback=white,title=Verification]
+\textbf{Với $f_B = 4$ GHz, kiểm tra thời gian thực thi:}
+\[
+T_B = \frac{C_B}{f_B} = \frac{28 \times 10^9}{4 \times 10^9} = 7\,\text{s} \quad \checkmark
+\]
+
+\textbf{So sánh tỷ lệ tần số:}
+\[
+\frac{f_B}{f_A} = \frac{4}{2} = 2
+\]
+Máy B có tần số gấp đôi máy A.
+
+\textbf{So sánh tỷ lệ thời gian:}
+\[
+\frac{T_A}{T_B} = \frac{10}{7} = 1.43
+\]
+Máy B nhanh hơn 1.43 lần (không phải 2 lần như tỷ lệ tần số vì số chu kỳ tăng).
+\end{tcolorbox}
+
+\section{Phân tích thêm}
+
+\subsection{Hiệu quả tăng tần số}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{Speed-up thực tế vs. Speed-up lý tưởng:}
+
+\textbf{Lý tưởng} (nếu số chu kỳ không đổi):
+\[
+\text{Speed-up}_{ideal} = \frac{f_B}{f_A} = \frac{4}{2} = 2\times
+\]
+Nghĩa là nếu số chu kỳ bằng nhau, máy B sẽ chạy nhanh gấp 2 lần.
+
+\textbf{Thực tế} (do số chu kỳ tăng 1.4×):
+\[
+\text{Speed-up}_{actual} = \frac{T_A}{T_B} = \frac{10}{7} = 1.43\times
+\]
+
+\textbf{Efficiency (Hiệu quả):}
+\[
+\text{Efficiency} = \frac{\text{Speed-up}_{actual}}{\text{Speed-up}_{ideal}} = \frac{1.43}{2} = 0.715 = 71.5\%
+\]
+
+``Mất'' 28.5\% hiệu năng do overhead khi tăng tần số.
+\end{tcolorbox}
+
+\subsection{Công thức tổng quát}
+
+Nếu $C_B = k \times C_A$ (với $k > 1$ là hệ số tăng chu kỳ):
+
+\begin{tcolorbox}[colback=formulabox]
+\[
+f_B = \frac{C_B}{T_B} = \frac{k \times C_A}{T_B} = \frac{k \times T_A \times f_A}{T_B}
+\]
+
+Trong bài này: $k = 1.4$, $T_A = 10$, $T_B = 7$, $f_A = 2$:
+\[
+f_B = \frac{1.4 \times 10 \times 2}{7} = \frac{28}{7} = 4\,\text{GHz}
+\]
+\end{tcolorbox}
+
+\section{Tổng kết}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Thông số} & \textbf{Máy A} & \textbf{Máy B} \\
+\hline
+Tần số & 2 GHz & \textbf{4 GHz} \\
+\hline
+Thời gian thực thi & 10 s & 7 s \\
+\hline
+Số chu kỳ & 20 tỷ & 28 tỷ (+40\%) \\
+\hline
+Speed-up so với A & 1× & 1.43× \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Kết luận:} Để giảm thời gian thực thi từ 10s xuống 7s trong khi số chu kỳ tăng 1.4 lần, máy tính B cần có tần số \textbf{4 GHz}, gấp đôi máy A.
+
+\end{document}

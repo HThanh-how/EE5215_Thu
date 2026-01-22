@@ -1,0 +1,118 @@
+name: ĐÁP ÁN THI CUỐI KỲ MÔN THIẾT KẾ HỆ THỐNG TRÊN CHIP NÂNG CAO EE5215
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Diagnose workflow start
+        run: |
+          echo "Workflow triggered on $GITHUB_REF at commit $GITHUB_SHA"
+
+      - name: Show environment
+        run: |
+          uname -a
+          which xelatex || true
+          which latexmk || true
+          tlmgr --version || true
+
+      - name: Clean old build files
+        run: |
+          rm -f main.aux main.bbl main.bcf main.blg main.run.xml main.out main.toc main.lof main.lot || true
+
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          latexmk_use_xelatex: true
+          latexmk_use_biber: false
+          latexmk_shell_escape: false
+          pre_compile: tlmgr update --self && tlmgr install siunitx lm pgfplots babel-vietnamese fontspec enumitem booktabs fancyhdr hyperref multirow
+
+      - name: Rename PDF
+        run: |
+          if [ -f main.pdf ]; then
+            mv main.pdf "DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf"
+            echo "PDF renamed to DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf"
+          else
+            echo "Error: main.pdf not found"
+            exit 1
+          fi
+
+      - name: List workspace files
+        if: always()
+        run: |
+          ls -la
+          echo "PDF exists?"; [ -f DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf ] && echo yes || echo no
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dap-an-thi-cuoi-ky-ee5215-pdf
+          path: DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf
+
+      - name: Upload logs (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dap-an-thi-cuoi-ky-ee5215-logs
+          path: |
+            main.log
+            main.fls
+            main.fdb_latexmk
+
+  release:
+    # Auto-release on every push (optional: restrict to main)
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    needs: build-pdf
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dap-an-thi-cuoi-ky-ee5215-pdf
+          path: dist
+      - name: Get changelog from last successful build
+        id: changelog
+        run: |
+          git fetch --tags --force
+          LAST_BUILD_TAG=$(git tag -l "build-*" --sort=-version:refname | head -n 1)
+          if [ -z "$LAST_BUILD_TAG" ]; then
+            CHANGELOG=$(git log --oneline --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log ${LAST_BUILD_TAG}..HEAD --oneline --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: ĐÁP ÁN THI CUỐI KỲ EE5215 - Build ${{ github.run_number }}
+          body: |
+            ## Đáp án Thi Cuối Kỳ - HK242
+            
+            **Môn:** Thiết kế hệ thống trên chip nâng cao (EE5215)
+            **Ngày thi:** 18/05/2025
+            **Mã đề:** 1
+            
+            ## Changelog
+            
+            ${{ steps.changelog.outputs.changelog }}
+          generate_release_notes: false
+          files: |
+            dist/DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf
+            HK242_DE_KIEM_TRA_Thiết kế hệ thống trên chip nâng cao (EE5215)_NGUYỄN LÝ THIÊN TRƯỜNG (SDH_HK252) .pdf

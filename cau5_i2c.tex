@@ -1,0 +1,448 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\usepackage[vietnamese]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+\usepackage{tikz-timing}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{tcolorbox}
+\usepackage{multirow}
+
+\geometry{margin=2cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EE5215 - Câu 5: Giao thức I2C}
+\fancyhead[R]{1.5 điểm}
+\fancyfoot[C]{\thepage}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{resultbox}{RGB}{220,255,220}
+\definecolor{conceptbox}{RGB}{255,245,220}
+\definecolor{sda}{RGB}{0,100,200}
+\definecolor{scl}{RGB}{200,100,0}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{CÂU HỎI 5: GIAO THỨC I2C}\\[0.3cm]
+\large Learning Outcome: L.O.3 | Điểm: 1.5
+\end{center}
+
+\section{Đề bài}
+
+Cho kết nối giữa Master và các Slave theo giao thức I2C như hình bên dưới. Mô tả quá trình Master muốn gửi liên tục 2 byte data \texttt{12H} và \texttt{34H} xuống Slave 2 từ lúc bắt đầu cho đến kết thúc khung truyền.
+
+\textbf{Địa chỉ các Slave:}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Slave} & \textbf{Địa chỉ (7-bit)} \\
+\hline
+Slave 1 & \texttt{1101001} \\
+\hline
+Slave 2 & \texttt{1001100} \\
+\hline
+Slave 3 & \texttt{0100111} \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Kiến thức nền tảng về I2C}
+
+\subsection{Tổng quan I2C}
+
+\begin{tcolorbox}[colback=conceptbox,title=I2C là gì?]
+\textbf{I2C} (Inter-Integrated Circuit) hay còn gọi là \textbf{TWI} (Two-Wire Interface) là giao thức truyền thông nối tiếp đồng bộ, sử dụng 2 dây:
+
+\begin{itemize}
+    \item \textbf{SDA} (Serial Data): Dây dữ liệu
+    \item \textbf{SCL} (Serial Clock): Dây xung nhịp
+\end{itemize}
+
+\textbf{Đặc điểm:}
+\begin{itemize}
+    \item Half-duplex (hai chiều nhưng không đồng thời)
+    \item Multi-master, multi-slave
+    \item Tốc độ: 100 kbps (Standard), 400 kbps (Fast), 3.4 Mbps (High-speed)
+    \item Open-drain với pull-up resistors
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Sơ đồ kết nối I2C}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % VCC and Pull-up resistors
+    \node at (4,4.5) {$V_{CC}$};
+    \draw (4,4.5) -- (4,4);
+    \draw (2,4) -- (6,4);
+    
+    % Pull-up resistors
+    \draw (2.5,4) -- (2.5,3.5);
+    \draw[thick] (2.3,3.5) rectangle (2.7,3);
+    \node at (2.5,3.2) {\tiny Rp};
+    \draw (2.5,3) -- (2.5,2.5);
+    
+    \draw (5.5,4) -- (5.5,3.5);
+    \draw[thick] (5.3,3.5) rectangle (5.7,3);
+    \node at (5.5,3.2) {\tiny Rp};
+    \draw (5.5,3) -- (5.5,2.5);
+    
+    % SDA and SCL lines
+    \draw[thick,sda] (0,2.5) -- (8,2.5);
+    \node[sda] at (8.5,2.5) {SDA};
+    \draw[thick,scl] (0,1.5) -- (8,1.5);
+    \node[scl] at (8.5,1.5) {SCL};
+    
+    % Master
+    \draw[fill=blue!20] (-0.5,0) rectangle (1.5,2);
+    \node at (0.5,1) {Master};
+    \draw (0.5,2) -- (0.5,2.5);
+    \draw (0.8,2) -- (0.8,1.5);
+    
+    % Slave 1
+    \draw[fill=green!20] (2,0) rectangle (3.5,2);
+    \node at (2.75,1.2) {\tiny Slave 1};
+    \node at (2.75,0.6) {\tiny 1101001};
+    \draw (2.75,2) -- (2.75,2.5);
+    \draw (3,2) -- (3,1.5);
+    
+    % Slave 2 (highlighted)
+    \draw[fill=yellow!40,thick] (4,0) rectangle (5.5,2);
+    \node at (4.75,1.2) {\tiny \textbf{Slave 2}};
+    \node at (4.75,0.6) {\tiny \textbf{1001100}};
+    \draw (4.75,2) -- (4.75,2.5);
+    \draw (5,2) -- (5,1.5);
+    
+    % Slave 3
+    \draw[fill=green!20] (6,0) rectangle (7.5,2);
+    \node at (6.75,1.2) {\tiny Slave 3};
+    \node at (6.75,0.6) {\tiny 0100111};
+    \draw (6.75,2) -- (6.75,2.5);
+    \draw (7,2) -- (7,1.5);
+\end{tikzpicture}
+\end{center}
+
+\subsection{Cấu trúc Frame I2C}
+
+\begin{tcolorbox}[colback=formulabox,title=Cấu trúc khung truyền I2C]
+Mỗi transaction I2C bao gồm:
+
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+    % Start
+    \draw[fill=red!30] (0,0) rectangle (1,1);
+    \node at (0.5,0.5) {\tiny S};
+    \node at (0.5,-0.3) {\tiny Start};
+    
+    % Address (7 bits)
+    \draw[fill=blue!30] (1,0) rectangle (5,1);
+    \node at (3,0.5) {\tiny Address (7 bit)};
+    
+    % R/W
+    \draw[fill=purple!30] (5,0) rectangle (6,1);
+    \node at (5.5,0.5) {\tiny R/W};
+    
+    % ACK
+    \draw[fill=green!30] (6,0) rectangle (7,1);
+    \node at (6.5,0.5) {\tiny A};
+    \node at (6.5,-0.3) {\tiny ACK};
+    
+    % Data 1
+    \draw[fill=orange!30] (7,0) rectangle (11,1);
+    \node at (9,0.5) {\tiny Data 1 (8 bit)};
+    
+    % ACK
+    \draw[fill=green!30] (11,0) rectangle (12,1);
+    \node at (11.5,0.5) {\tiny A};
+    
+    % Data 2
+    \draw[fill=orange!30] (12,0) rectangle (16,1);
+    \node at (14,0.5) {\tiny Data 2 (8 bit)};
+    
+    % ACK
+    \draw[fill=green!30] (16,0) rectangle (17,1);
+    \node at (16.5,0.5) {\tiny A};
+    
+    % Stop
+    \draw[fill=red!30] (17,0) rectangle (18,1);
+    \node at (17.5,0.5) {\tiny P};
+    \node at (17.5,-0.3) {\tiny Stop};
+\end{tikzpicture}
+\end{center}
+
+\textbf{Giải thích:}
+\begin{itemize}
+    \item \textbf{S (Start):} Master kéo SDA từ HIGH xuống LOW khi SCL vẫn HIGH
+    \item \textbf{Address:} 7 bit địa chỉ Slave (MSB first)
+    \item \textbf{R/W:} 0 = Write (ghi), 1 = Read (đọc)
+    \item \textbf{A (ACK):} Slave kéo SDA xuống LOW để xác nhận
+    \item \textbf{Data:} 8 bit dữ liệu (MSB first)
+    \item \textbf{P (Stop):} Master kéo SDA từ LOW lên HIGH khi SCL đang HIGH
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Start và Stop Condition}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8]
+    % Start condition
+    \node at (-1,3) {\textbf{Start Condition:}};
+    \draw[->] (0,0) -- (5,0) node[right] {t};
+    
+    % SCL
+    \draw[thick,scl] (0,2) -- (1,2) -- (1,1) -- (2,1) -- (2,2) -- (3,2) -- (3,1) -- (4,1);
+    \node[scl] at (-0.5,1.5) {SCL};
+    
+    % SDA
+    \draw[thick,sda] (0,3) -- (0.5,3) -- (0.5,2.5) -- (4,2.5);
+    \node[sda] at (-0.5,2.75) {SDA};
+    
+    % Annotation
+    \draw[<-,thick] (0.5,2.7) -- (0.5,3.5) node[above] {\tiny SDA: HIGH$\rightarrow$LOW};
+    \draw[<->,thick] (0.2,2.2) -- (0.8,2.2);
+    \node at (0.5,2.4) {\tiny SCL = HIGH};
+    
+    % Stop condition
+    \node at (7,3) {\textbf{Stop Condition:}};
+    \draw[->] (8,0) -- (13,0) node[right] {t};
+    
+    % SCL
+    \draw[thick,scl] (8,1) -- (9,1) -- (9,2) -- (10,2) -- (10,1) -- (11,1) -- (11,2) -- (12,2);
+    \node[scl] at (7.5,1.5) {SCL};
+    
+    % SDA
+    \draw[thick,sda] (8,2.5) -- (10.5,2.5) -- (10.5,3) -- (12,3);
+    \node[sda] at (7.5,2.75) {SDA};
+    
+    % Annotation
+    \draw[<-,thick] (10.5,2.7) -- (10.5,3.5) node[above] {\tiny SDA: LOW$\rightarrow$HIGH};
+    \draw[<->,thick] (10.2,2.2) -- (10.8,2.2);
+    \node at (10.5,2.4) {\tiny SCL = HIGH};
+\end{tikzpicture}
+\end{center}
+
+\section{Lời giải chi tiết}
+
+\subsection{Thông tin cần truyền}
+
+\begin{tcolorbox}[colback=white]
+\textbf{Master gửi đến Slave 2:}
+\begin{itemize}
+    \item Địa chỉ Slave 2: \texttt{1001100} (7 bit)
+    \item Hướng truyền: Write (R/W = 0)
+    \item Byte 1: \texttt{0x12} = \texttt{00010010} (binary)
+    \item Byte 2: \texttt{0x34} = \texttt{00110100} (binary)
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Chuyển đổi dữ liệu}
+
+\begin{tcolorbox}[colback=formulabox]
+\textbf{Address frame:} Slave 2 address + Write
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+\multicolumn{7}{|c|}{Address (7 bit)} & R/W \\
+\hline
+1 & 0 & 0 & 1 & 1 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+= \texttt{0x98}
+\end{center}
+
+\textbf{Data 1:} \texttt{0x12}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Data 2:} \texttt{0x34}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+0 & 0 & 1 & 1 & 0 & 1 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\subsection{Mô tả từng bước quá trình truyền}
+
+\begin{tcolorbox}[colback=resultbox,title=Quy trình truyền I2C chi tiết]
+
+\textbf{Bước 1: START Condition}
+\begin{itemize}
+    \item Master khởi tạo giao tiếp
+    \item Master kéo SDA từ HIGH $\rightarrow$ LOW trong khi SCL đang HIGH
+    \item Tất cả các Slave đều ``lắng nghe''
+    \item Thời gian: 1 clock
+\end{itemize}
+
+\textbf{Bước 2: Gửi Address Frame (8 bit)}
+\begin{itemize}
+    \item Master gửi 7 bit địa chỉ + 1 bit R/W
+    \item Địa chỉ: \texttt{1001100}, R/W = 0 (Write)
+    \item Frame hoàn chỉnh: \texttt{10011000} = \texttt{0x98}
+    \item Truyền MSB first: 1 $\rightarrow$ 0 $\rightarrow$ 0 $\rightarrow$ 1 $\rightarrow$ 1 $\rightarrow$ 0 $\rightarrow$ 0 $\rightarrow$ 0
+    \item Thời gian: 8 clock cycles
+\end{itemize}
+
+\textbf{Bước 3: ACK từ Slave 2}
+\begin{itemize}
+    \item Slave 2 nhận ra địa chỉ \texttt{1001100} là của mình
+    \item Slave 2 kéo SDA xuống LOW (ACK = 0)
+    \item Slave 1 và Slave 3 không phản hồi (địa chỉ không khớp)
+    \item Thời gian: 1 clock
+\end{itemize}
+
+\textbf{Bước 4: Gửi Data Byte 1 (0x12)}
+\begin{itemize}
+    \item Master gửi 8 bit: \texttt{00010010}
+    \item Truyền MSB first: 0 $\rightarrow$ 0 $\rightarrow$ 0 $\rightarrow$ 1 $\rightarrow$ 0 $\rightarrow$ 0 $\rightarrow$ 1 $\rightarrow$ 0
+    \item Thời gian: 8 clock cycles
+\end{itemize}
+
+\textbf{Bước 5: ACK từ Slave 2}
+\begin{itemize}
+    \item Slave 2 kéo SDA xuống LOW để xác nhận đã nhận byte 1
+    \item Thời gian: 1 clock
+\end{itemize}
+
+\textbf{Bước 6: Gửi Data Byte 2 (0x34)}
+\begin{itemize}
+    \item Master gửi 8 bit: \texttt{00110100}
+    \item Truyền MSB first: 0 $\rightarrow$ 0 $\rightarrow$ 1 $\rightarrow$ 1 $\rightarrow$ 0 $\rightarrow$ 1 $\rightarrow$ 0 $\rightarrow$ 0
+    \item Thời gian: 8 clock cycles
+\end{itemize}
+
+\textbf{Bước 7: ACK từ Slave 2}
+\begin{itemize}
+    \item Slave 2 kéo SDA xuống LOW để xác nhận đã nhận byte 2
+    \item Thời gian: 1 clock
+\end{itemize}
+
+\textbf{Bước 8: STOP Condition}
+\begin{itemize}
+    \item Master kết thúc giao tiếp
+    \item Master kéo SDA từ LOW $\rightarrow$ HIGH trong khi SCL đang HIGH
+    \item Bus trở về trạng thái idle
+    \item Thời gian: 1 clock
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Timing Diagram}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.45]
+    % Time axis
+    \draw[->] (0,0) -- (32,0) node[right] {Clock};
+    
+    % SCL
+    \node at (-1.5,2) {SCL};
+    \draw[thick,scl] (0,2.5) -- (0.5,2.5) -- (0.5,1.5) -- (1,1.5) -- (1,2.5) -- (1.5,2.5) -- (1.5,1.5) -- (2,1.5) -- (2,2.5);
+    \foreach \x in {2.5,3.5,...,29.5} {
+        \draw[thick,scl] (\x-0.5,2.5) -- (\x,2.5) -- (\x,1.5) -- (\x+0.5,1.5) -- (\x+0.5,2.5);
+    }
+    \draw[thick,scl] (29.5,2.5) -- (30,2.5);
+    
+    % SDA - simplified representation
+    \node at (-1.5,4) {SDA};
+    % Start
+    \draw[thick,sda] (0,4.5) -- (0.3,4.5) -- (0.3,3.5);
+    % Address frame 10011000
+    \draw[thick,sda] (0.3,3.5) -- (0.5,3.5) -- (0.5,4.5) -- (1.5,4.5) -- (1.5,3.5) -- (3.5,3.5) -- (3.5,4.5) -- (5.5,4.5) -- (5.5,3.5) -- (8.5,3.5);
+    % ACK
+    \draw[thick,sda] (8.5,3.5) -- (9.5,3.5);
+    % Data 1: 00010010
+    \draw[thick,sda] (9.5,3.5) -- (12.5,3.5) -- (12.5,4.5) -- (13.5,4.5) -- (13.5,3.5) -- (15.5,3.5) -- (15.5,4.5) -- (16.5,4.5) -- (16.5,3.5) -- (17.5,3.5);
+    % ACK
+    \draw[thick,sda] (17.5,3.5) -- (18.5,3.5);
+    % Data 2: 00110100
+    \draw[thick,sda] (18.5,3.5) -- (20.5,3.5) -- (20.5,4.5) -- (22.5,4.5) -- (22.5,3.5) -- (23.5,3.5) -- (23.5,4.5) -- (24.5,4.5) -- (24.5,3.5) -- (26.5,3.5);
+    % ACK
+    \draw[thick,sda] (26.5,3.5) -- (27.5,3.5);
+    % Stop
+    \draw[thick,sda] (27.5,3.5) -- (28,3.5) -- (28,4.5) -- (30,4.5);
+    
+    % Labels
+    \node at (0.3,5.2) {\tiny S};
+    \node at (4.5,5.2) {\tiny Address+W};
+    \node at (9,5.2) {\tiny A};
+    \node at (13.5,5.2) {\tiny Data 0x12};
+    \node at (18,5.2) {\tiny A};
+    \node at (22.5,5.2) {\tiny Data 0x34};
+    \node at (27,5.2) {\tiny A};
+    \node at (28.5,5.2) {\tiny P};
+    
+    % Clock count
+    \foreach \x/\n in {1/1,3/3,5/5,7/7,9/9,11/11,13/13,15/15,17/17,19/19,21/21,23/23,25/25,27/27} {
+        \node at (\x,-0.5) {\tiny \n};
+    }
+\end{tikzpicture}
+\end{center}
+
+\subsection{Tổng kết số clock cycles}
+
+\begin{tcolorbox}[colback=resultbox]
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Thành phần} & \textbf{Số clock} \\
+\hline
+Start condition & 1 \\
+\hline
+Address + R/W (8 bit) & 8 \\
+\hline
+ACK 1 & 1 \\
+\hline
+Data 1 (8 bit) & 8 \\
+\hline
+ACK 2 & 1 \\
+\hline
+Data 2 (8 bit) & 8 \\
+\hline
+ACK 3 & 1 \\
+\hline
+Stop condition & 1 \\
+\hline
+\hline
+\textbf{Tổng cộng} & \textbf{29 clock cycles} \\
+\hline
+\end{tabular}
+\end{center}
+\end{tcolorbox}
+
+\section{Các trường hợp đặc biệt}
+
+\begin{tcolorbox}[colback=conceptbox]
+\textbf{1. NACK (Not Acknowledge):}
+\begin{itemize}
+    \item Slave không kéo SDA xuống LOW
+    \item Nguyên nhân: Slave bận, địa chỉ sai, lỗi
+    \item Master có thể retry hoặc tạo STOP
+\end{itemize}
+
+\textbf{2. Repeated Start:}
+\begin{itemize}
+    \item Master tạo START mới mà không cần STOP trước
+    \item Dùng khi đổi hướng đọc/ghi hoặc đổi Slave
+\end{itemize}
+
+\textbf{3. Clock Stretching:}
+\begin{itemize}
+    \item Slave giữ SCL ở LOW để chậm lại giao tiếp
+    \item Master phải chờ SCL được release
+\end{itemize}
+\end{tcolorbox}
+
+\end{document}
