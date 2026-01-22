@@ -6,7 +6,7 @@
 \usepackage{geometry}
 \usepackage{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows,positioning,calc}
+\usetikzlibrary{shapes,arrows,positioning,calc,decorations.pathreplacing}
 \usepackage{tikz-timing}
 \usepackage{enumitem}
 \usepackage{booktabs}
@@ -342,52 +342,251 @@ Mỗi transaction I2C bao gồm:
 
 \subsection{Timing Diagram}
 
+% Chi tiết Timing Diagram với sóng vuông đẹp
 \begin{center}
-\begin{tikzpicture}[scale=0.45]
-    % Time axis
-    \draw[->] (0,0) -- (32,0) node[right] {Clock};
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    high/.style={line width=1.5pt, blue!70!black},
+    low/.style={line width=1.5pt, blue!70!black},
+    sclline/.style={line width=1.5pt, orange!80!black},
+    bitlabel/.style={font=\footnotesize\bfseries},
+    framelabel/.style={font=\small\bfseries, fill=white, inner sep=2pt}
+]
+
+% Định nghĩa các thông số
+\def\bitwidth{0.8}
+\def\sclheight{1}
+\def\sdaheight{3}
+\def\gap{0.1}
+
+% ============ VẼ SCL (Clock) ============
+\node[anchor=east, font=\bfseries] at (-0.5, \sclheight) {SCL};
+
+% Vẽ xung clock - 28 clock pulses + start/stop
+\foreach \i in {0,1,...,28} {
+    \pgfmathsetmacro{\xstart}{\i*\bitwidth}
+    % Low phase
+    \draw[sclline] (\xstart, 0.5) -- (\xstart+\gap, 0.5) -- (\xstart+\gap, \sclheight+0.5);
+    % High phase
+    \draw[sclline] (\xstart+\gap, \sclheight+0.5) -- (\xstart+\bitwidth-\gap, \sclheight+0.5);
+    % Transition down
+    \draw[sclline] (\xstart+\bitwidth-\gap, \sclheight+0.5) -- (\xstart+\bitwidth-\gap, 0.5);
+    \draw[sclline] (\xstart+\bitwidth-\gap, 0.5) -- (\xstart+\bitwidth, 0.5);
+}
+
+% ============ VẼ SDA (Data) ============
+\node[anchor=east, font=\bfseries] at (-0.5, \sdaheight) {SDA};
+
+% Start condition: SDA drops while SCL high
+\draw[high] (0, \sdaheight+0.5) -- (0.2, \sdaheight+0.5);
+\draw[high] (0.2, \sdaheight+0.5) -- (0.2, \sdaheight-0.5);
+\node[above, font=\tiny\bfseries, red!70!black] at (0.1, \sdaheight+0.7) {START};
+
+% Address bits: 1 0 0 1 1 0 0 + R/W=0
+% Bit 0: HIGH (1)
+\draw[high] (0.2, \sdaheight-0.5) -- (0.4, \sdaheight-0.5) -- (0.4, \sdaheight+0.5) -- (0.8, \sdaheight+0.5);
+\node[bitlabel] at (0.6, \sdaheight+0.9) {1};
+
+% Bit 1: LOW (0)
+\draw[high] (0.8, \sdaheight+0.5) -- (0.8, \sdaheight-0.5) -- (1.6, \sdaheight-0.5);
+\node[bitlabel] at (1.2, \sdaheight+0.9) {0};
+
+% Bit 2: LOW (0)
+\draw[high] (1.6, \sdaheight-0.5) -- (2.4, \sdaheight-0.5);
+\node[bitlabel] at (2.0, \sdaheight+0.9) {0};
+
+% Bit 3: HIGH (1)
+\draw[high] (2.4, \sdaheight-0.5) -- (2.4, \sdaheight+0.5) -- (3.2, \sdaheight+0.5);
+\node[bitlabel] at (2.8, \sdaheight+0.9) {1};
+
+% Bit 4: HIGH (1)
+\draw[high] (3.2, \sdaheight+0.5) -- (4.0, \sdaheight+0.5);
+\node[bitlabel] at (3.6, \sdaheight+0.9) {1};
+
+% Bit 5: LOW (0)
+\draw[high] (4.0, \sdaheight+0.5) -- (4.0, \sdaheight-0.5) -- (4.8, \sdaheight-0.5);
+\node[bitlabel] at (4.4, \sdaheight+0.9) {0};
+
+% Bit 6: LOW (0)
+\draw[high] (4.8, \sdaheight-0.5) -- (5.6, \sdaheight-0.5);
+\node[bitlabel] at (5.2, \sdaheight+0.9) {0};
+
+% Bit 7: R/W = LOW (0 = Write)
+\draw[high] (5.6, \sdaheight-0.5) -- (6.4, \sdaheight-0.5);
+\node[bitlabel, red] at (6.0, \sdaheight+0.9) {W};
+
+% ACK from Slave (LOW)
+\draw[high, green!60!black] (6.4, \sdaheight-0.5) -- (7.2, \sdaheight-0.5);
+\node[bitlabel, green!60!black] at (6.8, \sdaheight+0.9) {A};
+
+% Data 1: 0x12 = 0001 0010
+% Bit 0: LOW
+\draw[high] (7.2, \sdaheight-0.5) -- (8.0, \sdaheight-0.5);
+\node[bitlabel] at (7.6, \sdaheight+0.9) {0};
+
+% Bit 1: LOW
+\draw[high] (8.0, \sdaheight-0.5) -- (8.8, \sdaheight-0.5);
+\node[bitlabel] at (8.4, \sdaheight+0.9) {0};
+
+% Bit 2: LOW
+\draw[high] (8.8, \sdaheight-0.5) -- (9.6, \sdaheight-0.5);
+\node[bitlabel] at (9.2, \sdaheight+0.9) {0};
+
+% Bit 3: HIGH
+\draw[high] (9.6, \sdaheight-0.5) -- (9.6, \sdaheight+0.5) -- (10.4, \sdaheight+0.5);
+\node[bitlabel] at (10.0, \sdaheight+0.9) {1};
+
+% Bit 4: LOW
+\draw[high] (10.4, \sdaheight+0.5) -- (10.4, \sdaheight-0.5) -- (11.2, \sdaheight-0.5);
+\node[bitlabel] at (10.8, \sdaheight+0.9) {0};
+
+% Bit 5: LOW
+\draw[high] (11.2, \sdaheight-0.5) -- (12.0, \sdaheight-0.5);
+\node[bitlabel] at (11.6, \sdaheight+0.9) {0};
+
+% Bit 6: HIGH
+\draw[high] (12.0, \sdaheight-0.5) -- (12.0, \sdaheight+0.5) -- (12.8, \sdaheight+0.5);
+\node[bitlabel] at (12.4, \sdaheight+0.9) {1};
+
+% Bit 7: LOW
+\draw[high] (12.8, \sdaheight+0.5) -- (12.8, \sdaheight-0.5) -- (13.6, \sdaheight-0.5);
+\node[bitlabel] at (13.2, \sdaheight+0.9) {0};
+
+% ACK
+\draw[high, green!60!black] (13.6, \sdaheight-0.5) -- (14.4, \sdaheight-0.5);
+\node[bitlabel, green!60!black] at (14.0, \sdaheight+0.9) {A};
+
+% Data 2: 0x34 = 0011 0100
+% Bit 0: LOW
+\draw[high] (14.4, \sdaheight-0.5) -- (15.2, \sdaheight-0.5);
+\node[bitlabel] at (14.8, \sdaheight+0.9) {0};
+
+% Bit 1: LOW
+\draw[high] (15.2, \sdaheight-0.5) -- (16.0, \sdaheight-0.5);
+\node[bitlabel] at (15.6, \sdaheight+0.9) {0};
+
+% Bit 2: HIGH
+\draw[high] (16.0, \sdaheight-0.5) -- (16.0, \sdaheight+0.5) -- (16.8, \sdaheight+0.5);
+\node[bitlabel] at (16.4, \sdaheight+0.9) {1};
+
+% Bit 3: HIGH
+\draw[high] (16.8, \sdaheight+0.5) -- (17.6, \sdaheight+0.5);
+\node[bitlabel] at (17.2, \sdaheight+0.9) {1};
+
+% Bit 4: LOW
+\draw[high] (17.6, \sdaheight+0.5) -- (17.6, \sdaheight-0.5) -- (18.4, \sdaheight-0.5);
+\node[bitlabel] at (18.0, \sdaheight+0.9) {0};
+
+% Bit 5: HIGH
+\draw[high] (18.4, \sdaheight-0.5) -- (18.4, \sdaheight+0.5) -- (19.2, \sdaheight+0.5);
+\node[bitlabel] at (18.8, \sdaheight+0.9) {1};
+
+% Bit 6: LOW
+\draw[high] (19.2, \sdaheight+0.5) -- (19.2, \sdaheight-0.5) -- (20.0, \sdaheight-0.5);
+\node[bitlabel] at (19.6, \sdaheight+0.9) {0};
+
+% Bit 7: LOW
+\draw[high] (20.0, \sdaheight-0.5) -- (20.8, \sdaheight-0.5);
+\node[bitlabel] at (20.4, \sdaheight+0.9) {0};
+
+% ACK
+\draw[high, green!60!black] (20.8, \sdaheight-0.5) -- (21.6, \sdaheight-0.5);
+\node[bitlabel, green!60!black] at (21.2, \sdaheight+0.9) {A};
+
+% Stop condition: SDA rises while SCL high
+\draw[high] (21.6, \sdaheight-0.5) -- (22.0, \sdaheight-0.5);
+\draw[high] (22.0, \sdaheight-0.5) -- (22.0, \sdaheight+0.5) -- (23.2, \sdaheight+0.5);
+\node[above, font=\tiny\bfseries, red!70!black] at (22.2, \sdaheight+0.7) {STOP};
+
+% ============ FRAME LABELS ============
+% Address frame bracket
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, purple!70!black] 
+    (0.4, -0.3) -- (6.4, -0.3) node[midway, below=8pt, framelabel, purple!70!black] {Address: 1001100 + W};
+
+% ACK bracket
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}, thick, green!60!black] 
+    (6.4, -0.3) -- (7.2, -0.3) node[midway, below=6pt, font=\tiny, green!60!black] {ACK};
+
+% Data 1 bracket
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, orange!70!black] 
+    (7.2, -0.3) -- (13.6, -0.3) node[midway, below=8pt, framelabel, orange!70!black] {Data 1: 0x12};
+
+% ACK bracket
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}, thick, green!60!black] 
+    (13.6, -0.3) -- (14.4, -0.3) node[midway, below=6pt, font=\tiny, green!60!black] {ACK};
+
+% Data 2 bracket
+\draw[decorate, decoration={brace, amplitude=5pt, mirror}, thick, cyan!70!black] 
+    (14.4, -0.3) -- (20.8, -0.3) node[midway, below=8pt, framelabel, cyan!70!black] {Data 2: 0x34};
+
+% ACK bracket
+\draw[decorate, decoration={brace, amplitude=3pt, mirror}, thick, green!60!black] 
+    (20.8, -0.3) -- (21.6, -0.3) node[midway, below=6pt, font=\tiny, green!60!black] {ACK};
+
+% ============ CLOCK NUMBERS ============
+\foreach \i in {1,2,...,28} {
+    \pgfmathsetmacro{\xpos}{(\i-0.5)*\bitwidth}
+    \node[font=\tiny, gray] at (\xpos, -0.9) {\i};
+}
+
+% ============ LEGEND ============
+\node[anchor=west, font=\footnotesize] at (0, -1.8) {
+    \textcolor{orange!80!black}{\rule{1cm}{2pt}} SCL (Clock) \quad
+    \textcolor{blue!70!black}{\rule{1cm}{2pt}} SDA (Data) \quad
+    \textcolor{green!60!black}{\textbf{A}} = ACK (Slave) \quad
+    \textcolor{red}{\textbf{W}} = Write
+};
+
+\end{tikzpicture}
+}
+\end{center}
+
+% Thêm sơ đồ khối đơn giản hơn
+\vspace{0.5cm}
+\begin{center}
+\begin{tikzpicture}[scale=0.9]
+    % Frame boxes
+    \draw[fill=red!20, thick] (0,0) rectangle (0.8,0.8);
+    \node at (0.4,0.4) {\textbf{S}};
+    \node at (0.4,-0.3) {\scriptsize Start};
     
-    % SCL
-    \node at (-1.5,2) {SCL};
-    \draw[thick,scl] (0,2.5) -- (0.5,2.5) -- (0.5,1.5) -- (1,1.5) -- (1,2.5) -- (1.5,2.5) -- (1.5,1.5) -- (2,1.5) -- (2,2.5);
-    \foreach \x in {2.5,3.5,...,29.5} {
-        \draw[thick,scl] (\x-0.5,2.5) -- (\x,2.5) -- (\x,1.5) -- (\x+0.5,1.5) -- (\x+0.5,2.5);
-    }
-    \draw[thick,scl] (29.5,2.5) -- (30,2.5);
+    \draw[fill=purple!20, thick] (1,0) rectangle (4.2,0.8);
+    \node at (2.6,0.4) {\textbf{1001100 + 0}};
+    \node at (2.6,-0.3) {\scriptsize Address + W};
     
-    % SDA - simplified representation
-    \node at (-1.5,4) {SDA};
-    % Start
-    \draw[thick,sda] (0,4.5) -- (0.3,4.5) -- (0.3,3.5);
-    % Address frame 10011000
-    \draw[thick,sda] (0.3,3.5) -- (0.5,3.5) -- (0.5,4.5) -- (1.5,4.5) -- (1.5,3.5) -- (3.5,3.5) -- (3.5,4.5) -- (5.5,4.5) -- (5.5,3.5) -- (8.5,3.5);
-    % ACK
-    \draw[thick,sda] (8.5,3.5) -- (9.5,3.5);
-    % Data 1: 00010010
-    \draw[thick,sda] (9.5,3.5) -- (12.5,3.5) -- (12.5,4.5) -- (13.5,4.5) -- (13.5,3.5) -- (15.5,3.5) -- (15.5,4.5) -- (16.5,4.5) -- (16.5,3.5) -- (17.5,3.5);
-    % ACK
-    \draw[thick,sda] (17.5,3.5) -- (18.5,3.5);
-    % Data 2: 00110100
-    \draw[thick,sda] (18.5,3.5) -- (20.5,3.5) -- (20.5,4.5) -- (22.5,4.5) -- (22.5,3.5) -- (23.5,3.5) -- (23.5,4.5) -- (24.5,4.5) -- (24.5,3.5) -- (26.5,3.5);
-    % ACK
-    \draw[thick,sda] (26.5,3.5) -- (27.5,3.5);
-    % Stop
-    \draw[thick,sda] (27.5,3.5) -- (28,3.5) -- (28,4.5) -- (30,4.5);
+    \draw[fill=green!30, thick] (4.4,0) rectangle (5.2,0.8);
+    \node at (4.8,0.4) {\textbf{A}};
+    \node at (4.8,-0.3) {\scriptsize ACK};
     
-    % Labels
-    \node at (0.3,5.2) {\tiny S};
-    \node at (4.5,5.2) {\tiny Address+W};
-    \node at (9,5.2) {\tiny A};
-    \node at (13.5,5.2) {\tiny Data 0x12};
-    \node at (18,5.2) {\tiny A};
-    \node at (22.5,5.2) {\tiny Data 0x34};
-    \node at (27,5.2) {\tiny A};
-    \node at (28.5,5.2) {\tiny P};
+    \draw[fill=orange!20, thick] (5.4,0) rectangle (8.6,0.8);
+    \node at (7,0.4) {\textbf{00010010}};
+    \node at (7,-0.3) {\scriptsize 0x12};
     
-    % Clock count
-    \foreach \x/\n in {1/1,3/3,5/5,7/7,9/9,11/11,13/13,15/15,17/17,19/19,21/21,23/23,25/25,27/27} {
-        \node at (\x,-0.5) {\tiny \n};
-    }
+    \draw[fill=green!30, thick] (8.8,0) rectangle (9.6,0.8);
+    \node at (9.2,0.4) {\textbf{A}};
+    \node at (9.2,-0.3) {\scriptsize ACK};
+    
+    \draw[fill=cyan!20, thick] (9.8,0) rectangle (13,0.8);
+    \node at (11.4,0.4) {\textbf{00110100}};
+    \node at (11.4,-0.3) {\scriptsize 0x34};
+    
+    \draw[fill=green!30, thick] (13.2,0) rectangle (14,0.8);
+    \node at (13.6,0.4) {\textbf{A}};
+    \node at (13.6,-0.3) {\scriptsize ACK};
+    
+    \draw[fill=red!20, thick] (14.2,0) rectangle (15,0.8);
+    \node at (14.6,0.4) {\textbf{P}};
+    \node at (14.6,-0.3) {\scriptsize Stop};
+    
+    % Bit counts
+    \node at (0.4,1.1) {\scriptsize 1};
+    \node at (2.6,1.1) {\scriptsize 8 bit};
+    \node at (4.8,1.1) {\scriptsize 1};
+    \node at (7,1.1) {\scriptsize 8 bit};
+    \node at (9.2,1.1) {\scriptsize 1};
+    \node at (11.4,1.1) {\scriptsize 8 bit};
+    \node at (13.6,1.1) {\scriptsize 1};
+    \node at (14.6,1.1) {\scriptsize 1};
 \end{tikzpicture}
 \end{center}
 
