@@ -28,38 +28,88 @@ jobs:
 
       - name: Clean old build files
         run: |
-          rm -f main.aux main.bbl main.bcf main.blg main.run.xml main.out main.toc main.lof main.lot || true
+          rm -f *.aux *.bbl *.bcf *.blg *.run.xml *.out *.toc *.lof *.lot || true
 
-      - name: Compile LaTeX
+      - name: Compile Main LaTeX
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
           latexmk_use_xelatex: true
           latexmk_use_biber: false
           latexmk_shell_escape: false
-          pre_compile: tlmgr update --self && tlmgr install siunitx lm pgfplots babel-vietnamese fontspec enumitem booktabs fancyhdr hyperref multirow
+          pre_compile: tlmgr update --self && tlmgr install siunitx lm pgfplots babel-vietnamese fontspec enumitem booktabs fancyhdr hyperref multirow tcolorbox circuitikz tikz-timing
 
-      - name: Rename PDF
+      - name: Compile Cau 1
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau1_pipeline.tex
+          latexmk_use_xelatex: true
+
+      - name: Compile Cau 2
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau2_cpu_frequency.tex
+          latexmk_use_xelatex: true
+
+      - name: Compile Cau 3
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau3_cache.tex
+          latexmk_use_xelatex: true
+
+      - name: Compile Cau 4
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau4_dynamic_power.tex
+          latexmk_use_xelatex: true
+
+      - name: Compile Cau 5
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau5_i2c.tex
+          latexmk_use_xelatex: true
+
+      - name: Compile Cau 6
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau6_noc.tex
+          latexmk_use_xelatex: true
+
+      - name: Compile Cau 7
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cau7_chip_area.tex
+          latexmk_use_xelatex: true
+
+      - name: Rename PDFs
         run: |
-          if [ -f main.pdf ]; then
-            mv main.pdf "DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf"
-            echo "PDF renamed to DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf"
-          else
-            echo "Error: main.pdf not found"
-            exit 1
-          fi
+          mv main.pdf "DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf"
+          mv cau1_pipeline.pdf "Cau1_Pipeline_ChiTiet.pdf"
+          mv cau2_cpu_frequency.pdf "Cau2_CPU_Frequency_ChiTiet.pdf"
+          mv cau3_cache.pdf "Cau3_Cache_Memory_ChiTiet.pdf"
+          mv cau4_dynamic_power.pdf "Cau4_Dynamic_Power_ChiTiet.pdf"
+          mv cau5_i2c.pdf "Cau5_I2C_Protocol_ChiTiet.pdf"
+          mv cau6_noc.pdf "Cau6_NoC_Wormhole_ChiTiet.pdf"
+          mv cau7_chip_area.pdf "Cau7_Chip_Area_ChiTiet.pdf"
 
       - name: List workspace files
         if: always()
         run: |
-          ls -la
-          echo "PDF exists?"; [ -f DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf ] && echo yes || echo no
+          ls -la *.pdf || true
 
-      - name: Upload artifact
+      - name: Upload all PDFs
         uses: actions/upload-artifact@v4
         with:
-          name: dap-an-thi-cuoi-ky-ee5215-pdf
-          path: DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf
+          name: dap-an-thi-cuoi-ky-ee5215-all
+          path: |
+            DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf
+            Cau1_Pipeline_ChiTiet.pdf
+            Cau2_CPU_Frequency_ChiTiet.pdf
+            Cau3_Cache_Memory_ChiTiet.pdf
+            Cau4_Dynamic_Power_ChiTiet.pdf
+            Cau5_I2C_Protocol_ChiTiet.pdf
+            Cau6_NoC_Wormhole_ChiTiet.pdf
+            Cau7_Chip_Area_ChiTiet.pdf
 
       - name: Upload logs (always)
         if: always()
@@ -67,36 +117,38 @@ jobs:
         with:
           name: dap-an-thi-cuoi-ky-ee5215-logs
           path: |
-            main.log
-            main.fls
-            main.fdb_latexmk
+            *.log
+            *.fls
+            *.fdb_latexmk
 
   release:
-    # Auto-release on every push (optional: restrict to main)
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: build-pdf
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: dap-an-thi-cuoi-ky-ee5215-pdf
+          name: dap-an-thi-cuoi-ky-ee5215-all
           path: dist
-      - name: Get changelog from last successful build
+          
+      - name: Get changelog
         id: changelog
         run: |
           git fetch --tags --force
           LAST_BUILD_TAG=$(git tag -l "build-*" --sort=-version:refname | head -n 1)
           if [ -z "$LAST_BUILD_TAG" ]; then
-            CHANGELOG=$(git log --oneline --pretty=format:"- %s (%h)" --no-merges)
+            CHANGELOG=$(git log --oneline --pretty=format:"- %s (%h)" --no-merges -10)
           else
             CHANGELOG=$(git log ${LAST_BUILD_TAG}..HEAD --oneline --pretty=format:"- %s (%h)" --no-merges)
           fi
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -109,10 +161,26 @@ jobs:
             **Ngày thi:** 18/05/2025
             **Mã đề:** 1
             
-            ## Changelog
+            ### Danh sách file PDF:
+            - `DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf` - Đáp án tổng hợp
+            - `Cau1_Pipeline_ChiTiet.pdf` - Câu 1: CPU Pipeline (1.5đ)
+            - `Cau2_CPU_Frequency_ChiTiet.pdf` - Câu 2: Tần số CPU (1.0đ)
+            - `Cau3_Cache_Memory_ChiTiet.pdf` - Câu 3: Cache Memory (2.0đ)
+            - `Cau4_Dynamic_Power_ChiTiet.pdf` - Câu 4: Dynamic Power (1.5đ)
+            - `Cau5_I2C_Protocol_ChiTiet.pdf` - Câu 5: I2C Protocol (1.5đ)
+            - `Cau6_NoC_Wormhole_ChiTiet.pdf` - Câu 6: NoC Wormhole (1.5đ)
+            - `Cau7_Chip_Area_ChiTiet.pdf` - Câu 7: Chip Area (1.0đ)
             
+            ## Changelog
             ${{ steps.changelog.outputs.changelog }}
           generate_release_notes: false
           files: |
             dist/DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf
+            dist/Cau1_Pipeline_ChiTiet.pdf
+            dist/Cau2_CPU_Frequency_ChiTiet.pdf
+            dist/Cau3_Cache_Memory_ChiTiet.pdf
+            dist/Cau4_Dynamic_Power_ChiTiet.pdf
+            dist/Cau5_I2C_Protocol_ChiTiet.pdf
+            dist/Cau6_NoC_Wormhole_ChiTiet.pdf
+            dist/Cau7_Chip_Area_ChiTiet.pdf
             HK242_DE_KIEM_TRA_Thiết kế hệ thống trên chip nâng cao (EE5215)_NGUYỄN LÝ THIÊN TRƯỜNG (SDH_HK252) .pdf
