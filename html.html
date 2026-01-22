@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processor Design: RISC-V Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700;800&family=Azeret+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. CORE RESET & LAYOUT */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            background-color: #0f172a;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 120px;
+            padding: 100px 0;
+            font-family: 'Urbanist', sans-serif;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #ffffff;
+            border-radius: 30px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            padding: 60px 80px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* Decorative Elements */
+        .slide-container::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(30, 64, 175, 0.07) 0%, transparent 70%);
+            z-index: 0;
+        }
+
+        .slide-container::after {
+            content: '';
+            position: absolute;
+            bottom: 35px;
+            left: 80px;
+            right: 80px;
+            height: 2px;
+            background: #f1f5f9;
+            z-index: 0;
+        }
+
+        .slide-container>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. TYPOGRAPHY */
+        h1 {
+            font-size: 74px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            color: #1e40af;
+        }
+
+        .slide-title {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            border-left: 15px solid #1e40af;
+            padding-left: 30px;
+            color: #0f172a;
+        }
+
+        .slide-title span {
+            color: #1e40af;
+        }
+
+        h3 {
+            font-size: 32px;
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        p,
+        li {
+            font-size: 24px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .subtitle {
+            font-size: 32px;
+            color: #64748b;
+            margin-top: 20px;
+        }
+
+        .quote-box {
+            font-style: italic;
+            color: #1e40af;
+            border-left: 8px solid #1e40af;
+            background: #f1f5f9;
+            padding: 25px 40px;
+            margin: 25px 0;
+            font-size: 26px;
+            border-radius: 0 15px 15px 0;
+            line-height: 1.5;
+        }
+
+        /* 3. GRID & COMPONENTS */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 70px;
+            width: 100%;
+            align-items: start;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+
+        .tile {
+            background: #f8fafc;
+            border-radius: 28px;
+            border: 1px solid #e2e8f0;
+            padding: 40px;
+            flex: 1;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .tile:hover {
+            transform: translateY(-12px);
+            border-color: #1e40af;
+            box-shadow: 0 25px 50px rgba(30, 64, 175, 0.1);
+        }
+
+        .tile .icon {
+            background: #e0f2fe;
+            color: #1e40af;
+            width: 90px;
+            height: 90px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin-bottom: 30px;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 420px;
+            background: #f1f5f9;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #cbd5e1;
+            color: #94a3b8;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding: 50px 0;
+            width: 100%;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #f1f5f9;
+            transform: translateY(-50%);
+        }
+
+        .t-dot {
+            width: 38px;
+            height: 38px;
+            background: #1e40af;
+            border: 7px solid #fff;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 25px rgba(30, 64, 175, 0.4);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #1e40af;
+            padding: 22px;
+            text-align: left;
+            border-bottom: 5px solid #1e40af;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        td {
+            padding: 18px 22px;
+            border-bottom: 1px solid #f1f5f9;
+            font-family: 'Azeret Mono', monospace;
+            font-size: 18px;
+            color: #0f172a;
+        }
+
+        /* Dashboard UI */
+        .perf-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .perf-card {
+            background: #fff;
+            border-radius: 30px;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .perf-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            border-radius: 30px 30px 0 0;
+        }
+
+        .perf-card.v1::before {
+            background: #94a3b8;
+        }
+
+        .perf-card.v2::before {
+            background: #3b82f6;
+        }
+
+        .perf-card.v3::before {
+            background: #1e40af;
+        }
+
+        .perf-val {
+            font-size: 48px;
+            font-weight: 800;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .speed-bar {
+            width: 100%;
+            height: 12px;
+            background: #f1f5f9;
+            border-radius: 6px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .speed-fill {
+            height: 100%;
+            transition: width 1s ease-in-out;
+        }
+
+        .code-box {
+            background: #0f172a;
+            color: #38bdf8;
+            padding: 30px;
+            border-radius: 20px;
+            font-family: 'Azeret Mono', monospace;
+            font-size: 22px;
+            margin: 20px 0;
+            line-height: 1.4;
+            border-left: 10px solid #1e40af;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* AI Assistant */
+        #ai-assistant-toggle {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 75px;
+            height: 75px;
+            background: #1e40af;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.6);
+            font-size: 32px;
+            transition: 0.2s;
+        }
+
+        #ai-assistant-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        #ai-container {
+            position: fixed;
+            bottom: 130px;
+            right: 40px;
+            width: 420px;
+            height: 600px;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        #ai-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 25px;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #ai-input-area {
+            padding: 20px;
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        #ai-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        #ai-send {
+            background: #1e40af;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .bot-msg {
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 18px;
+            align-self: flex-start;
+        }
+
+        .user-msg {
+            background: #1e40af;
+            color: white;
+            padding: 15px;
+            border-radius: 18px;
+            align-self: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SLIDE 1: COVER -->
+    <div class="slide-container" style="padding: 40px 60px;">
+        <!-- Header với logo và tên trường -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+            <!-- Bên trái: Logo + Tên trường -->
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <img src="hcmut_logo.png" alt="HCMUT Logo" style="height: 70px;">
+                <div style="text-align: left;">
+                    <p style="font-size: 18px; font-weight: 800; color: #1e40af; margin: 0;">ĐẠI HỌC QUỐC GIA THÀNH PHỐ
+                        HỒ CHÍ MINH</p>
+                    <p style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0;">TRƯỜNG ĐẠI HỌC BÁCH KHOA
+                    </p>
+                </div>
+            </div>
+            <!-- Bên phải: Khoa -->
+            <div style="text-align: right;">
+                <p style="font-size: 16px; font-weight: 700; color: #1e40af; margin: 0;">KHOA ĐIỆN - ĐIỆN TỬ</p>
+                <p style="font-size: 16px; font-weight: 700; color: #1e40af; margin: 0;">BỘ MÔN KỸ THUẬT ĐIỆN TỬ</p>
+            </div>
+        </div>
+
+        <!-- Nội dung chính -->
+        <div
+            style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-top: 30px;">
+            <p style="font-size: 28px; font-weight: 800; color: #1e40af; font-style: italic; margin-bottom: 5px;">TIỂU
+                LUẬN MÔN HỌC</p>
+            <p style="font-size: 20px; font-weight: 700; color: #1e40af; font-style: italic; margin-bottom: 30px;">THIẾT
+                KẾ HỆ THỐNG TRÊN CHIP NÂNG CAO - NHÓM CH01</p>
+
+            <h1 style="font-size: 52px; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.2;">PROCESSOR
+                DESIGN:</h1>
+            <h1 style="font-size: 52px; font-weight: 800; color: #1e40af; margin: 0; line-height: 1.2;">RISC-V PROCESSOR
+                ARCHITECTURE</h1>
+
+            <!-- Thông tin GVHD và HV -->
+            <div style="margin-top: 50px; text-align: center;">
+                <p style="font-size: 22px; color: #0f172a; margin: 10px 0;">
+                    <span style="font-weight: 400;">GVHD:</span> <b>Nguyễn Lý Thiên Trường</b>
+                </p>
+                <div style="display: flex; justify-content: center; gap: 60px; margin-top: 15px;">
+                    <p style="font-size: 20px; color: #0f172a; margin: 5px 0;">
+                        HV: <b>Phạm Huy Thanh</b> &nbsp;&nbsp;&nbsp; MSHV: <b>2570317</b>
+                    </p>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 60px;">
+                    <p style="font-size: 20px; color: #0f172a; margin: 5px 0;">
+                        HV: <b>Nguyễn Minh Đức</b> &nbsp;&nbsp;&nbsp; MSHV: <b>2570662</b>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="width: 100%; text-align: center; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+            <p style="font-size: 18px; color: #1e40af; font-weight: 600; margin: 0;">TP. Hồ Chí Minh, ngày 29 tháng 01
+                năm 2026</p>
+        </div>
+
+        <!-- Số trang -->
+        <div style="position: absolute; bottom: 40px; right: 60px; font-size: 18px; color: #94a3b8; font-weight: 700;">1
+        </div>
+    </div>
+
+    <!-- SLIDE 2: TOC -->
+    <div class="slide-container">
+        <h2 class="slide-title">Mục lục <span>Nội dung</span></h2>
+        <div class="content-area">
+            <div class="two-column" style="grid-template-columns: 1.3fr 0.7fr;">
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 25px;">
+                    <li><b style="color:#1e40af; font-size: 32px; margin-right: 15px;">I.</b> Cuộc cách mạng Mở & Gia
+                        phả RISC</li>
+                    <li><b style="color:#1e40af; font-size: 32px; margin-right: 15px;">II.</b> Đặc tả Kỹ thuật (ISA &
+                        Encoding)</li>
+                    <li><b style="color:#1e40af; font-size: 32px; margin-right: 15px;">III.</b> Vi kiến trúc Phần cứng
+                        (Pipeline)</li>
+                    <li><b style="color:#1e40af; font-size: 32px; margin-right: 15px;">IV.</b> Hệ thống & Đặc quyền (CSR
+                        & MMU)</li>
+                    <li><b style="color:#1e40af; font-size: 32px; margin-right: 15px;">V.</b> Hệ sinh thái & Tầm nhìn
+                        2030</li>
+                </ul>
+                <div class="tile" style="background: #1e40af; color: white; border: none; justify-content: center;">
+                    <i class="fa-solid fa-microchip" style="font-size: 80px; margin-bottom: 30px; color: #e0f2fe;"></i>
+                    <p style="color: white; font-weight: 700; font-size: 26px;">"Sự tự do trong thiết kế phần cứng là
+                        chìa khóa của tương lai."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: CHƯƠNG I -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 01</h2>
+            <h1>Cuộc cách mạng <span>Mở</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+            <p class="subtitle">Phá bỏ sự độc quyền, kiến tạo giá trị vĩnh viễn</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: DAVID PATTERSON -->
+    <div class="slide-container">
+        <h2 class="slide-title">David Patterson: <span>Cha đẻ kiến trúc RISC</span></h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 25px;">
+                        <li><i class="fa-solid fa-medal"
+                                style="color:#1e40af; font-size: 30px; margin-right: 15px;"></i> <b>Giải Turing
+                                2017:</b> Đóng góp vĩ đại cho kiến trúc RISC.</li>
+                        <li><i class="fa-solid fa-book-open"
+                                style="color:#1e40af; font-size: 30px; margin-right: 15px;"></i> <b>Tác giả kinh
+                                điển:</b> "Computer Organization and Design".</li>
+                        <li><i class="fa-solid fa-user-graduate"
+                                style="color:#1e40af; font-size: 30px; margin-right: 15px;"></i> <b>Huyền thoại
+                                Berkeley:</b> Khởi xướng RISC từ 1980.</li>
+                    </ul>
+                    <div class="quote-box">"Kiến trúc máy tính là một nghệ thuật định lượng."</div>
+                </div>
+                <div class="image-placeholder">
+                    <i class="fa-solid fa-user-tie" style="font-size: 150px;"></i>
+                    <p style="margin-top: 25px; font-weight: 800; font-size: 32px;">David Patterson</p>
+                    <p>Berkeley Architecture Research</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: KRSTE ASANOVIC -->
+    <div class="slide-container">
+        <h2 class="slide-title">Krste Asanović: <span>Kiến trúc sư trưởng</span></h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="image-placeholder">
+                    <i class="fa-solid fa-chalkboard-user" style="font-size: 150px;"></i>
+                    <p style="margin-top: 25px; font-weight: 800; font-size: 32px;">Krste Asanović</p>
+                    <p>Chairman of RISC-V International</p>
+                </div>
+                <div>
+                    <p>Người thực sự dẫn dắt dự án RISC-V từ những dòng code đầu tiên tại Berkeley năm 2010.</p>
+                    <p style="margin-top: 20px;">Đồng sáng lập <b>SiFive</b>, đưa RISC-V từ phòng Lab ra thương mại toàn
+                        cầu.</p>
+                    <div class="quote-box">"Một tập lệnh sạch, miễn phí cho nhân loại."</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: GIA PHẢ RISC -->
+    <div class="slide-container">
+        <h2 class="slide-title">Gia phả: <span>Hành trình 40 năm tiến hóa</span></h2>
+        <div class="content-area">
+            <div class="grid-3" style="grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;">
+                <div class="tile">
+                    <h3>RISC-I & II (1981)</h3>
+                    <p>Chứng minh sức mạnh của tập lệnh đơn giản trước CISC phức tạp.</p>
+                </div>
+                <div class="tile">
+                    <h3>RISC-III (SOAR)</h3>
+                    <p>Smalltalk On A RISC: Tối ưu cho ngôn ngữ hướng đối tượng.</p>
+                </div>
+                <div class="tile">
+                    <h3>RISC-IV (SPUR)</h3>
+                    <p>Symbolic Processing: Tập trung đa nhân và Floating point.</p>
+                </div>
+                <div class="tile" style="border: 5px solid #1e40af; background: #e0f2fe;">
+                    <h3 style="color: #1e40af;">RISC-V (2010+)</h3>
+                    <p>Kế thừa 30 năm tinh hoa. Thiết kế sạch, tiêu chuẩn quốc tế vĩnh viễn.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: DỰ ÁN 3 THÁNG -->
+    <div class="slide-container">
+        <h2 class="slide-title">Huyền thoại <span>"Dự án 3 tháng hè"</span></h2>
+        <div class="content-area">
+            <div class="quote-box">
+                "Mùa hè năm 2010, Krste và nhóm Berkeley định chỉ mất 3 tháng để thiết kế tập lệnh cho sinh viên nghiên
+                cứu. Nhưng họ đã tạo ra một đế chế."
+            </div>
+            <div class="tile" style="background: #e0f2fe; border: none; margin-top: 30px;">
+                <i class="fa-solid fa-bolt" style="font-size: 50px; color: #1e40af; margin-bottom: 20px;"></i>
+                <p style="font-size: 30px; font-weight: 800;">PHÁT TRIỂN NHANH NHẤT LỊCH SỬ</p>
+                <p>Đạt được sự chấp nhận toàn cầu chỉ trong vòng 10 năm đầu tiên.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: GIẢI MÃ CHỮ V -->
+    <div class="slide-container">
+        <h2 class="slide-title">Fact vui: <span>Ý nghĩa chữ "V"</span></h2>
+        <div class="content-area">
+            <div class="tile" style="border: 4px solid #1e40af; background: #f8fafc;">
+                <div style="font-size: 160px; font-weight: 800; color: #1e40af; line-height: 1;">V</div>
+                <p style="font-size: 28px; font-weight: 800; margin-top: 10px;">Chữ "V" đại diện cho:</p>
+                <div class="two-column" style="margin-top: 40px; width: 100%;">
+                    <div class="tile" style="background: #e0f2fe; border: none;">
+                        <h3 style="font-size: 40px;">Variations</h3>
+                        <p>Sự tùy biến (Extensions)</p>
+                    </div>
+                    <div class="tile" style="background: #e0f2fe; border: none;">
+                        <h3 style="font-size: 40px;">Vectors</h3>
+                        <p>Xử lý AI siêu tốc</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: TẠI SAO THẮNG -->
+    <div class="slide-container">
+        <h2 class="slide-title">Tại sao RISC-V <span>Chiến thắng?</span></h2>
+        <div class="content-area">
+            <div class="grid-3">
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-broom"></i></div>
+                    <h3>Clean Slate</h3>
+                    <p>Không nợ kỹ thuật, tối ưu từng bit silicon.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-unlock"></i></div>
+                    <h3>Mã nguồn mở</h3>
+                    <p>Tự do tuyệt đối, không phí bản quyền.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                    <h3>Tùy biến</h3>
+                    <p>Cho phép sáng tạo lệnh riêng mà không làm vỡ lõi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: TIMELINE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Dòng thời gian <span>Phát triển</span></h2>
+        <div class="content-area">
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                <div class="t-item">
+                    <div class="t-dot"></div><b>2010</b>
+                    <p>Khởi động</p>
+                </div>
+                <div class="t-item">
+                    <div class="t-dot"></div><b>2015</b>
+                    <p>Foundation</p>
+                </div>
+                <div class="t-item">
+                    <div class="t-dot"></div><b>2020</b>
+                    <p>Sang Thụy Sĩ</p>
+                </div>
+                <div class="t-item">
+                    <div class="t-dot"></div><b>2024</b>
+                    <p>10 Tỷ lõi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: CHƯƠNG II -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 02</h2>
+            <h1>Đặc tả <span>Kỹ thuật</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+        </div>
+    </div>
+
+    <!-- SLIDE 12: MODULAR ISA -->
+    <div class="slide-container">
+        <h2 class="slide-title">Hệ thống <span>Tập lệnh Module</span></h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="tile">
+                    <h3>RV32I / RV64I</h3>
+                    <p>47 lệnh xương sống. Tối thiểu để vận hành phần cứng và chạy Linux.</p>
+                </div>
+                <div class="tile" style="background: #1e40af; color: white;">
+                    <h3 style="color: white;">Standard Extensions</h3>
+                    <p><b>M:</b> Nhân chia | <b>A:</b> Atomic | <b>F/D:</b> Số thực | <b>C:</b> Nén lệnh 16-bit (Giảm
+                        30% bộ nhớ).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 13: BIT ENCODING -->
+    <div class="slide-container">
+        <h2 class="slide-title">Mã hóa lệnh <span>Bit-level</span></h2>
+        <div class="content-area">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>[31:25]</th>
+                        <th>[24:20]</th>
+                        <th>[19:15]</th>
+                        <th>[14:12]</th>
+                        <th>[11:7]</th>
+                        <th>[6:0]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>R-Type</td>
+                        <td>funct7</td>
+                        <td>rs2</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>rd</td>
+                        <td>opcode</td>
+                    </tr>
+                    <tr>
+                        <td>I-Type</td>
+                        <td colspan="2">immediate [11:0]</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>rd</td>
+                        <td>opcode</td>
+                    </tr>
+                    <tr>
+                        <td>S-Type</td>
+                        <td>imm[11:5]</td>
+                        <td>rs2</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>imm[4:0]</td>
+                        <td>opcode</td>
+                    </tr>
+                    <tr>
+                        <td>B-Type</td>
+                        <td>imm[12|10:5]</td>
+                        <td>rs2</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>imm[4:1|11]</td>
+                        <td>opcode</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="quote-box" style="font-size: 20px;">Vị trí rs1/rs2/rd cố định giúp mạch giải mã truy cập Register
+                File cực nhanh ngay từ ID stage.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 14: REGISTER FILE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Hệ thống <span>Thanh ghi (x0 - x31)</span></h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><i class="fa-solid fa-0" style="color:#1e40af;"></i> <b>x0 (Zero):</b> Luôn bằng 0.</li>
+                        <li><i class="fa-solid fa-link" style="color:#1e40af;"></i> <b>x1 (ra):</b> Return Address.</li>
+                        <li><i class="fa-solid fa-arrow-down-short-wide" style="color:#1e40af;"></i> <b>x2 (sp):</b>
+                            Stack Pointer.</li>
+                        <li><i class="fa-solid fa-user" style="color:#1e40af;"></i> <b>x10-x17:</b> Arguments (a0-a7).
+                        </li>
+                    </ul>
+                </div>
+                <div class="tile"><i class="fa-solid fa-memory" style="font-size: 100px; margin-bottom: 20px;"></i>
+                    <p>32 thanh ghi đa năng tối ưu cho Performance/Area.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 15: CHƯƠNG III -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 03</h2>
+            <h1>Vi kiến trúc <span>Phần cứng</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+        </div>
+    </div>
+
+    <!-- SLIDE 16: PIPELINE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Dây chuyền <span>5-Stage Pipeline</span></h2>
+        <div class="content-area">
+            <div class="grid-3" style="display: flex; gap: 20px;">
+                <div class="tile" style="border-top: 8px solid #1e40af;"><b>IF</b><br>Fetch</div>
+                <div class="tile" style="border-top: 8px solid #1e40af;"><b>ID</b><br>Decode</div>
+                <div class="tile" style="border-top: 8px solid #1e40af;"><b>EX</b><br>Execute</div>
+                <div class="tile" style="border-top: 8px solid #1e40af;"><b>MEM</b><br>Memory</div>
+                <div class="tile" style="border-top: 8px solid #1e40af;"><b>WB</b><br>WriteBack</div>
+            </div>
+            <p class="subtitle" style="text-align: center;">Tăng IPC thông qua thực thi lệnh gối đầu song song.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 17: CONTROL LOGIC -->
+    <div class="slide-container">
+        <h2 class="slide-title">Bảng chân trị <span>Control Unit</span></h2>
+        <div class="content-area">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lệnh</th>
+                        <th>RegWrite</th>
+                        <th>ALUSrc</th>
+                        <th>MemRead</th>
+                        <th>MemWrite</th>
+                        <th>ALUOp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>R-type</td>
+                        <td>1</td>
+                        <td>0 (Reg)</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>LW (Load)</td>
+                        <td>1</td>
+                        <td>1 (Imm)</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>00</td>
+                    </tr>
+                    <tr>
+                        <td>SW (Store)</td>
+                        <td>0</td>
+                        <td>1 (Imm)</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>00</td>
+                    </tr>
+                    <tr>
+                        <td>BEQ (Branch)</td>
+                        <td>0</td>
+                        <td>0 (Reg)</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>01</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SLIDE 18: FORWARDING -->
+    <div class="slide-container">
+        <h2 class="slide-title">Xung đột dữ liệu <span>& Forwarding</span></h2>
+        <div class="content-area">
+            <div class="code-box">ADD x1, x2, x3<br>SUB x4, x1, x5 &nbsp;// x1 cần ngay tầng EX</div>
+            <div class="two-column">
+                <div class="tile">
+                    <h3>RAW Hazard</h3>
+                    <p>Đọc thanh ghi khi chưa kịp ghi trả kết quả.</p>
+                </div>
+                <div class="tile" style="border-left: 8px solid #1e40af;">
+                    <h3>Giải pháp</h3>
+                    <p>Mạch Forwarding đi tắt dữ liệu từ EX về ID.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 19: LOAD USE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Load-Use <span>Hazard & Stalling</span></h2>
+        <div class="content-area">
+            <div class="code-box">LW x1, 0(x2)<br>ADD x3, x1, x4 &nbsp;// Dữ liệu chỉ có sau MEM</div>
+            <div class="two-column">
+                <div class="tile">
+                    <h3>Vấn đề</h3>
+                    <p>Forwarding không thể đi ngược thời gian.</p>
+                </div>
+                <div class="tile" style="border-left: 8px solid #ef4444;">
+                    <h3>Stall</h3>
+                    <p>Chèn lệnh trống (Bubble) để trì hoãn Pipeline.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 20: CHƯƠNG IV -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 04</h2>
+            <h1>Hệ thống <span>& Đặc quyền</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+        </div>
+    </div>
+
+    <!-- SLIDE 21: PRIVILEGE MODES -->
+    <div class="slide-container">
+        <h2 class="slide-title">Kiến trúc <span>Đặc quyền (Privilege)</span></h2>
+        <div class="content-area">
+            <div class="grid-3">
+                <div class="tile">
+                    <h3>Machine (M)</h3>
+                    <p>Đặc quyền cao nhất (Firmware).</p>
+                </div>
+                <div class="tile">
+                    <h3>Supervisor (S)</h3>
+                    <p>Cho OS (Kernel Linux).</p>
+                </div>
+                <div class="tile">
+                    <h3>User (U)</h3>
+                    <p>Cho App người dùng.</p>
+                </div>
+            </div>
+            <p class="quote-box" style="text-align: center;">CSR (Control & Status Registers) quản lý mọi Trap, ngắt và
+                ngoại lệ.</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 22: MMU DASHBOARD -->
+    <div class="slide-container">
+        <h2 class="slide-title">Quản lý bộ nhớ <span>(MMU)</span></h2>
+        <div class="content-area">
+            <div class="tiled-content">
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-table"></i></div>
+                    <h3>Sv39 / Sv48</h3>
+                    <p>Phân trang đa cấp giúp ánh xạ địa chỉ ảo sang vật lý cho hệ điều hành Linux bảo mật.</p>
+                </div>
+                <div class="tile" style="border-bottom: 8px solid #1e40af;">
+                    <div class="icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                    <h3>TLB Accelerator</h3>
+                    <p>Translation Lookaside Buffer: Bộ đệm siêu tốc giảm trễ khi tra cứu Page Table.</p>
+                </div>
+                <div class="tile">
+                    <div class="icon"><i class="fa-solid fa-user-shield"></i></div>
+                    <h3>Cơ chế PMP</h3>
+                    <p>Physical Memory Protection: Kiểm soát quyền truy cập vùng nhớ cứng của Machine Mode.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 23: PERFORMANCE IRON LAW -->
+    <div class="slide-container">
+        <h2 class="slide-title">Phân tích hiệu năng <span>(The Iron Law)</span></h2>
+        <div class="content-area">
+            <div class="perf-grid">
+                <div class="perf-card v1">
+                    <div class="perf-val">CPI = 1.0</div>
+                    <div class="perf-label">Single-Cycle</div>
+                    <div class="speed-bar">
+                        <div class="speed-fill" style="width: 20%; background: #94a3b8;"></div>
+                    </div>
+                </div>
+                <div class="perf-card v2">
+                    <div class="perf-val">CPI ≈ 1.2</div>
+                    <div class="perf-label">5-Stage Pipeline</div>
+                    <div class="speed-bar">
+                        <div class="speed-fill" style="width: 65%; background: #3b82f6;"></div>
+                    </div>
+                </div>
+                <div class="perf-card v3">
+                    <div class="perf-val">CPI < 0.5</div>
+                            <div class="perf-label">Superscalar</div>
+                            <div class="speed-bar">
+                                <div class="speed-fill" style="width: 95%; background: #1e40af;"></div>
+                            </div>
+                    </div>
+                </div>
+                <div class="code-box" style="text-align: center; font-size: 36px; background: #0f172a;">T = N × CPI ×
+                    Clock_Period</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 24: CHƯƠNG V -->
+        <div class="slide-container">
+            <div
+                style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 05</h2>
+                <h1>Hệ sinh thái <span>& Tương lai</span></h1>
+                <hr
+                    style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+            </div>
+        </div>
+
+        <!-- SLIDE 25: SOFTWARE STACK DASHBOARD -->
+        <div class="slide-container">
+            <h2 class="slide-title">Hệ sinh thái <span>Phần mềm</span></h2>
+            <div class="content-area">
+                <div class="tiled-content">
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-terminal"></i></div>
+                        <h3>Toolchains</h3>
+                        <p>Hỗ trợ hoàn hảo GCC, LLVM và các bộ biên dịch tối ưu cho nén code.</p>
+                    </div>
+                    <div class="tile" style="border-bottom: 8px solid #1e40af;">
+                        <div class="icon"><i class="fa-solid fa-linux"></i></div>
+                        <h3>Operating Systems</h3>
+                        <p>Linux Mainline, FreeRTOS, Zephyr và tham vọng Android toàn cầu.</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon"><i class="fa-solid fa-vial-circle-check"></i></div>
+                        <h3>Simulators</h3>
+                        <p>QEMU và Spike cho phép phát triển chip ảo không tốn chi phí phần cứng.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 26: MARKET 2030 -->
+        <div class="slide-container">
+            <h2 class="slide-title">Chiếm lĩnh thị trường <span>2030</span></h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div class="tile" style="align-items: flex-start; text-align: left;">
+                        <h3>Ứng dụng mũi nhọn:</h3>
+                        <ul>
+                            <li>✅ <b>AI & Data Center:</b> Tăng tốc AI Vector.</li>
+                            <li>✅ <b>Space Tech:</b> NASA Orion và chip vệ tinh.</li>
+                            <li>✅ <b>Automotive:</b> Xe tự hành cấp độ cao.</li>
+                        </ul>
+                    </div>
+                    <div class="tile" style="background: #1e40af; color: white;">
+                        <h3 style="color: white; font-size: 60px;">16 TỶ LÕI</h3>
+                        <p style="color: white; font-size: 26px;">Dự báo chip RISC-V chiếm 25% thị phần vi xử lý thế
+                            giới vào năm 2030.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 27: KẾT LUẬN -->
+        <div class="slide-container">
+            <h2 class="slide-title">Kết luận</h2>
+            <div class="content-area">
+                <ul style="list-style: none; font-size: 32px; display: flex; flex-direction: column; gap: 30px;">
+                    <li>✅ <b>Tự do:</b> Xóa bỏ sự độc quyền của x86 và ARM.</li>
+                    <li>✅ <b>Hiện đại:</b> Thiết kế "sạch" tối ưu năng lượng.</li>
+                    <li>✅ <b>Hệ sinh thái:</b> Sự chung tay của 4000+ tập đoàn.</li>
+                </ul>
+                <p style="text-align: center; margin-top: 70px; font-weight: 800; font-size: 44px; color: #1e40af;">THE
+                    FUTURE OF COMPUTE IS OPEN.</p>
+            </div>
+        </div>
+
+        <!-- ============ PHẦN BỔ SUNG MỚI ============ -->
+
+        <!-- SLIDE NEW 1: DATAPATH OVERVIEW -->
+        <div class="slide-container">
+            <h2 class="slide-title">Sơ đồ Datapath <span>Tổng quan</span></h2>
+            <div class="content-area">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <!-- PC -->
+                    <div
+                        style="background: #fee2e2; border: 3px solid #ef4444; border-radius: 15px; padding: 20px 25px; text-align: center;">
+                        <i class="fa-solid fa-location-dot" style="font-size: 30px; color: #ef4444;"></i>
+                        <p style="font-weight: 800; margin-top: 10px;">PC</p>
+                        <p style="font-size: 14px; color: #666;">Program Counter</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 24px; color: #94a3b8;"></i>
+                    <!-- Instruction Memory -->
+                    <div
+                        style="background: #dbeafe; border: 3px solid #3b82f6; border-radius: 15px; padding: 20px 25px; text-align: center;">
+                        <i class="fa-solid fa-memory" style="font-size: 30px; color: #3b82f6;"></i>
+                        <p style="font-weight: 800; margin-top: 10px;">I-MEM</p>
+                        <p style="font-size: 14px; color: #666;">Instruction Memory</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 24px; color: #94a3b8;"></i>
+                    <!-- Register File -->
+                    <div
+                        style="background: #dcfce7; border: 3px solid #22c55e; border-radius: 15px; padding: 20px 25px; text-align: center;">
+                        <i class="fa-solid fa-table-cells" style="font-size: 30px; color: #22c55e;"></i>
+                        <p style="font-weight: 800; margin-top: 10px;">Reg File</p>
+                        <p style="font-size: 14px; color: #666;">x0 - x31</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 24px; color: #94a3b8;"></i>
+                    <!-- ALU -->
+                    <div
+                        style="background: #fef3c7; border: 3px solid #f59e0b; border-radius: 15px; padding: 20px 35px; text-align: center;">
+                        <i class="fa-solid fa-calculator" style="font-size: 30px; color: #f59e0b;"></i>
+                        <p style="font-weight: 800; margin-top: 10px;">ALU</p>
+                        <p style="font-size: 14px; color: #666;">+, -, AND, OR...</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 24px; color: #94a3b8;"></i>
+                    <!-- Data Memory -->
+                    <div
+                        style="background: #e0e7ff; border: 3px solid #6366f1; border-radius: 15px; padding: 20px 25px; text-align: center;">
+                        <i class="fa-solid fa-database" style="font-size: 30px; color: #6366f1;"></i>
+                        <p style="font-weight: 800; margin-top: 10px;">D-MEM</p>
+                        <p style="font-size: 14px; color: #666;">Data Memory</p>
+                    </div>
+                </div>
+                <div class="quote-box" style="margin-top: 30px; text-align: center;">
+                    <b>Luồng dữ liệu:</b> PC → Fetch Instruction → Decode & Read Registers → Execute ALU → Memory Access
+                    → Write Back
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 2: DATAPATH CHI TIẾT VỚI MUX -->
+        <div class="slide-container">
+            <h2 class="slide-title">Datapath Pipeline <span>với các MUX</span></h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <h3><i class="fa-solid fa-shuffle"></i> Các MUX quan trọng</h3>
+                        <ul style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+                            <li><b style="color: #1e40af;">ALUSrc MUX:</b> Chọn giữa Register (rs2) hoặc Immediate</li>
+                            <li><b style="color: #1e40af;">MemToReg MUX:</b> Chọn ALU result hoặc Memory data để ghi về
+                                Register</li>
+                            <li><b style="color: #1e40af;">PCSrc MUX:</b> PC+4 (sequential) hoặc Branch Target</li>
+                            <li><b style="color: #1e40af;">Forward MUX:</b> Bypass data từ EX/MEM hoặc MEM/WB</li>
+                        </ul>
+                    </div>
+                    <div class="tile"
+                        style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; border: none;">
+                        <i class="fa-solid fa-microchip" style="font-size: 80px; margin-bottom: 20px;"></i>
+                        <h3 style="color: white;">Control Unit</h3>
+                        <p style="color: #e0f2fe;">Sinh tín hiệu điều khiển dựa trên opcode và funct3/funct7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 3: BRANCH PREDICTION -->
+        <div class="slide-container">
+            <h2 class="slide-title">Branch Prediction <span>Dự đoán rẽ nhánh</span></h2>
+            <div class="content-area">
+                <div class="grid-3">
+                    <div class="tile">
+                        <div class="icon" style="background: #fef3c7;"><i class="fa-solid fa-arrow-trend-up"
+                                style="color: #f59e0b;"></i></div>
+                        <h3>Static Prediction</h3>
+                        <p><b>Always Not Taken:</b> Giả sử không nhảy, đơn giản nhất.<br><b>BTFN:</b> Backward Taken,
+                            Forward Not-taken.</p>
+                    </div>
+                    <div class="tile" style="border: 4px solid #1e40af;">
+                        <div class="icon"><i class="fa-solid fa-brain"></i></div>
+                        <h3>Dynamic Prediction</h3>
+                        <p><b>1-bit:</b> Nhớ lần trước.<br><b>2-bit Saturating:</b> Strongly/Weakly Taken/Not-Taken.</p>
+                    </div>
+                    <div class="tile">
+                        <div class="icon" style="background: #dcfce7;"><i class="fa-solid fa-sitemap"
+                                style="color: #22c55e;"></i></div>
+                        <h3>BTB & BHT</h3>
+                        <p><b>Branch Target Buffer:</b> Cache địa chỉ đích.<br><b>Branch History Table:</b> Lịch sử
+                            Taken/Not.</p>
+                    </div>
+                </div>
+                <p class="quote-box" style="text-align: center;">Misprediction penalty: Pipeline flush 2-3 cycles
+                    (5-stage) → Cần prediction accuracy > 90%</p>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 4: 2-BIT PREDICTOR -->
+        <div class="slide-container">
+            <h2 class="slide-title">2-Bit Saturating <span>Predictor</span></h2>
+            <div class="content-area">
+                <div style="display: flex; justify-content: center; gap: 40px; align-items: center;">
+                    <!-- State machine diagram -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div
+                            style="background: #22c55e; color: white; padding: 25px; border-radius: 20px; text-align: center;">
+                            <p style="font-size: 28px; font-weight: 800;">11</p>
+                            <p>Strongly Taken</p>
+                        </div>
+                        <div
+                            style="background: #86efac; color: #166534; padding: 25px; border-radius: 20px; text-align: center;">
+                            <p style="font-size: 28px; font-weight: 800;">10</p>
+                            <p>Weakly Taken</p>
+                        </div>
+                        <div
+                            style="background: #fca5a5; color: #991b1b; padding: 25px; border-radius: 20px; text-align: center;">
+                            <p style="font-size: 28px; font-weight: 800;">01</p>
+                            <p>Weakly Not</p>
+                        </div>
+                        <div
+                            style="background: #ef4444; color: white; padding: 25px; border-radius: 20px; text-align: center;">
+                            <p style="font-size: 28px; font-weight: 800;">00</p>
+                            <p>Strongly Not</p>
+                        </div>
+                    </div>
+                    <div class="tile" style="max-width: 350px;">
+                        <h3>Ưu điểm</h3>
+                        <p>Không thay đổi prediction chỉ vì 1 lần sai → Ổn định với loop branches có tỉ lệ taken cao.
+                        </p>
+                        <p style="margin-top: 15px; color: #1e40af; font-weight: 800;">Accuracy: ~85-90%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 5: RISC-V ASSEMBLY -->
+        <div class="slide-container">
+            <h2 class="slide-title">RISC-V Assembly <span>Ví dụ thực tế</span></h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <h3><i class="fa-solid fa-code"></i> Tính tổng mảng</h3>
+                        <div class="code-box" style="font-size: 18px;">
+                            # a0 = base address<br>
+                            # a1 = array length<br>
+                            # a2 = sum (result)<br><br>
+                            <span style="color: #22c55e;">loop:</span><br>
+                            &nbsp;&nbsp;lw t0, 0(a0) <span style="color: #94a3b8;"># Load element</span><br>
+                            &nbsp;&nbsp;add a2, a2, t0 <span style="color: #94a3b8;"># sum += element</span><br>
+                            &nbsp;&nbsp;addi a0, a0, 4 <span style="color: #94a3b8;"># next element</span><br>
+                            &nbsp;&nbsp;addi a1, a1, -1 <span style="color: #94a3b8;"># length--</span><br>
+                            &nbsp;&nbsp;bne a1, zero, loop<br>
+                            &nbsp;&nbsp;ret
+                        </div>
+                    </div>
+                    <div>
+                        <h3><i class="fa-solid fa-arrows-rotate"></i> Fibonacci</h3>
+                        <div class="code-box" style="font-size: 18px;">
+                            # a0 = n<br>
+                            # a1 = fib(n) result<br><br>
+                            &nbsp;&nbsp;li t0, 0 <span style="color: #94a3b8;"># f0 = 0</span><br>
+                            &nbsp;&nbsp;li t1, 1 <span style="color: #94a3b8;"># f1 = 1</span><br>
+                            <span style="color: #22c55e;">fib_loop:</span><br>
+                            &nbsp;&nbsp;beq a0, zero, done<br>
+                            &nbsp;&nbsp;add t2, t0, t1 <span style="color: #94a3b8;"># t2 = f0 + f1</span><br>
+                            &nbsp;&nbsp;mv t0, t1<br>
+                            &nbsp;&nbsp;mv t1, t2<br>
+                            &nbsp;&nbsp;addi a0, a0, -1<br>
+                            &nbsp;&nbsp;j fib_loop<br>
+                            <span style="color: #22c55e;">done:</span> mv a1, t0
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 6: CSR REGISTERS -->
+        <div class="slide-container">
+            <h2 class="slide-title">CSR Registers <span>Control & Status</span></h2>
+            <div class="content-area">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>CSR</th>
+                            <th>Tên</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>mstatus</td>
+                            <td>Machine Status</td>
+                            <td>Trạng thái global (MIE, MPIE, MPP...)</td>
+                        </tr>
+                        <tr>
+                            <td>mtvec</td>
+                            <td>Trap Vector</td>
+                            <td>Địa chỉ handler khi có trap/exception</td>
+                        </tr>
+                        <tr>
+                            <td>mepc</td>
+                            <td>Exception PC</td>
+                            <td>Lưu PC của lệnh gây exception</td>
+                        </tr>
+                        <tr>
+                            <td>mcause</td>
+                            <td>Trap Cause</td>
+                            <td>Mã nguyên nhân: interrupt hay exception</td>
+                        </tr>
+                        <tr>
+                            <td>mie/mip</td>
+                            <td>Interrupt Enable/Pending</td>
+                            <td>Cho phép và theo dõi interrupt</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="text-align: center; color: #64748b; margin-top: 20px;"><b>Lệnh:</b> CSRRW, CSRRS, CSRRC,
+                    CSRRWI, CSRRSI, CSRRCI</p>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 7: EXCEPTION HANDLING -->
+        <div class="slide-container">
+            <h2 class="slide-title">Exception <span>Handling Flow</span></h2>
+            <div class="content-area">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+                    <div class="tile" style="flex: 1; border-left: 8px solid #ef4444;">
+                        <h3 style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Khi xảy ra
+                            Exception</h3>
+                        <ol style="text-align: left; padding-left: 20px;">
+                            <li>mepc ← PC của lệnh lỗi</li>
+                            <li>mcause ← Mã exception</li>
+                            <li>PC ← mtvec (nhảy đến handler)</li>
+                            <li>Tắt interrupt (MIE = 0)</li>
+                        </ol>
+                    </div>
+                    <i class="fa-solid fa-arrow-right" style="font-size: 40px; color: #1e40af;"></i>
+                    <div class="tile" style="flex: 1; border-left: 8px solid #22c55e;">
+                        <h3 style="color: #22c55e;"><i class="fa-solid fa-rotate-left"></i> Khi MRET (Return)</h3>
+                        <ol style="text-align: left; padding-left: 20px;">
+                            <li>PC ← mepc (quay lại)</li>
+                            <li>Privilege ← MPP</li>
+                            <li>MIE ← MPIE</li>
+                            <li>MPIE ← 1</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="quote-box" style="text-align: center; margin-top: 25px;">
+                    <b>Exception types:</b> Illegal instruction, Misaligned access, Ecall, Ebreak, Page fault...
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 8: CACHE ARCHITECTURE -->
+        <div class="slide-container">
+            <h2 class="slide-title">Cache Architecture <span>L1 & L2</span></h2>
+            <div class="content-area">
+                <div class="grid-3">
+                    <div class="tile" style="border-top: 8px solid #ef4444;">
+                        <h3>L1 I-Cache</h3>
+                        <p style="font-size: 48px; font-weight: 800; color: #ef4444;">32KB</p>
+                        <p>Instruction cache - Read only, tối ưu latency 1-2 cycle</p>
+                    </div>
+                    <div class="tile" style="border-top: 8px solid #3b82f6;">
+                        <h3>L1 D-Cache</h3>
+                        <p style="font-size: 48px; font-weight: 800; color: #3b82f6;">32KB</p>
+                        <p>Data cache - Read/Write, Write-back policy</p>
+                    </div>
+                    <div class="tile" style="border-top: 8px solid #1e40af;">
+                        <h3>L2 Unified</h3>
+                        <p style="font-size: 48px; font-weight: 800; color: #1e40af;">256KB-1MB</p>
+                        <p>Shared cache, higher latency 10-20 cycles</p>
+                    </div>
+                </div>
+                <div class="two-column" style="margin-top: 25px;">
+                    <div class="tile">
+                        <h3>Direct-Mapped</h3>
+                        <p>Đơn giản, nhanh, nhưng conflict miss cao</p>
+                    </div>
+                    <div class="tile" style="border: 4px solid #1e40af;">
+                        <h3>N-Way Set Associative</h3>
+                        <p>Cân bằng giữa hit rate và complexity. Thường dùng 4-8 way.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 9: VECTOR EXTENSION -->
+        <div class="slide-container">
+            <h2 class="slide-title">Vector Extension <span>"V" cho AI</span></h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <h3><i class="fa-solid fa-layer-group"></i> SIMD on Steroids</h3>
+                        <ul style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+                            <li><b>Scalable Vector Length (SVL):</b> Không cố định như AVX, linh hoạt theo phần cứng
+                            </li>
+                            <li><b>VL (Vector Length):</b> Runtime configurable</li>
+                            <li><b>32 Vector Registers:</b> v0-v31, mỗi reg có thể 128-bit đến 16384-bit</li>
+                            <li><b>Element types:</b> int8, int16, int32, fp16, fp32, fp64</li>
+                        </ul>
+                    </div>
+                    <div class="tile"
+                        style="background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); color: white; border: none;">
+                        <i class="fa-solid fa-brain" style="font-size: 70px; margin-bottom: 20px;"></i>
+                        <h3 style="color: white;">AI Acceleration</h3>
+                        <p style="color: #ede9fe;">Matrix multiply, Convolution, Transformer attention - tất cả được
+                            tăng tốc với V extension.</p>
+                    </div>
+                </div>
+                <div class="code-box" style="text-align: center; font-size: 24px;">
+                    vsetvli t0, a0, e32, m4 &nbsp;&nbsp;|&nbsp;&nbsp; vle32.v v0, (a1) &nbsp;&nbsp;|&nbsp;&nbsp; vadd.vv
+                    v4, v0, v2
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE NEW 10: ATOMIC EXTENSION -->
+        <div class="slide-container">
+            <h2 class="slide-title">Atomic Extension <span>"A" cho Multicore</span></h2>
+            <div class="content-area">
+                <div class="two-column">
+                    <div>
+                        <h3><i class="fa-solid fa-lock"></i> LR/SC Pattern</h3>
+                        <div class="code-box" style="font-size: 18px;">
+                            <span style="color: #22c55e;">spin_lock:</span><br>
+                            &nbsp;&nbsp;lr.w t0, (a0) <span style="color: #94a3b8;"># Load-Reserved</span><br>
+                            &nbsp;&nbsp;bnez t0, spin_lock<br>
+                            &nbsp;&nbsp;li t1, 1<br>
+                            &nbsp;&nbsp;sc.w t2, t1, (a0) <span style="color: #94a3b8;"># Store-Conditional</span><br>
+                            &nbsp;&nbsp;bnez t2, spin_lock <span style="color: #94a3b8;"># Retry if failed</span><br>
+                            &nbsp;&nbsp;ret
+                        </div>
+                    </div>
+                    <div>
+                        <h3><i class="fa-solid fa-atom"></i> AMO Operations</h3>
+                        <table style="font-size: 18px;">
+                            <tbody>
+                                <tr>
+                                    <td>AMOSWAP</td>
+                                    <td>Swap memory & register</td>
+                                </tr>
+                                <tr>
+                                    <td>AMOADD</td>
+                                    <td>Atomic add</td>
+                                </tr>
+                                <tr>
+                                    <td>AMOAND</td>
+                                    <td>Atomic AND</td>
+                                </tr>
+                                <tr>
+                                    <td>AMOOR</td>
+                                    <td>Atomic OR</td>
+                                </tr>
+                                <tr>
+                                    <td>AMOMAX</td>
+                                    <td>Atomic max</td>
+                                </tr>
+                                <tr>
+                                    <td>AMOMIN</td>
+                                    <td>Atomic min</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p class="quote-box" style="text-align: center;">Essential cho synchronization trong SMP (Symmetric
+                    Multiprocessing) và cache coherence.</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 28: Q&A -->
+        <div class="slide-container">
+            <div class="title-layout">
+                <h1 style="font-size: 110px;">Q&A</h1>
+                <p class="subtitle" style="font-size: 36px; color: #1e40af; font-weight: 800;">Cảm ơn thầy và các bạn đã
+                    theo dõi!</p>
+                <div
+                    style="margin-top: 60px; padding: 40px; border: 5px solid #1e40af; border-radius: 40px; background: #f8fafc; display: inline-block;">
+                    <p style="font-weight: 800; color: #0f172a; font-size: 32px;">Hỏi Gemini để giải đáp kỹ thuật!</p>
+                </div>
+            </div>
+            <div
+                style="position: absolute; bottom: 40px; right: 80px; font-weight: 800; color: #cbd5e1; font-size: 24px;">
+                BK UNIVERSITY | 2026</div>
+        </div>
+
+        <!-- AI ASSISTANT
+        <div id="ai-assistant-toggle"><i class="fa-solid fa-robot"></i></div>
+        <div id="ai-container">
+            <div id="ai-header">
+                <span>Trợ lý AI Gemini</span>
+                <i class="fa-solid fa-xmark" id="ai-close" style="cursor:pointer;"></i>
+            </div>
+            <div id="ai-messages">
+                <div class="ai-msg bot-msg">Chào Bách Khoa-er! Tôi là Gemini. Tôi có thể giải thích chi tiết về MMU,
+                    Pipeline hay bất cứ điều gì trong slide này. Bạn muốn hỏi gì?</div>
+            </div>
+            <div id="ai-input-area">
+                <input type="text" id="ai-input" placeholder="Hỏi Gemini...">
+                <button id="ai-send">Gửi</button>
+            </div>
+        </div>
+
+        <script>
+            const apiKey = "";
+            const aiToggle = document.getElementById('ai-assistant-toggle');
+            const aiContainer = document.getElementById('ai-container');
+            const aiInput = document.getElementById('ai-input');
+            const aiSend = document.getElementById('ai-send');
+            const aiMessages = document.getElementById('ai-messages');
+
+            aiToggle.addEventListener('click', () => aiContainer.style.display = aiContainer.style.display === 'flex' ? 'none' : 'flex');
+            document.getElementById('ai-close').addEventListener('click', () => aiContainer.style.display = 'none');
+
+            async function callGemini(q) {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: q }] }],
+                    systemInstruction: { parts: [{ text: "Bạn là chuyên gia kiến trúc máy tính BK. Giải thích cực kỳ chuyên nghiệp nhưng ngắn gọn." }] }
+                };
+                try {
+                    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const data = await r.json();
+                    return data.candidates[0].content.parts[0].text;
+                } catch (e) { return "Lỗi kết nối API."; }
+            }
+
+            aiSend.addEventListener('click', async () => {
+                const q = aiInput.value.trim(); if (!q) return;
+                aiMessages.innerHTML += `<div class="ai-msg user-msg">${q}</div>`;
+                aiInput.value = '';
+                const botDiv = document.createElement('div');
+                botDiv.className = 'ai-msg bot-msg loading-dots';
+                botDiv.textContent = 'Gemini đang suy nghĩ';
+                aiMessages.appendChild(botDiv);
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+                const res = await callGemini(q);
+                botDiv.classList.remove('loading-dots');
+                botDiv.textContent = res;
+                aiMessages.scrollTop = aiMessages.scrollHeight;
+            });
+        </script> -->
+
+</body>
+
+</html>

@@ -14,6 +14,8 @@
 \usepackage{multirow}
 
 \geometry{margin=2cm}
+\setlength{\headheight}{15pt}
+\addtolength{\topmargin}{-3pt}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{EE5215 - Câu 3: Cache Memory}
@@ -368,15 +370,22 @@ Thực ra Index từ địa chỉ chính là cách đúng:
     \node at (-1,6) {\textbf{Main Memory (4GB)}};
     \draw (0,0) rectangle (3,5.5);
     
-    % Zones
-    \foreach \y/\label in {0/Vùng 0, 1.1/Vùng 1, 2.2/Vùng 2, 4.4/..., 5/Vùng 16383} {
-        \draw (0,\y) rectangle (3,\y+0.5);
-        \node at (1.5,\y+0.25) {\tiny \label};
-    }
+    % Zones - drawn individually to avoid foreach parsing issues
+    \draw (0,0) rectangle (3,0.5);
+    \node at (1.5,0.25) {\tiny Vùng 0};
     
-    % Highlight zone 2
+    \draw (0,1.1) rectangle (3,1.6);
+    \node at (1.5,1.35) {\tiny Vùng 1};
+    
+    % Vùng 2 - highlighted
     \draw[fill=yellow!50] (0,2.2) rectangle (3,2.7);
     \node at (1.5,2.45) {\tiny \textbf{Vùng 2}};
+    
+    \draw (0,4.4) rectangle (3,4.9);
+    \node at (1.5,4.65) {\tiny ...};
+    
+    \draw (0,5) rectangle (3,5.5);
+    \node at (1.5,5.25) {\tiny Vùng 16383};
     
     % Arrow
     \draw[->,thick,red] (3.5,2.45) -- (5.5,2.45);
@@ -386,15 +395,22 @@ Thực ra Index từ địa chỉ chính là cách đúng:
     \node at (7,6) {\textbf{Cache (256KB)}};
     \draw (6,0) rectangle (9,5.5);
     
-    % Lines
-    \foreach \y/\label in {0/Line 0, 0.5/Line 1, 1/..., 3/Line 3090, 5/Line 4095} {
-        \draw (6,\y) rectangle (9,\y+0.4);
-        \node at (7.5,\y+0.2) {\tiny \label};
-    }
+    % Lines - drawn individually to avoid foreach parsing issues
+    \draw (6,0) rectangle (9,0.4);
+    \node at (7.5,0.2) {\tiny Line 0};
     
-    % Highlight line 3090
+    \draw (6,0.5) rectangle (9,0.9);
+    \node at (7.5,0.7) {\tiny Line 1};
+    
+    \draw (6,1) rectangle (9,1.4);
+    \node at (7.5,1.2) {\tiny ...};
+    
+    % Line 3090 - highlighted
     \draw[fill=green!50] (6,3) rectangle (9,3.4);
     \node at (7.5,3.2) {\tiny \textbf{Line 3090}};
+    
+    \draw (6,5) rectangle (9,5.4);
+    \node at (7.5,5.2) {\tiny Line 4095};
     
 \end{tikzpicture}
 \end{center}
