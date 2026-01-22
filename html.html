@@ -668,25 +668,64 @@
 
     <!-- SLIDE 10: TIMELINE -->
     <div class="slide-container">
-        <h2 class="slide-title">Dòng thời gian <span>Phát triển</span></h2>
+        <h2 class="slide-title">Dòng thời gian <span>Phát triển RISC-V</span></h2>
         <div class="content-area">
-            <div class="timeline-container">
-                <div class="timeline-line"></div>
-                <div class="t-item">
-                    <div class="t-dot"></div><b>2010</b>
-                    <p>Khởi động</p>
+            <div class="timeline-container" style="display: flex; flex-direction: column; gap: 25px; margin-top: 20px;">
+                <div class="timeline-row" style="display: flex; align-items: center; gap: 30px;">
+                    <div style="width: 100px; text-align: center; flex-shrink: 0;">
+                        <div style="font-size: 36px; font-weight: 800; color: #1e40af;">2010</div>
+                    </div>
+                    <div style="width: 20px; height: 20px; background: #1e40af; border-radius: 50%; flex-shrink: 0;">
+                    </div>
+                    <div
+                        style="flex: 1; background: #f1f5f9; padding: 20px 30px; border-radius: 15px; border-left: 5px solid #1e40af;">
+                        <h4 style="font-size: 24px; color: #0f172a; margin-bottom: 8px;">🚀 Khởi động tại UC Berkeley
+                        </h4>
+                        <p style="font-size: 18px; color: #64748b;">Giáo sư Krste Asanović và David Patterson bắt đầu dự
+                            án nghiên cứu ISA mở tại đại học California, Berkeley.</p>
+                    </div>
                 </div>
-                <div class="t-item">
-                    <div class="t-dot"></div><b>2015</b>
-                    <p>Foundation</p>
+                <div class="timeline-row" style="display: flex; align-items: center; gap: 30px;">
+                    <div style="width: 100px; text-align: center; flex-shrink: 0;">
+                        <div style="font-size: 36px; font-weight: 800; color: #1e40af;">2015</div>
+                    </div>
+                    <div style="width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; flex-shrink: 0;">
+                    </div>
+                    <div
+                        style="flex: 1; background: #f1f5f9; padding: 20px 30px; border-radius: 15px; border-left: 5px solid #3b82f6;">
+                        <h4 style="font-size: 24px; color: #0f172a; margin-bottom: 8px;">🏛️ Thành lập RISC-V Foundation
+                        </h4>
+                        <p style="font-size: 18px; color: #64748b;">Tổ chức phi lợi nhuận ra đời với 36 thành viên sáng
+                            lập, bao gồm Google, NVIDIA và Western Digital.</p>
+                    </div>
                 </div>
-                <div class="t-item">
-                    <div class="t-dot"></div><b>2020</b>
-                    <p>Sang Thụy Sĩ</p>
+                <div class="timeline-row" style="display: flex; align-items: center; gap: 30px;">
+                    <div style="width: 100px; text-align: center; flex-shrink: 0;">
+                        <div style="font-size: 36px; font-weight: 800; color: #1e40af;">2020</div>
+                    </div>
+                    <div style="width: 20px; height: 20px; background: #60a5fa; border-radius: 50%; flex-shrink: 0;">
+                    </div>
+                    <div
+                        style="flex: 1; background: #f1f5f9; padding: 20px 30px; border-radius: 15px; border-left: 5px solid #60a5fa;">
+                        <h4 style="font-size: 24px; color: #0f172a; margin-bottom: 8px;">🇨🇭 Chuyển trụ sở sang Thụy Sĩ
+                        </h4>
+                        <p style="font-size: 18px; color: #64748b;">Đổi tên thành RISC-V International, đặt trụ sở tại
+                            Thụy Sĩ để đảm bảo tính trung lập toàn cầu.</p>
+                    </div>
                 </div>
-                <div class="t-item">
-                    <div class="t-dot"></div><b>2024</b>
-                    <p>10 Tỷ lõi</p>
+                <div class="timeline-row" style="display: flex; align-items: center; gap: 30px;">
+                    <div style="width: 100px; text-align: center; flex-shrink: 0;">
+                        <div style="font-size: 36px; font-weight: 800; color: #1e40af;">2024</div>
+                    </div>
+                    <div style="width: 20px; height: 20px; background: #93c5fd; border-radius: 50%; flex-shrink: 0;">
+                    </div>
+                    <div
+                        style="flex: 1; background: linear-gradient(135deg, #1e40af, #3b82f6); padding: 20px 30px; border-radius: 15px; color: white;">
+                        <h4 style="font-size: 24px; color: white; margin-bottom: 8px;">🎯 10 Tỷ lõi RISC-V được sản xuất
+                        </h4>
+                        <p style="font-size: 18px; color: rgba(255,255,255,0.9);">Cột mốc lịch sử với hơn 4000 công ty
+                            thành viên, vượt qua ARM về tốc độ tăng trưởng.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -952,21 +991,65 @@
     <div class="slide-container">
         <h2 class="slide-title">Quản lý bộ nhớ <span>(MMU)</span></h2>
         <div class="content-area">
-            <div class="tiled-content">
-                <div class="tile">
-                    <div class="icon"><i class="fa-solid fa-table"></i></div>
-                    <h3>Sv39 / Sv48</h3>
-                    <p>Phân trang đa cấp giúp ánh xạ địa chỉ ảo sang vật lý cho hệ điều hành Linux bảo mật.</p>
+            <div class="two-column" style="gap: 40px;">
+                <!-- Left: Page Table Diagram -->
+                <div style="background: #f8fafc; border-radius: 20px; padding: 30px;">
+                    <h3 style="font-size: 26px; color: #1e40af; margin-bottom: 20px; text-align: center;">📊 Cấu trúc
+                        Sv39 (39-bit Virtual Address)</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div
+                            style="display: flex; border-radius: 10px; overflow: hidden; font-size: 14px; font-weight: 600;">
+                            <div style="flex: 1; background: #1e40af; color: white; padding: 12px; text-align: center;">
+                                VPN[2]<br><span style="font-size: 12px; opacity: 0.8;">9 bits</span></div>
+                            <div style="flex: 1; background: #3b82f6; color: white; padding: 12px; text-align: center;">
+                                VPN[1]<br><span style="font-size: 12px; opacity: 0.8;">9 bits</span></div>
+                            <div style="flex: 1; background: #60a5fa; color: white; padding: 12px; text-align: center;">
+                                VPN[0]<br><span style="font-size: 12px; opacity: 0.8;">9 bits</span></div>
+                            <div style="flex: 1; background: #94a3b8; color: white; padding: 12px; text-align: center;">
+                                Offset<br><span style="font-size: 12px; opacity: 0.8;">12 bits</span></div>
+                        </div>
+                        <p style="font-size: 16px; color: #64748b; text-align: center; margin-top: 10px;">→ Hỗ trợ đến
+                            <b>512 GB</b> không gian địa chỉ ảo
+                        </p>
+                        <div
+                            style="background: #1e40af; color: white; padding: 15px 20px; border-radius: 10px; margin-top: 10px;">
+                            <p style="font-size: 16px;">📌 <b>Sv48:</b> 4-level page table, hỗ trợ <b>256 TB</b></p>
+                            <p style="font-size: 16px; margin-top: 5px;">📌 <b>Sv57:</b> 5-level page table, hỗ trợ
+                                <b>128 PB</b>
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="tile" style="border-bottom: 8px solid #1e40af;">
-                    <div class="icon"><i class="fa-solid fa-bolt-lightning"></i></div>
-                    <h3>TLB Accelerator</h3>
-                    <p>Translation Lookaside Buffer: Bộ đệm siêu tốc giảm trễ khi tra cứu Page Table.</p>
-                </div>
-                <div class="tile">
-                    <div class="icon"><i class="fa-solid fa-user-shield"></i></div>
-                    <h3>Cơ chế PMP</h3>
-                    <p>Physical Memory Protection: Kiểm soát quyền truy cập vùng nhớ cứng của Machine Mode.</p>
+                <!-- Right: MMU Features -->
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 25px; border-radius: 15px; border-left: 5px solid #1e40af;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                            <i class="fa-solid fa-bolt-lightning" style="font-size: 28px; color: #1e40af;"></i>
+                            <h4 style="font-size: 22px; color: #0f172a;">TLB (Translation Lookaside Buffer)</h4>
+                        </div>
+                        <p style="font-size: 17px; color: #475569;">Cache ánh xạ địa chỉ, giảm <b>95%</b> thời gian tra
+                            cứu page table. Hit rate thường đạt <b>99%+</b>.</p>
+                    </div>
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 25px; border-radius: 15px; border-left: 5px solid #3b82f6;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                            <i class="fa-solid fa-shield-halved" style="font-size: 28px; color: #3b82f6;"></i>
+                            <h4 style="font-size: 22px; color: #0f172a;">PMP (Physical Memory Protection)</h4>
+                        </div>
+                        <p style="font-size: 17px; color: #475569;">16 vùng bảo vệ có thể cấu hình, hỗ trợ <b>R/W/X</b>
+                            permissions cho embedded systems.</p>
+                    </div>
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 25px; border-radius: 15px; border-left: 5px solid #60a5fa;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                            <i class="fa-solid fa-microchip" style="font-size: 28px; color: #60a5fa;"></i>
+                            <h4 style="font-size: 22px; color: #0f172a;">ASID Support</h4>
+                        </div>
+                        <p style="font-size: 17px; color: #475569;">Address Space ID cho phép context switch nhanh mà
+                            <b>không cần flush TLB</b>.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1017,23 +1100,69 @@
 
         <!-- SLIDE 25: SOFTWARE STACK DASHBOARD -->
         <div class="slide-container">
-            <h2 class="slide-title">Hệ sinh thái <span>Phần mềm</span></h2>
+            <h2 class="slide-title">Hệ sinh thái <span>Phần mềm RISC-V</span></h2>
             <div class="content-area">
-                <div class="tiled-content">
-                    <div class="tile">
-                        <div class="icon"><i class="fa-solid fa-terminal"></i></div>
-                        <h3>Toolchains</h3>
-                        <p>Hỗ trợ hoàn hảo GCC, LLVM và các bộ biên dịch tối ưu cho nén code.</p>
+                <div class="two-column" style="gap: 40px;">
+                    <!-- Left: Software Stack Layers -->
+                    <div style="display: flex; flex-direction: column; gap: 0;">
+                        <div
+                            style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 25px 30px; border-radius: 15px 15px 0 0;">
+                            <h4 style="font-size: 20px; margin-bottom: 8px;">🖥️ Applications</h4>
+                            <p style="font-size: 15px; opacity: 0.9;">TensorFlow Lite, PyTorch, SPEC CPU, CoreMark</p>
+                        </div>
+                        <div style="background: #3b82f6; color: white; padding: 25px 30px;">
+                            <h4 style="font-size: 20px; margin-bottom: 8px;">🐧 Operating Systems</h4>
+                            <p style="font-size: 15px; opacity: 0.9;"><b>Linux 5.4+</b> (mainline), FreeRTOS, Zephyr,
+                                seL4</p>
+                        </div>
+                        <div style="background: #60a5fa; color: white; padding: 25px 30px;">
+                            <h4 style="font-size: 20px; margin-bottom: 8px;">⚙️ Runtime & Libraries</h4>
+                            <p style="font-size: 15px; opacity: 0.9;">glibc, musl, Newlib, OpenSSL, OpenCV</p>
+                        </div>
+                        <div style="background: #93c5fd; color: #0f172a; padding: 25px 30px;">
+                            <h4 style="font-size: 20px; margin-bottom: 8px;">🔧 Toolchains</h4>
+                            <p style="font-size: 15px;"><b>GCC 13+</b>, <b>LLVM 17+</b>, Rust, Go, Java (OpenJDK)</p>
+                        </div>
+                        <div
+                            style="background: #cbd5e1; color: #0f172a; padding: 25px 30px; border-radius: 0 0 15px 15px;">
+                            <h4 style="font-size: 20px; margin-bottom: 8px;">🖲️ Hardware / ISA</h4>
+                            <p style="font-size: 15px;">RV32/64/128, Extensions: IMAFDC, V, B, H...</p>
+                        </div>
                     </div>
-                    <div class="tile" style="border-bottom: 8px solid #1e40af;">
-                        <div class="icon"><i class="fa-solid fa-linux"></i></div>
-                        <h3>Operating Systems</h3>
-                        <p>Linux Mainline, FreeRTOS, Zephyr và tham vọng Android toàn cầu.</p>
-                    </div>
-                    <div class="tile">
-                        <div class="icon"><i class="fa-solid fa-vial-circle-check"></i></div>
-                        <h3>Simulators</h3>
-                        <p>QEMU và Spike cho phép phát triển chip ảo không tốn chi phí phần cứng.</p>
+                    <!-- Right: Development Tools -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <h3 style="font-size: 26px; color: #1e40af; margin-bottom: 5px;">🛠️ Công cụ phát triển</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                                <i class="fa-solid fa-bug"
+                                    style="font-size: 32px; color: #1e40af; margin-bottom: 10px;"></i>
+                                <h5 style="font-size: 18px; color: #0f172a;">GDB</h5>
+                                <p style="font-size: 14px; color: #64748b;">Debug toàn diện</p>
+                            </div>
+                            <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                                <i class="fa-solid fa-microchip"
+                                    style="font-size: 32px; color: #3b82f6; margin-bottom: 10px;"></i>
+                                <h5 style="font-size: 18px; color: #0f172a;">QEMU</h5>
+                                <p style="font-size: 14px; color: #64748b;">Emulator đa nền</p>
+                            </div>
+                            <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                                <i class="fa-solid fa-wave-square"
+                                    style="font-size: 32px; color: #60a5fa; margin-bottom: 10px;"></i>
+                                <h5 style="font-size: 18px; color: #0f172a;">Verilator</h5>
+                                <p style="font-size: 14px; color: #64748b;">RTL Simulation</p>
+                            </div>
+                            <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                                <i class="fa-solid fa-code-branch"
+                                    style="font-size: 32px; color: #94a3b8; margin-bottom: 10px;"></i>
+                                <h5 style="font-size: 18px; color: #0f172a;">Spike</h5>
+                                <p style="font-size: 14px; color: #64748b;">ISA Reference</p>
+                            </div>
+                        </div>
+                        <div
+                            style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 20px; border-radius: 12px; text-align: center; margin-top: auto;">
+                            <p style="font-size: 18px;"><b>🎯 4000+ công ty</b> đang đóng góp và sử dụng hệ sinh thái
+                                RISC-V</p>
+                        </div>
                     </div>
                 </div>
             </div>
