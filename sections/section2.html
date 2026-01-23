@@ -1,115 +1,172 @@
 <!-- SLIDE 11: CHƯƠNG II -->
-    <div class="slide-container">
-        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
-            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 02</h2>
-            <h1>Đặc tả <span>Kỹ thuật</span></h1>
-            <hr
-                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
-            <p class="subtitle">Ngôn ngữ của phần cứng, DNA của bộ vi xử lý</p>
-        </div>
+<div class="slide-container">
+    <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+        <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 02</h2>
+        <h1>Đặc tả <span>Kỹ thuật</span></h1>
+        <hr
+            style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+        <p class="subtitle">Ngôn ngữ của phần cứng, DNA của bộ vi xử lý</p>
     </div>
+</div>
 
-    
+
 <!-- SLIDE 12: MODULAR ISA -->
-    <div class="slide-container">
-        <h2 class="slide-title">Hệ thống <span>Tập lệnh Module</span></h2>
-        <div class="content-area">
-            <div class="two-column">
-                <div class="tile">
-                    <h3>RV32I / RV64I</h3>
-                    <p>47 lệnh xương sống. Tối thiểu để vận hành phần cứng và chạy Linux.</p>
-                </div>
-                <div class="tile" style="background: #1e40af; color: white;">
-                    <h3 style="color: white;">Standard Extensions</h3>
-                    <p style="color: white;"><b>M:</b> Nhân chia | <b>A:</b> Atomic | <b>F/D:</b> Số thực | <b>C:</b>
-                        Nén lệnh 16-bit (Giảm
-                        30% bộ nhớ).</p>
-                </div>
+<div class="slide-container">
+    <h2 class="slide-title">Hệ thống <span>Tập lệnh Module</span></h2>
+    <div class="content-area">
+        <div class="two-column">
+            <div class="tile">
+                <h3>RV32I / RV64I</h3>
+                <p>47 lệnh xương sống. Tối thiểu để vận hành phần cứng và chạy Linux.</p>
+            </div>
+            <div class="tile" style="background: #1e40af; color: white;">
+                <h3 style="color: white;">Standard Extensions</h3>
+                <p style="color: white;"><b>M:</b> Nhân chia | <b>A:</b> Atomic | <b>F/D:</b> Số thực | <b>C:</b>
+                    Nén lệnh 16-bit (Giảm
+                    30% bộ nhớ).</p>
             </div>
         </div>
     </div>
+</div>
 
-    
+
 <!-- SLIDE 13: BIT ENCODING -->
-    <div class="slide-container">
-        <h2 class="slide-title">Mã hóa lệnh <span>Bit-level</span></h2>
-        <div class="content-area">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>[31:25]</th>
-                        <th>[24:20]</th>
-                        <th>[19:15]</th>
-                        <th>[14:12]</th>
-                        <th>[11:7]</th>
-                        <th>[6:0]</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>R-Type</td>
-                        <td>funct7</td>
-                        <td>rs2</td>
-                        <td>rs1</td>
-                        <td>funct3</td>
-                        <td>rd</td>
-                        <td>opcode</td>
-                    </tr>
-                    <tr>
-                        <td>I-Type</td>
-                        <td colspan="2">immediate [11:0]</td>
-                        <td>rs1</td>
-                        <td>funct3</td>
-                        <td>rd</td>
-                        <td>opcode</td>
-                    </tr>
-                    <tr>
-                        <td>S-Type</td>
-                        <td>imm[11:5]</td>
-                        <td>rs2</td>
-                        <td>rs1</td>
-                        <td>funct3</td>
-                        <td>imm[4:0]</td>
-                        <td>opcode</td>
-                    </tr>
-                    <tr>
-                        <td>B-Type</td>
-                        <td>imm[12|10:5]</td>
-                        <td>rs2</td>
-                        <td>rs1</td>
-                        <td>funct3</td>
-                        <td>imm[4:1|11]</td>
-                        <td>opcode</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p class="quote-box" style="font-size: 20px;">Vị trí rs1/rs2/rd cố định giúp mạch giải mã truy cập Register
-                File cực nhanh ngay từ ID stage.</p>
-        </div>
+<div class="slide-container">
+    <h2 class="slide-title">Mã hóa lệnh <span>Bit-level</span></h2>
+    <div class="content-area">
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>[31:25]</th>
+                    <th>[24:20]</th>
+                    <th>[19:15]</th>
+                    <th>[14:12]</th>
+                    <th>[11:7]</th>
+                    <th>[6:0]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>R-Type</td>
+                    <td>funct7</td>
+                    <td>rs2</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>rd</td>
+                    <td>opcode</td>
+                </tr>
+                <tr>
+                    <td>I-Type</td>
+                    <td colspan="2">immediate [11:0]</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>rd</td>
+                    <td>opcode</td>
+                </tr>
+                <tr>
+                    <td>S-Type</td>
+                    <td>imm[11:5]</td>
+                    <td>rs2</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>imm[4:0]</td>
+                    <td>opcode</td>
+                </tr>
+                <tr>
+                    <td>B-Type</td>
+                    <td>imm[12|10:5]</td>
+                    <td>rs2</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>imm[4:1|11]</td>
+                    <td>opcode</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="quote-box" style="font-size: 20px;">Vị trí rs1/rs2/rd cố định giúp mạch giải mã truy cập Register
+            File cực nhanh ngay từ ID stage.</p>
     </div>
+</div>
 
-    
+
 <!-- SLIDE 14: REGISTER FILE -->
-    <div class="slide-container">
-        <h2 class="slide-title">Hệ thống <span>Thanh ghi (x0 - x31)</span></h2>
-        <div class="content-area">
-            <div class="two-column">
-                <div>
-                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px;">
-                        <li><i class="fa-solid fa-0" style="color:#1e40af;"></i> <b>x0 (Zero):</b> Luôn bằng 0.</li>
-                        <li><i class="fa-solid fa-link" style="color:#1e40af;"></i> <b>x1 (ra):</b> Return Address.</li>
-                        <li><i class="fa-solid fa-arrow-down-short-wide" style="color:#1e40af;"></i> <b>x2 (sp):</b>
-                            Stack Pointer.</li>
-                        <li><i class="fa-solid fa-user" style="color:#1e40af;"></i> <b>x10-x17:</b> Arguments (a0-a7).
-                        </li>
-                    </ul>
-                </div>
-                <div class="tile"><i class="fa-solid fa-memory" style="font-size: 100px; margin-bottom: 20px;"></i>
-                    <p>32 thanh ghi đa năng tối ưu cho Performance/Area.</p>
-                </div>
+<div class="slide-container">
+    <h2 class="slide-title">Hệ thống <span>Thanh ghi (x0 - x31)</span></h2>
+    <div class="content-area">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: 14px;">
+            <!-- Special Registers -->
+            <div
+                style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x0</div>
+                <div style="opacity: 0.9;">zero</div>
+                <div style="font-size: 11px; margin-top: 5px;">Luôn = 0</div>
+            </div>
+            <div
+                style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x1</div>
+                <div style="opacity: 0.9;">ra</div>
+                <div style="font-size: 11px; margin-top: 5px;">Return Addr</div>
+            </div>
+            <div
+                style="background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x2</div>
+                <div style="opacity: 0.9;">sp</div>
+                <div style="font-size: 11px; margin-top: 5px;">Stack Pointer</div>
+            </div>
+            <div
+                style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x3</div>
+                <div style="opacity: 0.9;">gp</div>
+                <div style="font-size: 11px; margin-top: 5px;">Global Pointer</div>
+            </div>
+
+            <!-- More registers -->
+            <div
+                style="background: #f1f5f9; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0;">
+                <div style="font-weight: 800; font-size: 18px; color: #1e40af;">x4</div>
+                <div style="color: #64748b;">tp</div>
+                <div style="font-size: 11px; margin-top: 5px; color: #94a3b8;">Thread Pointer</div>
+            </div>
+            <div
+                style="background: #fef3c7; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
+                <div style="font-weight: 800; font-size: 18px; color: #b45309;">x5-x7</div>
+                <div style="color: #92400e;">t0-t2</div>
+                <div style="font-size: 11px; margin-top: 5px; color: #a16207;">Temporaries</div>
+            </div>
+            <div
+                style="background: linear-gradient(135deg, #0891b2, #22d3ee); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x8-x9</div>
+                <div style="opacity: 0.9;">s0-s1</div>
+                <div style="font-size: 11px; margin-top: 5px;">Saved Regs</div>
+            </div>
+            <div
+                style="background: linear-gradient(135deg, #ea580c, #fb923c); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x10-x17</div>
+                <div style="opacity: 0.9;">a0-a7</div>
+                <div style="font-size: 11px; margin-top: 5px;">Arguments</div>
+            </div>
+
+            <!-- Bottom row -->
+            <div
+                style="background: linear-gradient(135deg, #0891b2, #22d3ee); color: white; padding: 15px; border-radius: 12px; text-align: center;">
+                <div style="font-weight: 800; font-size: 18px;">x18-x27</div>
+                <div style="opacity: 0.9;">s2-s11</div>
+                <div style="font-size: 11px; margin-top: 5px;">Saved Regs</div>
+            </div>
+            <div
+                style="background: #fef3c7; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
+                <div style="font-weight: 800; font-size: 18px; color: #b45309;">x28-x31</div>
+                <div style="color: #92400e;">t3-t6</div>
+                <div style="font-size: 11px; margin-top: 5px; color: #a16207;">Temporaries</div>
+            </div>
+            <!-- Summary tile -->
+            <div
+                style="background: linear-gradient(135deg, #1e293b, #334155); color: white; padding: 15px; border-radius: 12px; text-align: center; grid-column: span 2;">
+                <i class="fa-solid fa-microchip" style="font-size: 28px; margin-bottom: 8px;"></i>
+                <div style="font-weight: 700;">32 thanh ghi × 32/64-bit</div>
+                <div style="font-size: 11px; opacity: 0.8;">Tối ưu Performance/Area</div>
             </div>
         </div>
     </div>
-
-    
+</div>
