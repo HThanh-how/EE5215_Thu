@@ -96,25 +96,25 @@
     <div class="content-area">
         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: 14px;">
             <!-- Special Registers -->
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x0</div>
                 <div style="opacity: 0.9;">zero</div>
                 <div style="font-size: 11px; margin-top: 5px;">Luôn = 0</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x1</div>
                 <div style="opacity: 0.9;">ra</div>
                 <div style="font-size: 11px; margin-top: 5px;">Return Addr</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x2</div>
                 <div style="opacity: 0.9;">sp</div>
                 <div style="font-size: 11px; margin-top: 5px;">Stack Pointer</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x3</div>
                 <div style="opacity: 0.9;">gp</div>
@@ -122,25 +122,25 @@
             </div>
 
             <!-- More registers -->
-            <div
+            <div class="tile interactive"
                 style="background: #f1f5f9; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0;">
                 <div style="font-weight: 800; font-size: 18px; color: #1e40af;">x4</div>
                 <div style="color: #64748b;">tp</div>
                 <div style="font-size: 11px; margin-top: 5px; color: #94a3b8;">Thread Pointer</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: #fef3c7; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
                 <div style="font-weight: 800; font-size: 18px; color: #b45309;">x5-x7</div>
                 <div style="color: #92400e;">t0-t2</div>
                 <div style="font-size: 11px; margin-top: 5px; color: #a16207;">Temporaries</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #0891b2, #22d3ee); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x8-x9</div>
                 <div style="opacity: 0.9;">s0-s1</div>
                 <div style="font-size: 11px; margin-top: 5px;">Saved Regs</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #ea580c, #fb923c); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x10-x17</div>
                 <div style="opacity: 0.9;">a0-a7</div>
@@ -148,13 +148,13 @@
             </div>
 
             <!-- Bottom row -->
-            <div
+            <div class="tile interactive"
                 style="background: linear-gradient(135deg, #0891b2, #22d3ee); color: white; padding: 15px; border-radius: 12px; text-align: center;">
                 <div style="font-weight: 800; font-size: 18px;">x18-x27</div>
                 <div style="opacity: 0.9;">s2-s11</div>
                 <div style="font-size: 11px; margin-top: 5px;">Saved Regs</div>
             </div>
-            <div
+            <div class="tile interactive"
                 style="background: #fef3c7; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
                 <div style="font-weight: 800; font-size: 18px; color: #b45309;">x28-x31</div>
                 <div style="color: #92400e;">t3-t6</div>

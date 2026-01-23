@@ -195,139 +195,94 @@
             const slides = document.querySelectorAll('.slide-container');
             totalSlides = slides.length;
             updateSlideCounter();
+            setupInteractions();
         }
 
-        // Update slide counter
-        function updateSlideCounter() {
-            document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
-        }
+        // Setup all interactive elements
+        function setupInteractions() {
+            // Truth Table Interaction
+            document.querySelectorAll('.interactive-table tr').forEach(row => {
+                row.addEventListener('click', () => {
+                    // Reset
+                    row.parentElement.querySelectorAll('tr').forEach(r => r.classList.remove('active'));
+                    row.parentElement.querySelectorAll('td').forEach(c => c.classList.remove('highlight'));
 
-        // Show specific slide
-        function showSlide(index) {
-            const slides = document.querySelectorAll('.slide-container');
-            if (index < 0) index = 0;
-            if (index >= totalSlides) index = totalSlides - 1;
-
-            currentSlide = index;
-
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === currentSlide);
+                    // Activate
+                    row.classList.add('active');
+                    // Highlight specific columns (RegWrite=1, MemRead=1, etc.) - simple heuristic: highlight "1"
+                    row.querySelectorAll('td').forEach(cell => {
+                        if (cell.textContent.trim() === '1') {
+                            cell.classList.add('highlight');
+                        }
+                    });
+                });
             });
 
-            updateSlideCounter();
+            // Pipeline Hover Interaction
+            document.querySelectorAll('.pipe-stage').forEach((stage, index) => {
+                stage.addEventListener('mouseenter', () => {
+                    // Highlight corresponding timing column (simple mapping: index + 1)
+                    // Note: This requires specific structure in HTML which we will add
+                    const timingCols = document.querySelectorAll(`.timing-col-${index + 1}`);
+                    timingCols.forEach(col => col.classList.add('active'));
+                });
+                stage.addEventListener('mouseleave', () => {
+                    const timingCols = document.querySelectorAll(`.timing-col-${index + 1}`);
+                    timingCols.forEach(col => col.classList.remove('active'));
+                });
+            });
         }
 
-        // Next/Previous slide
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
-
-        // Calculate scale factor to fit viewport
-        function calculateScale() {
-            const slideWidth = 1280;
-            const slideHeight = 720;
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-
-            const scaleX = viewportWidth / slideWidth;
-            const scaleY = viewportHeight / slideHeight;
-            const scale = Math.min(scaleX, scaleY);
-
-            document.documentElement.style.setProperty('--slide-scale', scale);
+        // Update slide counter and trigger animations
+        function updateSlideCounter() {
+            document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            triggerSlideAnimations(currentSlide);
         }
 
-        // Toggle presentation mode
-        function togglePresentationMode() {
-            isPresentationMode = !isPresentationMode;
-            document.documentElement.classList.toggle('presentation-mode', isPresentationMode);
+        // Trigger animations for specific slide
+        function triggerSlideAnimations(index) {
+            const activeSlide = document.querySelectorAll('.slide-container')[index];
+            if (!activeSlide) return;
 
-            const btn = document.getElementById('btn-present');
-            btn.innerHTML = isPresentationMode
-                ? '<i class="fa-solid fa-stop"></i>'
-                : '<i class="fa-solid fa-play"></i>';
+            // 1. Counters
+            activeSlide.querySelectorAll('.counter-anim').forEach(counter => {
+                const target = parseInt(counter.dataset.target);
+                const suffix = counter.dataset.suffix || '';
+                animateValue(counter, 0, target, 1500, suffix);
+            });
 
-            if (isPresentationMode) {
-                calculateScale();
-                showSlide(currentSlide);
-                // Auto fullscreen when entering presentation mode
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => { });
+            // 2. Timeline Sequential
+            const timelineItems = activeSlide.querySelectorAll('.timeline-row');
+            timelineItems.forEach((item, i) => {
+                item.classList.remove('show'); // Reset
+                setTimeout(() => {
+                    item.classList.add('show');
+                }, i * 1000 + 500); // 1s delay staggered + 0.5s initial
+            });
+
+            // 3. Bars
+            activeSlide.querySelectorAll('.speed-fill').forEach(bar => {
+                bar.style.width = '0%'; // Reset
+                setTimeout(() => {
+                    bar.style.width = bar.dataset.width;
+                }, 500);
+            });
+        }
+
+        // Counter Animation
+        function animateValue(obj, start, end, duration, suffix) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = value.toLocaleString() + suffix;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
                 }
-            }
+            };
+            window.requestAnimationFrame(step);
         }
-
-        // Update scale on window resize
-        window.addEventListener('resize', () => {
-            if (isPresentationMode) {
-                calculateScale();
-            }
-        });
-
-        // Toggle fullscreen
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                document.documentElement.classList.add('fullscreen');
-            } else {
-                document.exitFullscreen();
-                document.documentElement.classList.remove('fullscreen');
-            }
-        }
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            switch (e.key) {
-                case 'ArrowRight':
-                case 'ArrowDown':
-                case ' ':
-                case 'PageDown':
-                    if (isPresentationMode) { e.preventDefault(); nextSlide(); }
-                    break;
-                case 'ArrowLeft':
-                case 'ArrowUp':
-                case 'PageUp':
-                    if (isPresentationMode) { e.preventDefault(); prevSlide(); }
-                    break;
-                case 'Home':
-                    if (isPresentationMode) { e.preventDefault(); showSlide(0); }
-                    break;
-                case 'End':
-                    if (isPresentationMode) { e.preventDefault(); showSlide(totalSlides - 1); }
-                    break;
-                case 'Escape':
-                    if (isPresentationMode) togglePresentationMode();
-                    break;
-                case 'f':
-                case 'F':
-                    toggleFullscreen();
-                    break;
-                case 'p':
-                case 'P':
-                    togglePresentationMode();
-                    break;
-            }
-        });
-
-        // Mouse click navigation (in presentation mode)
-        document.addEventListener('click', (e) => {
-            if (!isPresentationMode) return;
-            if (e.target.closest('#presentation-controls')) return;
-            if (e.target.closest('.nav-arrow')) return;
-
-            // Left half = previous, right half = next
-            const x = e.clientX;
-            const width = window.innerWidth;
-            if (x < width / 3) {
-                prevSlide();
-            } else if (x > width * 2 / 3) {
-                nextSlide();
-            }
-        });
-
-        // Button event listeners
-        document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
-        document.getElementById('btn-present').addEventListener('click', togglePresentationMode);
-        document.getElementById('prev-arrow').addEventListener('click', prevSlide);
-        document.getElementById('next-arrow').addEventListener('click', nextSlide);
 
         // Load sections on DOM ready
         document.addEventListener('DOMContentLoaded', loadAllSections);

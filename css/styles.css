@@ -324,5 +324,115 @@ td {
     margin: 20px 0;
     line-height: 1.4;
     border-left: 10px solid #1e40af;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
+
+/* 5. INTERACTIVE & ANIMATIONS */
+
+/* Glow Effect for Registers & Tiles */
+.tile.interactive:hover,
+.reg-cell:hover {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.6);
+    border-color: #3b82f6;
+    transform: translateY(-5px);
+    z-index: 10;
+}
+
+/* Pipeline Interaction */
+.pipe-stage {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pipe-stage:hover {
+    background: #fff !important;
+    color: #1e40af !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+}
+
+.timing-col.active {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-radius: 8px;
+}
+
+/* Timeline Sequential Animation */
+.timeline-row {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-container.active .timeline-row.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Performance Iron Law Bars */
+.speed-fill {
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Truth Table Interaction */
+.interactive-table tr {
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.interactive-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+.interactive-table tr.active {
+    background-color: #e0f2fe;
+    border-left: 5px solid #1e40af;
+}
+
+.interactive-table td.highlight {
+    color: #1e40af;
+    font-weight: 900;
+    background-color: #dbeafe;
+    transform: scale(1.1);
+}
+
+/* Virtual Address (VPN) Interaction */
+.vpn-part {
+    transition: all 0.3s ease;
+    cursor: help;
+}
+
+.vpn-container:hover .vpn-part {
+    opacity: 0.3;
+    filter: blur(2px);
+}
+
+.vpn-container:hover .vpn-part:hover {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1.05);
+    z-index: 10;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Tooltip for VPN */
+.vpn-tooltip {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 20;
+}
+
+.vpn-part:hover .vpn-tooltip {
+    opacity: 1;
+}
+
+/* End of styles */

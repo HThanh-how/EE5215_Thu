@@ -16,16 +16,26 @@
     <div class="content-area">
         <!-- Concept Explanation -->
         <div style="display: flex; gap: 15px; margin-bottom: 30px; justify-content: center;">
-            <div class="tile" style="padding: 15px 25px; border-top: 5px solid #1e40af; flex: 0 1 auto;"><b>IF</b>
-                Fetch</div>
-            <div class="tile" style="padding: 15px 25px; border-top: 5px solid #3b82f6; flex: 0 1 auto;"><b>ID</b>
-                Decode</div>
-            <div class="tile" style="padding: 15px 25px; border-top: 5px solid #60a5fa; flex: 0 1 auto;"><b>EX</b>
-                Execute</div>
-            <div class="tile" style="padding: 15px 25px; border-top: 5px solid #93c5fd; flex: 0 1 auto;"><b>MEM</b>
-                Memory</div>
-            <div class="tile" style="padding: 15px 25px; border-top: 5px solid #cbd5e1; flex: 0 1 auto;"><b>WB</b>
-                WriteBack</div>
+            <div class="tile pipe-stage" style="padding: 15px 25px; border-top: 5px solid #1e40af; flex: 0 1 auto;">
+                <b>IF</b>
+                Fetch
+            </div>
+            <div class="tile pipe-stage" style="padding: 15px 25px; border-top: 5px solid #3b82f6; flex: 0 1 auto;">
+                <b>ID</b>
+                Decode
+            </div>
+            <div class="tile pipe-stage" style="padding: 15px 25px; border-top: 5px solid #60a5fa; flex: 0 1 auto;">
+                <b>EX</b>
+                Execute
+            </div>
+            <div class="tile pipe-stage" style="padding: 15px 25px; border-top: 5px solid #93c5fd; flex: 0 1 auto;">
+                <b>MEM</b>
+                Memory
+            </div>
+            <div class="tile pipe-stage" style="padding: 15px 25px; border-top: 5px solid #cbd5e1; flex: 0 1 auto;">
+                <b>WB</b>
+                WriteBack
+            </div>
         </div>
 
         <!-- Visual Timing Diagram -->
@@ -34,15 +44,15 @@
             <div style="display: grid; grid-template-columns: 100px repeat(9, 1fr); gap: 10px; align-items: center;">
                 <!-- Header Cycles -->
                 <div style="font-weight: 800; color: #64748b;">Instr \#</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 1</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 2</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 3</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 4</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 5</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 6</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 7</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 8</div>
-                <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 9</div>
+                <div class="timing-col-1" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 1</div>
+                <div class="timing-col-2" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 2</div>
+                <div class="timing-col-3" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 3</div>
+                <div class="timing-col-4" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 4</div>
+                <div class="timing-col-5" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 5</div>
+                <div class="timing-col-6" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 6</div>
+                <div class="timing-col-7" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 7</div>
+                <div class="timing-col-8" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 8</div>
+                <div class="timing-col-9" style="text-align: center; color: #94a3b8; font-weight: 700;">CC 9</div>
 
                 <!-- Row 1: LW -->
                 <div style="font-family: 'Azeret Mono'; font-size: 14px; font-weight: 700;">LW x1</div>
@@ -140,7 +150,7 @@
 <div class="slide-container">
     <h2 class="slide-title">Bảng chân trị <span>Control Unit</span></h2>
     <div class="content-area">
-        <table>
+        <table class="interactive-table">
             <thead>
                 <tr>
                     <th>Lệnh</th>
