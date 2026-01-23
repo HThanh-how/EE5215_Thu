@@ -195,13 +195,150 @@
             const slides = document.querySelectorAll('.slide-container');
             totalSlides = slides.length;
             updateSlideCounter();
-            setupInteractions();
+            setupInteractions(); // Setup interactive elements
         }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        // Show specific slide
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide-container');
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+
+            currentSlide = index;
+
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentSlide);
+            });
+
+            updateSlideCounter();
+
+            // Trigger animations only in presentation mode
+            if (isPresentationMode) {
+                triggerSlideAnimations(currentSlide);
+            }
+        }
+
+        // Next/Previous slide
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+
+        // Calculate scale factor to fit viewport
+        function calculateScale() {
+            const slideWidth = 1280;
+            const slideHeight = 720;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            const scaleX = viewportWidth / slideWidth;
+            const scaleY = viewportHeight / slideHeight;
+            const scale = Math.min(scaleX, scaleY);
+
+            document.documentElement.style.setProperty('--slide-scale', scale);
+        }
+
+        // Toggle presentation mode
+        function togglePresentationMode() {
+            isPresentationMode = !isPresentationMode;
+            document.documentElement.classList.toggle('presentation-mode', isPresentationMode);
+
+            const btn = document.getElementById('btn-present');
+            btn.innerHTML = isPresentationMode
+                ? '<i class="fa-solid fa-stop"></i>'
+                : '<i class="fa-solid fa-play"></i>';
+
+            if (isPresentationMode) {
+                calculateScale();
+                showSlide(currentSlide);
+                // Auto fullscreen when entering presentation mode
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => { });
+                }
+            }
+        }
+
+        // Update scale on window resize
+        window.addEventListener('resize', () => {
+            if (isPresentationMode) {
+                calculateScale();
+            }
+        });
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.documentElement.classList.add('fullscreen');
+            } else {
+                document.exitFullscreen();
+                document.documentElement.classList.remove('fullscreen');
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                case 'PageDown':
+                    if (isPresentationMode) { e.preventDefault(); nextSlide(); }
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    if (isPresentationMode) { e.preventDefault(); prevSlide(); }
+                    break;
+                case 'Home':
+                    if (isPresentationMode) { e.preventDefault(); showSlide(0); }
+                    break;
+                case 'End':
+                    if (isPresentationMode) { e.preventDefault(); showSlide(totalSlides - 1); }
+                    break;
+                case 'Escape':
+                    if (isPresentationMode) togglePresentationMode();
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+                case 'p':
+                case 'P':
+                    togglePresentationMode();
+                    break;
+            }
+        });
+
+        // Mouse click navigation (in presentation mode)
+        document.addEventListener('click', (e) => {
+            if (!isPresentationMode) return;
+            if (e.target.closest('#presentation-controls')) return;
+            if (e.target.closest('.nav-arrow')) return;
+
+            // Left half = previous, right half = next
+            const x = e.clientX;
+            const width = window.innerWidth;
+            if (x < width / 3) {
+                prevSlide();
+            } else if (x > width * 2 / 3) {
+                nextSlide();
+            }
+        });
+
+        // Button event listeners
+        document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+        document.getElementById('btn-present').addEventListener('click', togglePresentationMode);
+        document.getElementById('prev-arrow').addEventListener('click', prevSlide);
+        document.getElementById('next-arrow').addEventListener('click', nextSlide);
 
         // Setup all interactive elements
         function setupInteractions() {
             // Truth Table Interaction
-            document.querySelectorAll('.interactive-table tr').forEach(row => {
+            document.querySelectorAll('.interactive-table tbody tr').forEach(row => {
                 row.addEventListener('click', () => {
                     // Reset
                     row.parentElement.querySelectorAll('tr').forEach(r => r.classList.remove('active'));
@@ -209,7 +346,7 @@
 
                     // Activate
                     row.classList.add('active');
-                    // Highlight specific columns (RegWrite=1, MemRead=1, etc.) - simple heuristic: highlight "1"
+                    // Highlight cells with "1"
                     row.querySelectorAll('td').forEach(cell => {
                         if (cell.textContent.trim() === '1') {
                             cell.classList.add('highlight');
@@ -221,8 +358,6 @@
             // Pipeline Hover Interaction
             document.querySelectorAll('.pipe-stage').forEach((stage, index) => {
                 stage.addEventListener('mouseenter', () => {
-                    // Highlight corresponding timing column (simple mapping: index + 1)
-                    // Note: This requires specific structure in HTML which we will add
                     const timingCols = document.querySelectorAll(`.timing-col-${index + 1}`);
                     timingCols.forEach(col => col.classList.add('active'));
                 });
@@ -233,13 +368,7 @@
             });
         }
 
-        // Update slide counter and trigger animations
-        function updateSlideCounter() {
-            document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
-            triggerSlideAnimations(currentSlide);
-        }
-
-        // Trigger animations for specific slide
+        // Trigger animations for specific slide (only in presentation mode)
         function triggerSlideAnimations(index) {
             const activeSlide = document.querySelectorAll('.slide-container')[index];
             if (!activeSlide) return;
