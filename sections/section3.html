@@ -1,0 +1,231 @@
+<!-- SLIDE 15: CHƯƠNG III -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 03</h2>
+            <h1>Vi kiến trúc <span>Phần cứng</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+            <p class="subtitle">Dây chuyền sản xuất lệnh, tối ưu từng nanosecond</p>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 16: PIPELINE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Vi kiến trúc <span>Pipeline Timing Diagram</span></h2>
+        <div class="content-area">
+            <!-- Concept Explanation -->
+            <div style="display: flex; gap: 15px; margin-bottom: 30px; justify-content: center;">
+                <div class="tile" style="padding: 15px 25px; border-top: 5px solid #1e40af; flex: 0 1 auto;"><b>IF</b>
+                    Fetch</div>
+                <div class="tile" style="padding: 15px 25px; border-top: 5px solid #3b82f6; flex: 0 1 auto;"><b>ID</b>
+                    Decode</div>
+                <div class="tile" style="padding: 15px 25px; border-top: 5px solid #60a5fa; flex: 0 1 auto;"><b>EX</b>
+                    Execute</div>
+                <div class="tile" style="padding: 15px 25px; border-top: 5px solid #93c5fd; flex: 0 1 auto;"><b>MEM</b>
+                    Memory</div>
+                <div class="tile" style="padding: 15px 25px; border-top: 5px solid #cbd5e1; flex: 0 1 auto;"><b>WB</b>
+                    WriteBack</div>
+            </div>
+
+            <!-- Visual Timing Diagram -->
+            <div
+                style="background: #f8fafc; padding: 25px; border-radius: 20px; border: 1px solid #e2e8f0; overflow-x: auto;">
+                <div
+                    style="display: grid; grid-template-columns: 100px repeat(9, 1fr); gap: 10px; align-items: center;">
+                    <!-- Header Cycles -->
+                    <div style="font-weight: 800; color: #64748b;">Instr \#</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 1</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 2</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 3</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 4</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 5</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 6</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 7</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 8</div>
+                    <div style="text-align: center; color: #94a3b8; font-weight: 700;">CC 9</div>
+
+                    <!-- Row 1: LW -->
+                    <div style="font-family: 'Azeret Mono'; font-size: 14px; font-weight: 700;">LW x1</div>
+                    <div
+                        style="background: #1e40af; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        IF</div>
+                    <div
+                        style="background: #3b82f6; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        ID</div>
+                    <div
+                        style="background: #60a5fa; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        EX</div>
+                    <div
+                        style="background: #93c5fd; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        MEM</div>
+                    <div
+                        style="background: #cbd5e1; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        WB</div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+
+                    <!-- Row 2: ADD -->
+                    <div style="font-family: 'Azeret Mono'; font-size: 14px; font-weight: 700;">ADD x2</div>
+                    <div></div>
+                    <div
+                        style="background: #1e40af; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        IF</div>
+                    <div
+                        style="background: #3b82f6; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        ID</div>
+                    <div
+                        style="background: #60a5fa; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        EX</div>
+                    <div
+                        style="background: #93c5fd; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        MEM</div>
+                    <div
+                        style="background: #cbd5e1; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        WB</div>
+                    <div></div>
+                    <div></div>
+
+                    <!-- Row 3: SW -->
+                    <div style="font-family: 'Azeret Mono'; font-size: 14px; font-weight: 700;">SW x3</div>
+                    <div></div>
+                    <div></div>
+                    <div
+                        style="background: #1e40af; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        IF</div>
+                    <div
+                        style="background: #3b82f6; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        ID</div>
+                    <div
+                        style="background: #60a5fa; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        EX</div>
+                    <div
+                        style="background: #93c5fd; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        MEM</div>
+                    <div
+                        style="background: #cbd5e1; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        WB</div>
+                    <div></div>
+
+                    <!-- Row 4: SUB -->
+                    <div style="font-family: 'Azeret Mono'; font-size: 14px; font-weight: 700;">SUB x4</div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div
+                        style="background: #1e40af; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        IF</div>
+                    <div
+                        style="background: #3b82f6; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        ID</div>
+                    <div
+                        style="background: #60a5fa; color: white; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        EX</div>
+                    <div
+                        style="background: #93c5fd; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        MEM</div>
+                    <div
+                        style="background: #cbd5e1; color: #0f172a; border-radius: 8px; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700;">
+                        WB</div>
+                </div>
+            </div>
+            <p class="subtitle" style="text-align: center; margin-top: 15px; font-size: 18px;">Lý tưởng: 1 Instruction
+                hoàn thành mỗi Cycle (CPI = 1).</p>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 17: CONTROL LOGIC -->
+    <div class="slide-container">
+        <h2 class="slide-title">Bảng chân trị <span>Control Unit</span></h2>
+        <div class="content-area">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lệnh</th>
+                        <th>RegWrite</th>
+                        <th>ALUSrc</th>
+                        <th>MemRead</th>
+                        <th>MemWrite</th>
+                        <th>ALUOp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>R-type</td>
+                        <td>1</td>
+                        <td>0 (Reg)</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>LW (Load)</td>
+                        <td>1</td>
+                        <td>1 (Imm)</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>00</td>
+                    </tr>
+                    <tr>
+                        <td>SW (Store)</td>
+                        <td>0</td>
+                        <td>1 (Imm)</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>00</td>
+                    </tr>
+                    <tr>
+                        <td>BEQ (Branch)</td>
+                        <td>0</td>
+                        <td>0 (Reg)</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>01</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 18: FORWARDING -->
+    <div class="slide-container">
+        <h2 class="slide-title">Xung đột dữ liệu <span>& Forwarding</span></h2>
+        <div class="content-area">
+            <div class="code-box">ADD x1, x2, x3<br>SUB x4, x1, x5 &nbsp;// x1 cần ngay tầng EX</div>
+            <div class="two-column">
+                <div class="tile">
+                    <h3>RAW Hazard</h3>
+                    <p>Đọc thanh ghi khi chưa kịp ghi trả kết quả.</p>
+                </div>
+                <div class="tile" style="border-left: 8px solid #1e40af;">
+                    <h3>Giải pháp</h3>
+                    <p>Mạch Forwarding đi tắt dữ liệu từ EX về ID.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 19: LOAD USE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Load-Use <span>Hazard & Stalling</span></h2>
+        <div class="content-area">
+            <div class="code-box">LW x1, 0(x2)<br>ADD x3, x1, x4 &nbsp;// Dữ liệu chỉ có sau MEM</div>
+            <div class="two-column">
+                <div class="tile">
+                    <h3>Vấn đề</h3>
+                    <p>Forwarding không thể đi ngược thời gian.</p>
+                </div>
+                <div class="tile" style="border-left: 8px solid #ef4444;">
+                    <h3>Stall</h3>
+                    <p>Chèn lệnh trống (Bubble) để trì hoãn Pipeline.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    

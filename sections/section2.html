@@ -1,0 +1,115 @@
+<!-- SLIDE 11: CHƯƠNG II -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 02</h2>
+            <h1>Đặc tả <span>Kỹ thuật</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+            <p class="subtitle">Ngôn ngữ của phần cứng, DNA của bộ vi xử lý</p>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 12: MODULAR ISA -->
+    <div class="slide-container">
+        <h2 class="slide-title">Hệ thống <span>Tập lệnh Module</span></h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div class="tile">
+                    <h3>RV32I / RV64I</h3>
+                    <p>47 lệnh xương sống. Tối thiểu để vận hành phần cứng và chạy Linux.</p>
+                </div>
+                <div class="tile" style="background: #1e40af; color: white;">
+                    <h3 style="color: white;">Standard Extensions</h3>
+                    <p style="color: white;"><b>M:</b> Nhân chia | <b>A:</b> Atomic | <b>F/D:</b> Số thực | <b>C:</b>
+                        Nén lệnh 16-bit (Giảm
+                        30% bộ nhớ).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 13: BIT ENCODING -->
+    <div class="slide-container">
+        <h2 class="slide-title">Mã hóa lệnh <span>Bit-level</span></h2>
+        <div class="content-area">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>[31:25]</th>
+                        <th>[24:20]</th>
+                        <th>[19:15]</th>
+                        <th>[14:12]</th>
+                        <th>[11:7]</th>
+                        <th>[6:0]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>R-Type</td>
+                        <td>funct7</td>
+                        <td>rs2</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>rd</td>
+                        <td>opcode</td>
+                    </tr>
+                    <tr>
+                        <td>I-Type</td>
+                        <td colspan="2">immediate [11:0]</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>rd</td>
+                        <td>opcode</td>
+                    </tr>
+                    <tr>
+                        <td>S-Type</td>
+                        <td>imm[11:5]</td>
+                        <td>rs2</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>imm[4:0]</td>
+                        <td>opcode</td>
+                    </tr>
+                    <tr>
+                        <td>B-Type</td>
+                        <td>imm[12|10:5]</td>
+                        <td>rs2</td>
+                        <td>rs1</td>
+                        <td>funct3</td>
+                        <td>imm[4:1|11]</td>
+                        <td>opcode</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="quote-box" style="font-size: 20px;">Vị trí rs1/rs2/rd cố định giúp mạch giải mã truy cập Register
+                File cực nhanh ngay từ ID stage.</p>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 14: REGISTER FILE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Hệ thống <span>Thanh ghi (x0 - x31)</span></h2>
+        <div class="content-area">
+            <div class="two-column">
+                <div>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 15px;">
+                        <li><i class="fa-solid fa-0" style="color:#1e40af;"></i> <b>x0 (Zero):</b> Luôn bằng 0.</li>
+                        <li><i class="fa-solid fa-link" style="color:#1e40af;"></i> <b>x1 (ra):</b> Return Address.</li>
+                        <li><i class="fa-solid fa-arrow-down-short-wide" style="color:#1e40af;"></i> <b>x2 (sp):</b>
+                            Stack Pointer.</li>
+                        <li><i class="fa-solid fa-user" style="color:#1e40af;"></i> <b>x10-x17:</b> Arguments (a0-a7).
+                        </li>
+                    </ul>
+                </div>
+                <div class="tile"><i class="fa-solid fa-memory" style="font-size: 100px; margin-bottom: 20px;"></i>
+                    <p>32 thanh ghi đa năng tối ưu cho Performance/Area.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    

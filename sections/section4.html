@@ -1,0 +1,130 @@
+<!-- SLIDE 20: CHƯƠNG IV -->
+    <div class="slide-container">
+        <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 120px; color: #f1f5f9; font-weight: 900; margin-bottom: -50px;">SECTION 04</h2>
+            <h1>Hệ thống <span>& Đặc quyền</span></h1>
+            <hr
+                style="width: 180px; height: 10px; background: #1e40af; border: none; margin: 40px auto; border-radius: 5px;">
+            <p class="subtitle">Bảo vệ và điều khiển từ firmware đến user-space</p>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 21: PRIVILEGE MODES -->
+    <div class="slide-container">
+        <h2 class="slide-title">Kiến trúc <span>Đặc quyền (Privilege)</span></h2>
+        <div class="content-area">
+            <div class="grid-3">
+                <div class="tile">
+                    <h3>Machine (M)</h3>
+                    <p>Đặc quyền cao nhất (Firmware).</p>
+                </div>
+                <div class="tile">
+                    <h3>Supervisor (S)</h3>
+                    <p>Cho OS (Kernel Linux).</p>
+                </div>
+                <div class="tile">
+                    <h3>User (U)</h3>
+                    <p>Cho App người dùng.</p>
+                </div>
+            </div>
+            <p class="quote-box" style="text-align: center;">CSR (Control & Status Registers) quản lý mọi Trap, ngắt và
+                ngoại lệ.</p>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 22A: MMU STRUCTURE -->
+    <div class="slide-container">
+        <h2 class="slide-title">Quản lý bộ nhớ <span>(Cấu trúc Sv39)</span></h2>
+        <div class="content-area">
+            <div
+                style="background: #f8fafc; border-radius: 20px; padding: 40px; margin: 0 auto; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                <h3 style="font-size: 32px; color: #1e40af; margin-bottom: 30px; text-align: center;"><i
+                        class="fa-solid fa-chart-bar" style="margin-right: 15px;"></i>Cấu trúc Địa chỉ ảo (39-bit VA)
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    <div
+                        style="display: flex; border-radius: 15px; overflow: hidden; font-size: 24px; font-weight: 700; height: 120px;">
+                        <div
+                            style="flex: 1; background: #1e40af; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2);">
+                            VPN[2]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span></div>
+                        <div
+                            style="flex: 1; background: #3b82f6; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2);">
+                            VPN[1]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span></div>
+                        <div
+                            style="flex: 1; background: #60a5fa; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2);">
+                            VPN[0]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span></div>
+                        <div
+                            style="flex: 1; background: #94a3b8; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            Offset<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">12 bits</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 26px; color: #64748b; text-align: center;">Hỗ trợ không gian địa chỉ ảo lên đến
+                        <b style="color: #1e40af; font-size: 36px;">512 GB</b>
+                    </p>
+
+                    <div style="display: flex; gap: 30px; margin-top: 10px;">
+                        <div
+                            style="flex: 1; background: #eff6ff; color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
+                            <p style="font-size: 22px; font-weight: 700; margin-bottom: 5px;"><i
+                                    class="fa-solid fa-server" style="margin-right: 10px;"></i>Sv48 (48-bit)</p>
+                            <p style="font-size: 18px;">Hỗ trợ <b>256 TB</b></p>
+                        </div>
+                        <div
+                            style="flex: 1; background: #eff6ff; color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
+                            <p style="font-size: 22px; font-weight: 700; margin-bottom: 5px;"><i
+                                    class="fa-solid fa-cloud" style="margin-right: 10px;"></i>Sv57 (57-bit)</p>
+                            <p style="font-size: 18px;">Hỗ trợ <b>128 PB</b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+<!-- SLIDE 22B: MMU FEATURES -->
+    <div class="slide-container">
+        <h2 class="slide-title">Quản lý bộ nhớ <span>(Các tính năng)</span></h2>
+        <div class="content-area">
+            <div class="grid-3" style="gap: 40px;">
+                <div class="tile"
+                    style="border-top: 10px solid #1e40af; justify-content: flex-start; padding-top: 50px;">
+                    <div class="icon" style="margin-bottom: 25px; width: 100px; height: 100px; font-size: 50px;"><i
+                            class="fa-solid fa-bolt-lightning" style="color: #1e40af;"></i></div>
+                    <h3 style="font-size: 36px; margin-bottom: 5px;">TLB</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px; color: #64748b; font-weight: 700;">Translation
+                        Lookaside Buffer</p>
+                    <p style="font-size: 20px;">Cache ánh xạ địa chỉ, giảm <b>95%</b> thời gian tra cứu page table. Hit
+                        rate thường đạt <b>99%+</b>.</p>
+                </div>
+                <div class="tile"
+                    style="border-top: 10px solid #3b82f6; justify-content: flex-start; padding-top: 50px;">
+                    <div class="icon"
+                        style="margin-bottom: 25px; width: 100px; height: 100px; font-size: 50px; background: #eff6ff;">
+                        <i class="fa-solid fa-shield-halved" style="color: #3b82f6;"></i>
+                    </div>
+                    <h3 style="font-size: 36px; margin-bottom: 5px;">PMP</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px; color: #64748b; font-weight: 700;">Physical Memory
+                        Protection</p>
+                    <p style="font-size: 20px;">16 vùng bảo vệ có thể cấu hình, hỗ trợ <b>R/W/X</b> permissions cho
+                        embedded systems.</p>
+                </div>
+                <div class="tile"
+                    style="border-top: 10px solid #60a5fa; justify-content: flex-start; padding-top: 50px;">
+                    <div class="icon"
+                        style="margin-bottom: 25px; width: 100px; height: 100px; font-size: 50px; background: #eff6ff;">
+                        <i class="fa-solid fa-microchip" style="color: #60a5fa;"></i>
+                    </div>
+                    <h3 style="font-size: 36px; margin-bottom: 5px;">ASID</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px; color: #64748b; font-weight: 700;">Address Space ID
+                    </p>
+                    <p style="font-size: 20px;">Định danh không gian địa chỉ, cho phép context switch nhanh mà <b>không
+                            cần flush TLB</b>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    

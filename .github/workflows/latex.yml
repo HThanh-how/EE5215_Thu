@@ -42,55 +42,55 @@ jobs:
       - name: Compile Cau 1
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau1_pipeline.tex
+          root_file: latex/cau1_pipeline.tex
           latexmk_use_xelatex: true
 
       - name: Compile Cau 2
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau2_cpu_frequency.tex
+          root_file: latex/cau2_cpu_frequency.tex
           latexmk_use_xelatex: true
 
       - name: Compile Cau 3
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau3_cache.tex
+          root_file: latex/cau3_cache.tex
           latexmk_use_xelatex: true
 
       - name: Compile Cau 4
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau4_dynamic_power.tex
+          root_file: latex/cau4_dynamic_power.tex
           latexmk_use_xelatex: true
 
       - name: Compile Cau 5
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau5_i2c.tex
+          root_file: latex/cau5_i2c.tex
           latexmk_use_xelatex: true
 
       - name: Compile Cau 6
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau6_noc.tex
+          root_file: latex/cau6_noc.tex
           latexmk_use_xelatex: true
 
       - name: Compile Cau 7
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: cau7_chip_area.tex
+          root_file: latex/cau7_chip_area.tex
           latexmk_use_xelatex: true
 
       - name: Rename PDFs
         run: |
           mv main.pdf "DapAn_242_ThiCuoiKy_ThietKeHeThongTrenChipNangCao_EE5215.pdf"
-          mv cau1_pipeline.pdf "Cau1_Pipeline_ChiTiet.pdf"
-          mv cau2_cpu_frequency.pdf "Cau2_CPU_Frequency_ChiTiet.pdf"
-          mv cau3_cache.pdf "Cau3_Cache_Memory_ChiTiet.pdf"
-          mv cau4_dynamic_power.pdf "Cau4_Dynamic_Power_ChiTiet.pdf"
-          mv cau5_i2c.pdf "Cau5_I2C_Protocol_ChiTiet.pdf"
-          mv cau6_noc.pdf "Cau6_NoC_Wormhole_ChiTiet.pdf"
-          mv cau7_chip_area.pdf "Cau7_Chip_Area_ChiTiet.pdf"
+          mv latex/cau1_pipeline.pdf "Cau1_Pipeline_ChiTiet.pdf"
+          mv latex/cau2_cpu_frequency.pdf "Cau2_CPU_Frequency_ChiTiet.pdf"
+          mv latex/cau3_cache.pdf "Cau3_Cache_Memory_ChiTiet.pdf"
+          mv latex/cau4_dynamic_power.pdf "Cau4_Dynamic_Power_ChiTiet.pdf"
+          mv latex/cau5_i2c.pdf "Cau5_I2C_Protocol_ChiTiet.pdf"
+          mv latex/cau6_noc.pdf "Cau6_NoC_Wormhole_ChiTiet.pdf"
+          mv latex/cau7_chip_area.pdf "Cau7_Chip_Area_ChiTiet.pdf"
 
       - name: List workspace files
         if: always()
