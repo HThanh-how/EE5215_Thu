@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \usepackage{xcolor}
 \usepackage{tikz}
+\usepackage{tikz-timing}
 \usepackage{enumitem}
 \usepackage{multirow}
 \usepackage{booktabs}
@@ -369,11 +370,25 @@ Hiệu quả giảm power & Rất cao ($\propto V^2$) & Cao (30-60\%) \\
 
 \subsubsection*{Sơ đồ thời gian (Timing Diagram):}
 
-\begin{verbatim}
-SCL: ‾‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|‾|_|A|_|‾|_|‾|_|...|_|A|_|‾|_|...|_|A|‾‾
-SDA: ‾‾\_| 1 | 0 | 0 | 1 | 1 | 0 | 0 | 0 |ACK| 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 |ACK|...
-      S  |<----- Address (7 bit) ----->|R/W|   |<----- Data 0x12 ---------->|   |
-\end{verbatim}
+\begin{center}
+\begin{tikztimingtable}[%
+    timing/dslope=0.1,
+    timing/slope=0.1,
+    xscale=3.5,yscale=1.5
+]
+\textbf{SCL} & H L 18{C} 18{C} H \\
+\textbf{SDA} & H L 2D{1} 2D{0} 2D{0} 2D{1} 2D{1} 2D{0} 2D{0} 2D{{\tiny R/W}} 2L
+                 2D{0} 2D{0} 2D{0} 2D{1} 2D{0} 2D{0} 2D{1} 2D{0} 2L H \\
+\extracode
+\begin{pgfonlayer}{background}
+\vertlines[help lines]{1.0,3.0,...,37.0}
+\end{pgfonlayer}
+\tablerules
+\end{tikztimingtable}
+\end{center}
+\begin{center}
+    \small \textit{Sơ đồ thời gian: Start $\to$ Addr(0x4C) + W $\to$ ACK $\to$ Data(0x12) $\to$ ACK $\to$ Stop}
+\end{center}
 
 \textbf{Tổng số bit truyền:}
 \begin{itemize}
