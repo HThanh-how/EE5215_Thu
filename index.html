@@ -12,14 +12,157 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Presentation Mode Styles */
+        .presentation-mode body {
+            gap: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+
+        .presentation-mode .slide-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .presentation-mode .slide-container.active {
+            display: flex;
+        }
+
+        /* Fullscreen scaling */
+        .presentation-mode.fullscreen .slide-container {
+            width: 100vw !important;
+            height: 100vh !important;
+            border-radius: 0 !important;
+        }
+
+        /* Control buttons */
+        #presentation-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #1e40af;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(30, 64, 175, 0.4);
+        }
+
+        .control-btn:hover {
+            transform: scale(1.1);
+            background: #3b82f6;
+        }
+
+        /* Navigation arrows (presentation mode) */
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 80px;
+            background: rgba(30, 64, 175, 0.8);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1001;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .presentation-mode .nav-arrow {
+            opacity: 0.5;
+        }
+
+        .presentation-mode .nav-arrow:hover {
+            opacity: 1;
+        }
+
+        #prev-arrow {
+            left: 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        #next-arrow {
+            right: 0;
+            border-radius: 10px 0 0 10px;
+        }
+
+        /* Slide counter */
+        #slide-counter {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            z-index: 1000;
+            display: none;
+        }
+
+        .presentation-mode #slide-counter {
+            display: block;
+        }
+
+        /* Hide controls in presentation mode */
+        .presentation-mode #presentation-controls {
+            opacity: 0.3;
+        }
+
+        .presentation-mode #presentation-controls:hover {
+            opacity: 1;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Các section sẽ được load tự động -->
+    <!-- Navigation Arrows -->
+    <button id="prev-arrow" class="nav-arrow"><i class="fa-solid fa-chevron-left"></i></button>
+    <button id="next-arrow" class="nav-arrow"><i class="fa-solid fa-chevron-right"></i></button>
+
+    <!-- Slide Counter -->
+    <div id="slide-counter">1 / 1</div>
+
+    <!-- Control Buttons -->
+    <div id="presentation-controls">
+        <button class="control-btn" id="btn-fullscreen" title="Fullscreen (F)">
+            <i class="fa-solid fa-expand"></i>
+        </button>
+        <button class="control-btn" id="btn-present" title="Presentation Mode (P)">
+            <i class="fa-solid fa-play"></i>
+        </button>
+    </div>
+
+    <!-- Slides Container -->
     <div id="slides-container"></div>
 
     <script>
-        // Danh sách các file section theo thứ tự
+        // State
+        let currentSlide = 0;
+        let totalSlides = 0;
+        let isPresentationMode = false;
+
+        // Sections list
         const sections = [
             'sections/cover.html',
             'sections/section1.html',
@@ -30,7 +173,7 @@
             'sections/qa.html'
         ];
 
-        // Load tất cả sections
+        // Load all sections
         async function loadAllSections() {
             const container = document.getElementById('slides-container');
 
@@ -38,16 +181,134 @@
                 try {
                     const response = await fetch(section);
                     if (response.ok) {
-                        const html = await response.text();
+                        let html = await response.text();
+                        // Fix image paths (from sections/ to root)
+                        html = html.replace(/\.\.\/assets\//g, 'assets/');
                         container.innerHTML += html;
                     }
                 } catch (error) {
                     console.error(`Error loading ${section}:`, error);
                 }
             }
+
+            // Initialize slides
+            initSlides();
         }
 
-        // Load khi trang sẵn sàng
+        // Initialize slides
+        function initSlides() {
+            const slides = document.querySelectorAll('.slide-container');
+            totalSlides = slides.length;
+            updateSlideCounter();
+        }
+
+        // Update slide counter
+        function updateSlideCounter() {
+            document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        // Show specific slide
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide-container');
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+
+            currentSlide = index;
+
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentSlide);
+            });
+
+            updateSlideCounter();
+        }
+
+        // Next/Previous slide
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+
+        // Toggle presentation mode
+        function togglePresentationMode() {
+            isPresentationMode = !isPresentationMode;
+            document.documentElement.classList.toggle('presentation-mode', isPresentationMode);
+
+            const btn = document.getElementById('btn-present');
+            btn.innerHTML = isPresentationMode
+                ? '<i class="fa-solid fa-stop"></i>'
+                : '<i class="fa-solid fa-play"></i>';
+
+            if (isPresentationMode) {
+                showSlide(0);
+            }
+        }
+
+        // Toggle fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.documentElement.classList.add('fullscreen');
+            } else {
+                document.exitFullscreen();
+                document.documentElement.classList.remove('fullscreen');
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                case 'PageDown':
+                    if (isPresentationMode) { e.preventDefault(); nextSlide(); }
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                case 'PageUp':
+                    if (isPresentationMode) { e.preventDefault(); prevSlide(); }
+                    break;
+                case 'Home':
+                    if (isPresentationMode) { e.preventDefault(); showSlide(0); }
+                    break;
+                case 'End':
+                    if (isPresentationMode) { e.preventDefault(); showSlide(totalSlides - 1); }
+                    break;
+                case 'Escape':
+                    if (isPresentationMode) togglePresentationMode();
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+                case 'p':
+                case 'P':
+                    togglePresentationMode();
+                    break;
+            }
+        });
+
+        // Mouse click navigation (in presentation mode)
+        document.addEventListener('click', (e) => {
+            if (!isPresentationMode) return;
+            if (e.target.closest('#presentation-controls')) return;
+            if (e.target.closest('.nav-arrow')) return;
+
+            // Left half = previous, right half = next
+            const x = e.clientX;
+            const width = window.innerWidth;
+            if (x < width / 3) {
+                prevSlide();
+            } else if (x > width * 2 / 3) {
+                nextSlide();
+            }
+        });
+
+        // Button event listeners
+        document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+        document.getElementById('btn-present').addEventListener('click', togglePresentationMode);
+        document.getElementById('prev-arrow').addEventListener('click', prevSlide);
+        document.getElementById('next-arrow').addEventListener('click', nextSlide);
+
+        // Load sections on DOM ready
         document.addEventListener('DOMContentLoaded', loadAllSections);
     </script>
 </body>
