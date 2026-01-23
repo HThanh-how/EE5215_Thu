@@ -436,3 +436,321 @@ td {
 }
 
 /* End of styles */
+
+/* ==================== MOBILE RESPONSIVE ==================== */
+
+/* Tablet and smaller screens */
+@media screen and (max-width: 1400px) {
+    .slide-container {
+        width: 90vw;
+        height: calc(90vw * 0.5625);
+        /* 16:9 ratio */
+        padding: 40px 50px;
+        margin-bottom: 60px;
+    }
+
+    body {
+        gap: 80px;
+        padding: 60px 0;
+    }
+
+    h1 {
+        font-size: 56px;
+    }
+
+    .slide-title {
+        font-size: 40px;
+        padding-left: 20px;
+        border-left-width: 10px;
+        margin-bottom: 25px;
+    }
+
+    h3 {
+        font-size: 26px;
+    }
+
+    p,
+    li {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 26px;
+    }
+
+    .quote-box {
+        font-size: 22px;
+        padding: 20px 30px;
+    }
+
+    th {
+        font-size: 17px;
+        padding: 16px;
+    }
+
+    td {
+        font-size: 15px;
+        padding: 14px 16px;
+    }
+
+    .code-box {
+        font-size: 18px;
+        padding: 20px;
+    }
+
+    .tile {
+        padding: 30px;
+    }
+
+    .tile .icon {
+        width: 70px;
+        height: 70px;
+        font-size: 34px;
+        margin-bottom: 20px;
+    }
+
+    .perf-val {
+        font-size: 38px;
+    }
+
+    .perf-card {
+        padding: 25px;
+    }
+
+    .two-column {
+        gap: 40px;
+    }
+
+    .grid-3 {
+        gap: 20px;
+    }
+}
+
+/* Mobile devices */
+@media screen and (max-width: 768px) {
+    .slide-container {
+        width: 95vw;
+        height: auto;
+        min-height: calc(95vw * 0.5625);
+        padding: 25px 20px;
+        border-radius: 15px;
+        margin-bottom: 40px;
+    }
+
+    body {
+        gap: 40px;
+        padding: 30px 0;
+    }
+
+    h1 {
+        font-size: 32px;
+        letter-spacing: 0;
+    }
+
+    .slide-title {
+        font-size: 24px;
+        padding-left: 15px;
+        border-left-width: 6px;
+        margin-bottom: 20px;
+    }
+
+    h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    p,
+    li {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .subtitle {
+        font-size: 18px;
+        margin-top: 12px;
+    }
+
+    .quote-box {
+        font-size: 14px;
+        padding: 15px 20px;
+        margin: 15px 0;
+        border-left-width: 5px;
+    }
+
+    .two-column {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .grid-3 {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .perf-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .tile {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .tile .icon {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+    }
+
+    .perf-val {
+        font-size: 28px;
+    }
+
+    .perf-card {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    th {
+        font-size: 12px;
+        padding: 10px 8px;
+    }
+
+    td {
+        font-size: 11px;
+        padding: 8px;
+    }
+
+    .code-box {
+        font-size: 12px;
+        padding: 15px;
+        border-radius: 10px;
+        border-left-width: 5px;
+        overflow-x: auto;
+    }
+
+    .image-placeholder {
+        height: 200px;
+        border-radius: 15px;
+    }
+
+    .timeline-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .timeline-line {
+        display: none;
+    }
+
+    .t-dot {
+        width: 24px;
+        height: 24px;
+        border-width: 4px;
+        margin-bottom: 10px;
+    }
+
+    /* Slide decorative elements */
+    .slide-container::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .slide-container::after {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+    }
+}
+
+/* Very small mobile devices */
+@media screen and (max-width: 480px) {
+    .slide-container {
+        width: 98vw;
+        padding: 20px 15px;
+        border-radius: 10px;
+    }
+
+    body {
+        gap: 25px;
+        padding: 15px 0;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .slide-title {
+        font-size: 20px;
+        padding-left: 12px;
+        border-left-width: 5px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    p,
+    li {
+        font-size: 12px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+
+    th {
+        font-size: 10px;
+        padding: 8px 5px;
+    }
+
+    td {
+        font-size: 9px;
+        padding: 6px 5px;
+    }
+
+    .code-box {
+        font-size: 10px;
+        padding: 10px;
+    }
+
+    .tile .icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .perf-val {
+        font-size: 22px;
+    }
+}
+
+/* Touch-friendly controls for mobile */
+@media screen and (max-width: 768px) {
+    #presentation-controls {
+        bottom: 15px;
+        right: 15px;
+        gap: 8px;
+    }
+
+    .control-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    .nav-arrow {
+        width: 40px;
+        height: 60px;
+        font-size: 18px;
+    }
+
+    #slide-counter {
+        padding: 8px 15px;
+        font-size: 14px;
+        border-radius: 15px;
+    }
+}
