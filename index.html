@@ -18,6 +18,7 @@
             gap: 0 !important;
             padding: 0 !important;
             overflow: hidden !important;
+            background: #000 !important;
         }
 
         .presentation-mode .slide-container {
@@ -25,21 +26,15 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            margin: 0;
+            transform: translate(-50%, -50%) scale(var(--slide-scale, 1));
+            transform-origin: center center;
+            margin: 0 !important;
             box-shadow: none;
             border-radius: 0;
         }
 
         .presentation-mode .slide-container.active {
             display: flex;
-        }
-
-        /* Fullscreen scaling */
-        .presentation-mode.fullscreen .slide-container {
-            width: 100vw !important;
-            height: 100vh !important;
-            border-radius: 0 !important;
         }
 
         /* Control buttons */
@@ -226,6 +221,20 @@
         function nextSlide() { showSlide(currentSlide + 1); }
         function prevSlide() { showSlide(currentSlide - 1); }
 
+        // Calculate scale factor to fit viewport
+        function calculateScale() {
+            const slideWidth = 1280;
+            const slideHeight = 720;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+
+            const scaleX = viewportWidth / slideWidth;
+            const scaleY = viewportHeight / slideHeight;
+            const scale = Math.min(scaleX, scaleY);
+
+            document.documentElement.style.setProperty('--slide-scale', scale);
+        }
+
         // Toggle presentation mode
         function togglePresentationMode() {
             isPresentationMode = !isPresentationMode;
@@ -237,9 +246,21 @@
                 : '<i class="fa-solid fa-play"></i>';
 
             if (isPresentationMode) {
-                showSlide(0);
+                calculateScale();
+                showSlide(currentSlide);
+                // Auto fullscreen when entering presentation mode
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => { });
+                }
             }
         }
+
+        // Update scale on window resize
+        window.addEventListener('resize', () => {
+            if (isPresentationMode) {
+                calculateScale();
+            }
+        });
 
         // Toggle fullscreen
         function toggleFullscreen() {
