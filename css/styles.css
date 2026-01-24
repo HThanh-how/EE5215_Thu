@@ -374,8 +374,12 @@ td {
 
 /* Performance Iron Law Bars */
 .speed-fill {
-    width: 0;
     transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Only animate in presentation mode */
+.presentation-mode .speed-fill {
+    width: 0 !important;
 }
 
 /* Truth Table Interaction */
