@@ -19,7 +19,7 @@
                         </div>
                         <div style="font-size: 30px; color: #cbd5e1; font-weight: 300;">=</div>
                         <div
-                            style="background: #eff6ff; padding: 10px 15px; border-radius: 12px; border: 2px solid #bfdbfe;">
+                            style="background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 10px 15px; border-radius: 12px; border: 2px solid #bfdbfe;">
                             <div
                                 style="font-size: 32px; font-weight: 800; color: #1e40af; font-family: 'Azeret Mono'; line-height: 1;">
                                 N</div>
@@ -28,7 +28,7 @@
                         </div>
                         <div style="font-size: 24px; color: #94a3b8;">×</div>
                         <div
-                            style="background: #eff6ff; padding: 10px 15px; border-radius: 12px; border: 2px solid #bfdbfe;">
+                            style="background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 10px 15px; border-radius: 12px; border: 2px solid #bfdbfe;">
                             <div
                                 style="font-size: 32px; font-weight: 800; color: #3b82f6; font-family: 'Azeret Mono'; line-height: 1;">
                                 CPI</div>
@@ -37,7 +37,7 @@
                         </div>
                         <div style="font-size: 24px; color: #94a3b8;">×</div>
                         <div
-                            style="background: #eff6ff; padding: 10px 15px; border-radius: 12px; border: 2px solid #bfdbfe;">
+                            style="background: linear-gradient(135deg, #eff6ff, #dbeafe); padding: 10px 15px; border-radius: 12px; border: 2px solid #bfdbfe;">
                             <div
                                 style="font-size: 32px; font-weight: 800; color: #60a5fa; font-family: 'Azeret Mono'; line-height: 1;">
                                 T<sub>clk</sub></div>
@@ -48,20 +48,20 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 15px;">
                     <div
-                        style="background: #f1f5f9; padding: 20px; border-radius: 12px; border-left: 5px solid #1e40af;">
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; border-left: 5px solid #1e40af;">
                         <p style="font-size: 18px;"><b style="color: #1e40af;">N</b> = Số lệnh (Instruction Count)
                         </p>
                         <p style="font-size: 14px; color: #64748b; margin-top: 5px;">Phụ thuộc: Algorithm, Compiler,
                             ISA</p>
                     </div>
                     <div
-                        style="background: #f1f5f9; padding: 20px; border-radius: 12px; border-left: 5px solid #3b82f6;">
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; border-left: 5px solid #3b82f6;">
                         <p style="font-size: 18px;"><b style="color: #3b82f6;">CPI</b> = Cycles Per Instruction</p>
                         <p style="font-size: 14px; color: #64748b; margin-top: 5px;">Phụ thuộc: Pipeline, Cache,
                             Hazards</p>
                     </div>
                     <div
-                        style="background: #f1f5f9; padding: 20px; border-radius: 12px; border-left: 5px solid #60a5fa;">
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; border-left: 5px solid #60a5fa;">
                         <p style="font-size: 18px;"><b style="color: #60a5fa;">T<sub>clk</sub></b> = Chu kỳ Clock
                             (1/f)</p>
                         <p style="font-size: 14px; color: #64748b; margin-top: 5px;">Phụ thuộc: Technology,
@@ -74,7 +74,8 @@
                 <h3 style="font-size: 24px; color: #1e40af; margin-bottom: 20px;"><i class="fa-solid fa-chart-column"
                         style="margin-right: 10px;"></i>So sánh kiến trúc</h3>
                 <div style="display: flex; flex-direction: column; gap: 20px;">
-                    <div style="background: #f8fafc; padding: 25px; border-radius: 15px;">
+                    <div
+                        style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 25px; border-radius: 15px;">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <span style="font-weight: 700; font-size: 18px;">Single-Cycle</span>
@@ -89,7 +90,8 @@
                         <p style="font-size: 13px; color: #64748b; margin-top: 8px;">T<sub>clk</sub> dài do critical
                             path</p>
                     </div>
-                    <div style="background: #f8fafc; padding: 25px; border-radius: 15px; border: 2px solid #3b82f6;">
+                    <div
+                        style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 25px; border-radius: 15px; border: 2px solid #3b82f6;">
                         <div
                             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                             <span style="font-weight: 700; font-size: 18px;">5-Stage Pipeline</span>
@@ -154,20 +156,21 @@
                     <p style="font-size: 15px; opacity: 0.9;  color: white;">TensorFlow Lite, PyTorch, SPEC CPU,
                         CoreMark</p>
                 </div>
-                <div style="background: #3b82f6; color: white; padding: 25px 30px;">
+                <div style="background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; padding: 25px 30px;">
                     <h4 style="font-size: 20px; margin-bottom: 8px;">🐧 Operating Systems</h4>
                     <p style="font-size: 15px; opacity: 0.9;"><b>Linux 5.4+</b> (mainline), FreeRTOS, Zephyr,
                         seL4</p>
                 </div>
-                <div style="background: #60a5fa; color: white; padding: 25px 30px;">
+                <div style="background: linear-gradient(135deg, #60a5fa, #93c5fd); color: white; padding: 25px 30px;">
                     <h4 style="font-size: 20px; margin-bottom: 8px;">⚙️ Runtime & Libraries</h4>
                     <p style="font-size: 15px; opacity: 0.9;">glibc, musl, Newlib, OpenSSL, OpenCV</p>
                 </div>
-                <div style="background: #93c5fd; color: #0f172a; padding: 25px 30px;">
+                <div style="background: linear-gradient(135deg, #93c5fd, #bfdbfe); color: #0f172a; padding: 25px 30px;">
                     <h4 style="font-size: 20px; margin-bottom: 8px;">🔧 Toolchains</h4>
                     <p style="font-size: 15px;"><b>GCC 13+</b>, <b>LLVM 17+</b>, Rust, Go, Java (OpenJDK)</p>
                 </div>
-                <div style="background: #cbd5e1; color: #0f172a; padding: 25px 30px; border-radius: 0 0 15px 15px;">
+                <div
+                    style="background: linear-gradient(135deg, #cbd5e1, #e2e8f0); color: #0f172a; padding: 25px 30px; border-radius: 0 0 15px 15px;">
                     <h4 style="font-size: 20px; margin-bottom: 8px;">🖲️ Hardware / ISA</h4>
                     <p style="font-size: 15px;">RV32/64/128, Extensions: IMAFDC, V, B, H...</p>
                 </div>
@@ -176,24 +179,28 @@
             <div style="display: flex; flex-direction: column; gap: 20px;">
                 <h3 style="font-size: 26px; color: #1e40af; margin-bottom: 5px;">🛠️ Công cụ phát triển</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; text-align: center;">
                         <i class="fa-solid fa-bug" style="font-size: 32px; color: #1e40af; margin-bottom: 10px;"></i>
                         <h5 style="font-size: 18px; color: #0f172a;">GDB</h5>
                         <p style="font-size: 14px; color: #64748b;">Debug toàn diện</p>
                     </div>
-                    <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; text-align: center;">
                         <i class="fa-solid fa-microchip"
                             style="font-size: 32px; color: #3b82f6; margin-bottom: 10px;"></i>
                         <h5 style="font-size: 18px; color: #0f172a;">QEMU</h5>
                         <p style="font-size: 14px; color: #64748b;">Emulator đa nền</p>
                     </div>
-                    <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; text-align: center;">
                         <i class="fa-solid fa-wave-square"
                             style="font-size: 32px; color: #60a5fa; margin-bottom: 10px;"></i>
                         <h5 style="font-size: 18px; color: #0f172a;">Verilator</h5>
                         <p style="font-size: 14px; color: #64748b;">RTL Simulation</p>
                     </div>
-                    <div style="background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center;">
+                    <div
+                        style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 20px; border-radius: 12px; text-align: center;">
                         <i class="fa-solid fa-code-branch"
                             style="font-size: 32px; color: #94a3b8; margin-bottom: 10px;"></i>
                         <h5 style="font-size: 18px; color: #0f172a;">Spike</h5>

@@ -39,7 +39,7 @@
     <h2 class="slide-title">Quản lý bộ nhớ <span>(Cấu trúc Sv39)</span></h2>
     <div class="content-area">
         <div
-            style="background: #f8fafc; border-radius: 20px; padding: 40px; margin: 0 auto; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: 20px; padding: 40px; margin: 0 auto; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
             <h3 style="font-size: 32px; color: #1e40af; margin-bottom: 30px; text-align: center;"><i
                     class="fa-solid fa-chart-bar" style="margin-right: 15px;"></i>Cấu trúc Địa chỉ ảo (39-bit VA)
             </h3>
@@ -47,22 +47,22 @@
                 <div class="vpn-container"
                     style="display: flex; border-radius: 15px; overflow: hidden; font-size: 24px; font-weight: 700; height: 120px;">
                     <div class="vpn-part"
-                        style="flex: 1; background: #1e40af; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
+                        style="flex: 1; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
                         VPN[2]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span>
                         <div class="vpn-tooltip">Tra cứu L1 Page Table</div>
                     </div>
                     <div class="vpn-part"
-                        style="flex: 1; background: #3b82f6; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
+                        style="flex: 1; background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
                         VPN[1]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span>
                         <div class="vpn-tooltip">Tra cứu L2 Page Table</div>
                     </div>
                     <div class="vpn-part"
-                        style="flex: 1; background: #60a5fa; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
+                        style="flex: 1; background: linear-gradient(135deg, #60a5fa, #93c5fd); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
                         VPN[0]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span>
                         <div class="vpn-tooltip">Tra cứu L3 Page Table (Physical Page)</div>
                     </div>
                     <div class="vpn-part"
-                        style="flex: 1; background: #94a3b8; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
+                        style="flex: 1; background: linear-gradient(135deg, #94a3b8, #cbd5e1); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
                         Offset<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">12 bits</span>
                         <div class="vpn-tooltip">Trỏ đến Byte trong Page (4KB)</div>
                     </div>
@@ -73,13 +73,13 @@
 
                 <div style="display: flex; gap: 30px; margin-top: 10px;">
                     <div
-                        style="flex: 1; background: #eff6ff; color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
+                        style="flex: 1; background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
                         <p style="font-size: 22px; font-weight: 700; margin-bottom: 5px;"><i class="fa-solid fa-server"
                                 style="margin-right: 10px;"></i>Sv48 (48-bit)</p>
                         <p style="font-size: 18px;">Hỗ trợ <b>256 TB</b></p>
                     </div>
                     <div
-                        style="flex: 1; background: #eff6ff; color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
+                        style="flex: 1; background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
                         <p style="font-size: 22px; font-weight: 700; margin-bottom: 5px;"><i class="fa-solid fa-cloud"
                                 style="margin-right: 10px;"></i>Sv57 (57-bit)</p>
                         <p style="font-size: 18px;">Hỗ trợ <b>128 PB</b></p>

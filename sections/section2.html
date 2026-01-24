@@ -19,7 +19,7 @@
                 <h3>RV32I / RV64I</h3>
                 <p>47 lệnh xương sống. Tối thiểu để vận hành phần cứng và chạy Linux.</p>
             </div>
-            <div class="tile" style="background: #1e40af; color: white;">
+            <div class="tile" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white;">
                 <h3 style="color: white;">Standard Extensions</h3>
                 <p style="color: white;"><b>M:</b> Nhân chia | <b>A:</b> Atomic | <b>F/D:</b> Số thực | <b>C:</b>
                     Nén lệnh 16-bit (Giảm
@@ -90,7 +90,96 @@
 </div>
 
 
-<!-- SLIDE 14: REGISTER FILE -->
+<!-- SLIDE 14: BIT ENCODING - U-TYPE & J-TYPE -->
+<div class="slide-container">
+    <h2 class="slide-title">Mã hóa lệnh <span>U-type & J-type</span></h2>
+    <div class="content-area">
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>[31:25]</th>
+                    <th>[24:20]</th>
+                    <th>[19:15]</th>
+                    <th>[14:12]</th>
+                    <th>[11:7]</th>
+                    <th>[6:0]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>R-Type</td>
+                    <td>funct7</td>
+                    <td>rs2</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>rd</td>
+                    <td>opcode</td>
+                </tr>
+                <tr>
+                    <td>I-Type</td>
+                    <td colspan="2">immediate [11:0]</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>rd</td>
+                    <td>opcode</td>
+                </tr>
+                <tr>
+                    <td>S-Type</td>
+                    <td>imm[11:5]</td>
+                    <td>rs2</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>imm[4:0]</td>
+                    <td>opcode</td>
+                </tr>
+                <tr>
+                    <td>B-Type</td>
+                    <td>imm[12|10:5]</td>
+                    <td>rs2</td>
+                    <td>rs1</td>
+                    <td>funct3</td>
+                    <td>imm[4:1|11]</td>
+                    <td>opcode</td>
+                </tr>
+                <tr style="background: linear-gradient(90deg, rgba(30, 64, 175, 0.15), rgba(59, 130, 246, 0.15));">
+                    <td><strong>U-Type</strong></td>
+                    <td colspan="4">imm[31:12]</td>
+                    <td>rd</td>
+                    <td>opcode</td>
+                </tr>
+                <tr style="background: linear-gradient(90deg, rgba(124, 58, 237, 0.15), rgba(168, 85, 247, 0.15));">
+                    <td><strong>J-Type</strong></td>
+                    <td colspan="4">imm[20|10:1|11|19:12]</td>
+                    <td>rd</td>
+                    <td>opcode</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="two-column" style="margin-top: 30px; gap: 20px;">
+            <div class="tile" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white;">
+                <h3 style="color: white; font-size: 22px; margin-bottom: 10px;"><i
+                        class="fa-solid fa-arrow-up-right-dots"></i> U-Type</h3>
+                <p style="color: white; font-size: 16px; line-height: 1.6;">
+                    <strong>LUI</strong> (Load Upper Immediate): Nạp 20-bit immediate vào bits [31:12] của rd<br>
+                    <strong>AUIPC</strong>: Cộng immediate với PC cho tính toán địa chỉ
+                </p>
+            </div>
+            <div class="tile" style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white;">
+                <h3 style="color: white; font-size: 22px; margin-bottom: 10px;"><i class="fa-solid fa-code-branch"></i>
+                    J-Type</h3>
+                <p style="color: white; font-size: 16px; line-height: 1.6;">
+                    <strong>JAL</strong> (Jump and Link): Nhảy không điều kiện, lưu PC+4 vào rd<br>
+                    Immediate 20-bit được mã hóa phức tạp để tối ưu mạch
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- SLIDE 15: REGISTER FILE -->
 <div class="slide-container">
     <h2 class="slide-title">Hệ thống <span>Thanh ghi (x0 - x31)</span></h2>
     <div class="content-area">
@@ -123,13 +212,13 @@
 
             <!-- More registers -->
             <div class="tile interactive"
-                style="background: #f1f5f9; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0;">
+                style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #e2e8f0;">
                 <div style="font-weight: 800; font-size: 18px; color: #1e40af;">x4</div>
                 <div style="color: #64748b;">tp</div>
                 <div style="font-size: 11px; margin-top: 5px; color: #94a3b8;">Thread Pointer</div>
             </div>
             <div class="tile interactive"
-                style="background: #fef3c7; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
+                style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
                 <div style="font-weight: 800; font-size: 18px; color: #b45309;">x5-x7</div>
                 <div style="color: #92400e;">t0-t2</div>
                 <div style="font-size: 11px; margin-top: 5px; color: #a16207;">Temporaries</div>
@@ -155,7 +244,7 @@
                 <div style="font-size: 11px; margin-top: 5px;">Saved Regs</div>
             </div>
             <div class="tile interactive"
-                style="background: #fef3c7; padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
+                style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 15px; border-radius: 12px; text-align: center; border: 2px solid #fcd34d;">
                 <div style="font-weight: 800; font-size: 18px; color: #b45309;">x28-x31</div>
                 <div style="color: #92400e;">t3-t6</div>
                 <div style="font-size: 11px; margin-top: 5px; color: #a16207;">Temporaries</div>
