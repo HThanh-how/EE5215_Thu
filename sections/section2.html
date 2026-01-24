@@ -157,21 +157,23 @@
             </tbody>
         </table>
 
-        <div class="two-column" style="margin-top: 30px; gap: 20px;">
-            <div class="tile" style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white;">
-                <h3 style="color: white; font-size: 22px; margin-bottom: 10px;"><i
-                        class="fa-solid fa-arrow-up-right-dots"></i> U-Type</h3>
-                <p style="color: white; font-size: 16px; line-height: 1.6;">
-                    <strong>LUI</strong> (Load Upper Immediate): Nạp 20-bit immediate vào bits [31:12] của rd<br>
-                    <strong>AUIPC</strong>: Cộng immediate với PC cho tính toán địa chỉ
+        <div class="two-column" style="margin-top: 20px; gap: 20px;">
+            <div class="tile"
+                style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; text-align: left; padding: 25px 30px;">
+                <h3 style="color: white; font-size: 20px; margin-bottom: 8px;"><i
+                        class="fa-solid fa-arrow-up-right-dots" style="margin-right: 8px;"></i>U-Type</h3>
+                <p style="color: white; font-size: 15px; line-height: 1.5;">
+                    <strong>LUI</strong>: Nạp 20-bit imm vào bits [31:12] của rd<br>
+                    <strong>AUIPC</strong>: Cộng imm với PC cho địa chỉ
                 </p>
             </div>
-            <div class="tile" style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white;">
-                <h3 style="color: white; font-size: 22px; margin-bottom: 10px;"><i class="fa-solid fa-code-branch"></i>
-                    J-Type</h3>
-                <p style="color: white; font-size: 16px; line-height: 1.6;">
-                    <strong>JAL</strong> (Jump and Link): Nhảy không điều kiện, lưu PC+4 vào rd<br>
-                    Immediate 20-bit được mã hóa phức tạp để tối ưu mạch
+            <div class="tile"
+                style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; text-align: left; padding: 25px 30px;">
+                <h3 style="color: white; font-size: 20px; margin-bottom: 8px;"><i class="fa-solid fa-code-branch"
+                        style="margin-right: 8px;"></i>J-Type</h3>
+                <p style="color: white; font-size: 15px; line-height: 1.5;">
+                    <strong>JAL</strong>: Nhảy không điều kiện, lưu PC+4 vào rd<br>
+                    Immediate 20-bit mã hóa phức tạp để tối ưu mạch
                 </p>
             </div>
         </div>
