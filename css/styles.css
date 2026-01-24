@@ -356,12 +356,18 @@ td {
 
 /* Timeline Sequential Animation */
 .timeline-row {
-    opacity: 0;
-    transform: translateX(-50px);
+    opacity: 1;
+    transform: translateX(0);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.slide-container.active .timeline-row.show {
+/* Only animate in presentation mode */
+.presentation-mode .timeline-row {
+    opacity: 0;
+    transform: translateX(-50px);
+}
+
+.presentation-mode .slide-container.active .timeline-row.show {
     opacity: 1;
     transform: translateX(0);
 }
