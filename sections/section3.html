@@ -207,7 +207,12 @@
 <div class="slide-container">
     <h2 class="slide-title">Xung đột dữ liệu <span>& Forwarding</span></h2>
     <div class="content-area">
-        <div class="code-box">ADD x1, x2, x3<br>SUB x4, x1, x5 &nbsp;// x1 cần ngay tầng EX</div>
+        <div class="code-box">
+            <span class="asm-opcode">ADD</span> <span class="asm-reg">x1</span>, <span class="asm-reg">x2</span>, <span
+                class="asm-reg">x3</span><br>
+            <span class="asm-opcode">SUB</span> <span class="asm-reg">x4</span>, <span class="asm-reg">x1</span>, <span
+                class="asm-reg">x5</span> &nbsp;<span class="asm-comment">// x1 cần ngay tầng EX</span>
+        </div>
         <div class="two-column">
             <div class="tile">
                 <h3>RAW Hazard</h3>
@@ -226,7 +231,12 @@
 <div class="slide-container">
     <h2 class="slide-title">Load-Use <span>Hazard & Stalling</span></h2>
     <div class="content-area">
-        <div class="code-box">LW x1, 0(x2)<br>ADD x3, x1, x4 &nbsp;// Dữ liệu chỉ có sau MEM</div>
+        <div class="code-box">
+            <span class="asm-opcode">LW</span> <span class="asm-reg">x1</span>, <span class="asm-imm">0</span>(<span
+                class="asm-reg">x2</span>)<br>
+            <span class="asm-opcode">ADD</span> <span class="asm-reg">x3</span>, <span class="asm-reg">x1</span>, <span
+                class="asm-reg">x4</span> &nbsp;<span class="asm-comment">// Dữ liệu chỉ có sau MEM</span>
+        </div>
         <div class="two-column">
             <div class="tile">
                 <h3>Vấn đề</h3>
