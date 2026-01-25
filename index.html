@@ -389,11 +389,12 @@
                 }, i * 1000 + 500); // 1s delay staggered + 0.5s initial
             });
 
-            // 3. Bars
+            // 3. Bars - use CSS variable and class to override !important
             activeSlide.querySelectorAll('.speed-fill').forEach(bar => {
-                bar.style.width = '0%'; // Reset
+                bar.classList.remove('animated'); // Reset
+                bar.style.setProperty('--target-width', bar.dataset.width);
                 setTimeout(() => {
-                    bar.style.width = bar.dataset.width;
+                    bar.classList.add('animated');
                 }, 500);
             });
         }
