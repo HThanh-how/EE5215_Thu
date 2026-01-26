@@ -15,15 +15,15 @@
     <h2 class="slide-title">Kiến trúc <span>Đặc quyền (Privilege)</span></h2>
     <div class="content-area">
         <div class="grid-3">
-            <div class="tile">
+            <div class="tile fragment">
                 <h3>Machine (M)</h3>
                 <p>Đặc quyền cao nhất (Firmware).</p>
             </div>
-            <div class="tile">
+            <div class="tile fragment">
                 <h3>Supervisor (S)</h3>
                 <p>Cho OS (Kernel Linux).</p>
             </div>
-            <div class="tile">
+            <div class="tile fragment">
                 <h3>User (U)</h3>
                 <p>Cho App người dùng.</p>
             </div>
@@ -46,22 +46,22 @@
             <div style="display: flex; flex-direction: column; gap: 30px;">
                 <div class="vpn-container"
                     style="display: flex; border-radius: 15px; overflow: hidden; font-size: 24px; font-weight: 700; height: 120px;">
-                    <div class="vpn-part"
+                    <div class="vpn-part fragment"
                         style="flex: 1; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
                         VPN[2]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span>
                         <div class="vpn-tooltip">Tra cứu L1 Page Table</div>
                     </div>
-                    <div class="vpn-part"
+                    <div class="vpn-part fragment"
                         style="flex: 1; background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
                         VPN[1]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span>
                         <div class="vpn-tooltip">Tra cứu L2 Page Table</div>
                     </div>
-                    <div class="vpn-part"
+                    <div class="vpn-part fragment"
                         style="flex: 1; background: linear-gradient(135deg, #60a5fa, #93c5fd); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 2px solid rgba(255,255,255,0.2); position: relative;">
                         VPN[0]<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">9 bits</span>
                         <div class="vpn-tooltip">Tra cứu L3 Page Table (Physical Page)</div>
                     </div>
-                    <div class="vpn-part"
+                    <div class="vpn-part fragment"
                         style="flex: 1; background: linear-gradient(135deg, #94a3b8, #cbd5e1); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative;">
                         Offset<br><span style="font-size: 18px; opacity: 0.9; font-weight: 500;">12 bits</span>
                         <div class="vpn-tooltip">Trỏ đến Byte trong Page (4KB)</div>
@@ -72,13 +72,13 @@
                 </p>
 
                 <div style="display: flex; gap: 30px; margin-top: 10px;">
-                    <div
+                    <div class="fragment"
                         style="flex: 1; background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
                         <p style="font-size: 22px; font-weight: 700; margin-bottom: 5px;"><i class="fa-solid fa-server"
                                 style="margin-right: 10px;"></i>Sv48 (48-bit)</p>
                         <p style="font-size: 18px;">Hỗ trợ <b>256 TB</b></p>
                     </div>
-                    <div
+                    <div class="fragment"
                         style="flex: 1; background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e40af; padding: 25px; border-radius: 15px; text-align: center; border: 2px solid #bfdbfe;">
                         <p style="font-size: 22px; font-weight: 700; margin-bottom: 5px;"><i class="fa-solid fa-cloud"
                                 style="margin-right: 10px;"></i>Sv57 (57-bit)</p>
@@ -96,7 +96,8 @@
     <h2 class="slide-title">Quản lý bộ nhớ <span>(Các tính năng)</span></h2>
     <div class="content-area">
         <div class="grid-3" style="gap: 40px;">
-            <div class="tile" style="border-top: 10px solid #1e40af; justify-content: flex-start; padding-top: 50px;">
+            <div class="tile fragment"
+                style="border-top: 10px solid #1e40af; justify-content: flex-start; padding-top: 50px;">
                 <div class="icon" style="margin-bottom: 25px; width: 100px; height: 100px; font-size: 50px;"><i
                         class="fa-solid fa-bolt-lightning" style="color: #1e40af;"></i></div>
                 <h3 style="font-size: 36px; margin-bottom: 5px;">TLB</h3>
@@ -105,7 +106,8 @@
                 <p style="font-size: 20px;">Cache ánh xạ địa chỉ, giảm <b>95%</b> thời gian tra cứu page table. Hit
                     rate thường đạt <b>99%+</b>.</p>
             </div>
-            <div class="tile" style="border-top: 10px solid #3b82f6; justify-content: flex-start; padding-top: 50px;">
+            <div class="tile fragment"
+                style="border-top: 10px solid #3b82f6; justify-content: flex-start; padding-top: 50px;">
                 <div class="icon"
                     style="margin-bottom: 25px; width: 100px; height: 100px; font-size: 50px; background: #eff6ff;">
                     <i class="fa-solid fa-shield-halved" style="color: #3b82f6;"></i>
@@ -116,7 +118,8 @@
                 <p style="font-size: 20px;">16 vùng bảo vệ có thể cấu hình, hỗ trợ <b>R/W/X</b> permissions cho
                     embedded systems.</p>
             </div>
-            <div class="tile" style="border-top: 10px solid #60a5fa; justify-content: flex-start; padding-top: 50px;">
+            <div class="tile fragment"
+                style="border-top: 10px solid #60a5fa; justify-content: flex-start; padding-top: 50px;">
                 <div class="icon"
                     style="margin-bottom: 25px; width: 100px; height: 100px; font-size: 50px; background: #eff6ff;">
                     <i class="fa-solid fa-microchip" style="color: #60a5fa;"></i>

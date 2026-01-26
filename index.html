@@ -214,6 +214,11 @@
 
             slides.forEach((slide, i) => {
                 slide.classList.toggle('active', i === currentSlide);
+                // Reset fragments when entering a new slide
+                if (i === currentSlide) {
+                    const fragments = slide.querySelectorAll('.fragment');
+                    fragments.forEach(f => f.classList.remove('visible'));
+                }
             });
 
             updateSlideCounter();
@@ -224,9 +229,30 @@
             }
         }
 
-        // Next/Previous slide
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
+        // Next/Previous slide with Fragment support
+        function nextSlide() {
+            if (isPresentationMode) {
+                const activeSlide = document.querySelectorAll('.slide-container')[currentSlide];
+                const hiddenFragments = activeSlide.querySelectorAll('.fragment:not(.visible)');
+                if (hiddenFragments.length > 0) {
+                    hiddenFragments[0].classList.add('visible');
+                    return;
+                }
+            }
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            if (isPresentationMode) {
+                const activeSlide = document.querySelectorAll('.slide-container')[currentSlide];
+                const visibleFragments = activeSlide.querySelectorAll('.fragment.visible');
+                if (visibleFragments.length > 0) {
+                    visibleFragments[visibleFragments.length - 1].classList.remove('visible');
+                    return;
+                }
+            }
+            showSlide(currentSlide - 1);
+        }
 
         // Calculate scale factor to fit viewport
         function calculateScale() {
@@ -379,15 +405,6 @@
                 const target = parseInt(counter.dataset.target);
                 const suffix = counter.dataset.suffix || '';
                 animateValue(counter, 0, target, 1500, suffix);
-            });
-
-            // 2. Timeline Sequential
-            const timelineItems = activeSlide.querySelectorAll('.timeline-row');
-            timelineItems.forEach((item, i) => {
-                item.classList.remove('show'); // Reset
-                setTimeout(() => {
-                    item.classList.add('show');
-                }, i * 1000 + 500); // 1s delay staggered + 0.5s initial
             });
 
             // 3. Bars - use CSS variable and class to override !important
