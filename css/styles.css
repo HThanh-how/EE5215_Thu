@@ -412,6 +412,70 @@ td {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Wave Glow Animation for Register Grid (Keyboard RGB Style) */
+@keyframes waveGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 5px 15px rgba(30, 64, 175, 0.2);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(59, 130, 246, 0.6), 0 0 50px rgba(59, 130, 246, 0.4);
+        transform: scale(1.03);
+    }
+}
+
+.presentation-mode .tile.interactive {
+    animation: waveGlow 2s ease-in-out infinite;
+}
+
+/* Stagger the wave effect for each tile */
+.presentation-mode .tile.interactive:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.presentation-mode .tile.interactive:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.presentation-mode .tile.interactive:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.presentation-mode .tile.interactive:nth-child(4) {
+    animation-delay: 0.45s;
+}
+
+.presentation-mode .tile.interactive:nth-child(5) {
+    animation-delay: 0.6s;
+}
+
+.presentation-mode .tile.interactive:nth-child(6) {
+    animation-delay: 0.75s;
+}
+
+.presentation-mode .tile.interactive:nth-child(7) {
+    animation-delay: 0.9s;
+}
+
+.presentation-mode .tile.interactive:nth-child(8) {
+    animation-delay: 1.05s;
+}
+
+.presentation-mode .tile.interactive:nth-child(9) {
+    animation-delay: 1.2s;
+}
+
+.presentation-mode .tile.interactive:nth-child(10) {
+    animation-delay: 1.35s;
+}
+
+.presentation-mode .tile.interactive:nth-child(11) {
+    animation-delay: 1.5s;
+}
+
 /* Truth Table Interaction */
 .interactive-table tr {
     cursor: pointer;

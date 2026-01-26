@@ -226,41 +226,24 @@
             // Trigger animations only in presentation mode
             if (isPresentationMode) {
                 triggerSlideAnimations(currentSlide);
+
+                // Auto-trigger fragment animations (staggered)
+                const activeSlide = slides[currentSlide];
+                const hiddenFragments = activeSlide.querySelectorAll('.fragment:not(.visible)');
+                hiddenFragments.forEach((fragment, idx) => {
+                    setTimeout(() => {
+                        fragment.classList.add('visible');
+                    }, idx * 250 + 300); // 250ms stagger, 300ms initial delay
+                });
             }
         }
 
-        // Next/Previous slide with Fragment support
+        // Next/Previous slide - fragments auto-animate on slide enter
         function nextSlide() {
-            if (isPresentationMode) {
-                const activeSlide = document.querySelectorAll('.slide-container')[currentSlide];
-                const hiddenFragments = activeSlide.querySelectorAll('.fragment:not(.visible)');
-
-                if (hiddenFragments.length > 0) {
-                    // Reveal ALL fragments gradually (staggered)
-                    hiddenFragments.forEach((fragment, index) => {
-                        setTimeout(() => {
-                            fragment.classList.add('visible');
-                        }, index * 250); // 250ms delay between each element
-                    });
-                    return;
-                }
-            }
             showSlide(currentSlide + 1);
         }
 
         function prevSlide() {
-            if (isPresentationMode) {
-                const activeSlide = document.querySelectorAll('.slide-container')[currentSlide];
-                const visibleFragments = activeSlide.querySelectorAll('.fragment.visible');
-
-                if (visibleFragments.length > 0) {
-                    // Hide ALL fragments immediately (reset state) preventing animation overlap
-                    visibleFragments.forEach(fragment => {
-                        fragment.classList.remove('visible');
-                    });
-                    return;
-                }
-            }
             showSlide(currentSlide - 1);
         }
 
