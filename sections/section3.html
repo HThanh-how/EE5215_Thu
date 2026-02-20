@@ -20,6 +20,335 @@
     </div>
 </div>
 
+<!-- SLIDE 15C: PC -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>Program Counter (PC)</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 500%; background-position: 5% 50%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Program Counter (PC)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Lưu địa chỉ của lệnh đang được thực thi.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Cập nhật mỗi chu kỳ clock (PC = PC + 4 hoặc địa chỉ nhảy).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Next PC Address (32-bit), Clock, Reset</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Current PC Address (32-bit)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 15D: Instruction Memory -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>Instruction Memory</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 500%; background-position: 20% 70%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Instruction Memory (IMem)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Lưu trữ mã máy của chương trình.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Đọc lệnh tại địa chỉ do PC cung cấp.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Read Address (32-bit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Instruction (32-bit)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 15E: Register File -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>Register File</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 400%; background-position: 40% 70%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Register File (RegFile)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Lưu trữ 32 thanh ghi đa dụng (x0 - x31).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Đọc 2 thanh ghi, ghi 1 thanh ghi cùng lúc.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Read Reg 1/2 (5-bit), Write Reg (5-bit), Write Data (32-bit), RegWrite (1-bit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Read Data 1/2 (32-bit)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 15F: Immediate Generator -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>Immediate Generator</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 600%; background-position: 40% 90%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Immediate Generator (ImmGen)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Tạo số tức thời 32-bit từ lệnh.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Mở rộng dấu (Sign-extend) các bit immediate trong lệnh.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Instruction (32-bit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Immediate Value (32-bit)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 15G: ALU -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>ALU</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 500%; background-position: 60% 60%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Arithmetic Logic Unit (ALU)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Thực hiện phép toán số học và logic.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Cộng, trừ, AND, OR, XOR, SLL, SRL, SRA...</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Operand A/B (32-bit), ALU Control (4-bit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>ALU Result (32-bit), Zero Flag (1-bit)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 15H: Data Memory -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>Data Memory</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 500%; background-position: 85% 70%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Data Memory (DMem)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Lưu trữ dữ liệu chương trình.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Đọc (Load) hoặc Ghi (Store) dữ liệu.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Address (32-bit), Write Data (32-bit), MemRead, MemWrite</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>Read Data (32-bit)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SLIDE 15I: Control Unit -->
+<div class="slide-container">
+    <h2 class="slide-title">Vi kiến trúc <span>Control Unit</span></h2>
+    <div class="content-area">
+        <div class="two-column" style="gap: 40px; align-items: start;">
+            <div
+                style="flex: 1; display: flex; justify-content: center; align-items: center; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; padding: 10px;">
+                <div
+                    style="width: 100%; height: 400px; background-image: url('../assets/single_cycle_CPU.jpg'); background-size: 500%; background-position: 40% 40%; background-repeat: no-repeat;">
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <table class="interactive-table">
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>Mô tả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tên</strong></td>
+                            <td>Control Unit (Controller)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chức năng</strong></td>
+                            <td>Điều khiển toàn bộ hoạt động của CPU.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hoạt động</strong></td>
+                            <td>Giải mã Opcode để tạo tín hiệu điều khiển.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Input</strong></td>
+                            <td>Opcode (7-bit), Funct3, Funct7</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Output</strong></td>
+                            <td>RegWrite, ALUSrc, MemRead, MemWrite, Branch, ALUOp...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- SLIDE 16: PIPELINE -->
 <div class="slide-container">
