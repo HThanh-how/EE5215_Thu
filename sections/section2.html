@@ -30,6 +30,118 @@
 </div>
 
 
+<!-- SLIDE: STANDARD RISC-V EXTENSION COMPARISON 1 -->
+<div class="slide-container">
+    <h2 class="slide-title">Standard <span>RISC-V Extension Comparison</span></h2>
+    <div class="content-area">
+        <table class="compact-table" style="font-size: 16px;">
+            <thead>
+                <tr>
+                    <th>Extension</th>
+                    <th>Chức năng chính</th>
+                    <th>Lệnh tiêu biểu</th>
+                    <th>Ứng dụng chính</th>
+                    <th>Lợi ích nổi bật</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="fragment">
+                    <td><strong>M</strong></td>
+                    <td>Nhân / Chia số nguyên</td>
+                    <td><code>MUL</code>, <code>DIV</code>, <code>REM</code></td>
+                    <td>Xử lý số học</td>
+                    <td>Tăng tốc phép toán số nguyên</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>A</strong></td>
+                    <td>Truy cập bộ nhớ nguyên tử</td>
+                    <td><code>LR.W</code>, <code>SC.W</code>, <code>AMOADD.W</code></td>
+                    <td>Lập trình đa luồng</td>
+                    <td>Tránh race condition</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>F</strong></td>
+                    <td>Floating Point 32-bit (FP32)</td>
+                    <td>Cộng, trừ, nhân, chia số thực</td>
+                    <td>Đồ họa, AI</td>
+                    <td>Xử lý số thực nhanh</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>D</strong></td>
+                    <td>Floating Point 64-bit (FP64)</td>
+                    <td>Chuyển đổi FP32 &harr; FP64</td>
+                    <td>Khoa học, ML</td>
+                    <td>Độ chính xác cao</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>C</strong></td>
+                    <td>Nén lệnh (16-bit)</td>
+                    <td>Lệnh rút gọn từ 32-bit</td>
+                    <td>Embedded system</td>
+                    <td>Giảm kích thước code</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- SLIDE: STANDARD RISC-V EXTENSION COMPARISON 2 -->
+<div class="slide-container">
+    <h2 class="slide-title">Standard <span>RISC-V Extension Comparison</span></h2>
+    <div class="content-area">
+        <table class="compact-table" style="font-size: 16px;">
+            <thead>
+                <tr>
+                    <th>Extension</th>
+                    <th>Chức năng chính</th>
+                    <th>Lệnh tiêu biểu</th>
+                    <th>Ứng dụng chính</th>
+                    <th>Lợi ích nổi bật</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="fragment">
+                    <td><strong>V</strong></td>
+                    <td>Xử lý vector song song</td>
+                    <td>Vector Register, Vector ALU</td>
+                    <td>AI / ML</td>
+                    <td>Tăng tốc xử lý dữ liệu lớn</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>B</strong></td>
+                    <td>Thao tác mức bit</td>
+                    <td>Shift, Extract, Insert</td>
+                    <td>Mã hóa, DSP</td>
+                    <td>Xử lý bit nhanh</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>P</strong></td>
+                    <td>Packed SIMD</td>
+                    <td>Multiple Data / 1 Instruction</td>
+                    <td>Multimedia</td>
+                    <td>Tăng hiệu năng xử lý ảnh, audio</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>H</strong></td>
+                    <td>Ảo hóa phần cứng</td>
+                    <td>Virtual Machine Support</td>
+                    <td>Cloud, Server</td>
+                    <td>Chạy nhiều OS</td>
+                </tr>
+                <tr class="fragment">
+                    <td><strong>S</strong></td>
+                    <td>Supervisor Mode</td>
+                    <td><code>SFENCE.VMA</code></td>
+                    <td>Hệ điều hành</td>
+                    <td>Quản lý bộ nhớ, ngắt</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 <!-- SLIDE 13: BIT ENCODING -->
 <div class="slide-container">
     <h2 class="slide-title">Mã hóa lệnh <span>Bit-level</span></h2>
