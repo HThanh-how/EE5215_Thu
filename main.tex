@@ -197,9 +197,9 @@ t = 32 - i - b = 32 - 12 - 6 = \boxed{14\,\text{bit}}
 \hline
 \textbf{Tag (14 bit)} & \textbf{Index (12 bit)} & \textbf{Block offset (6 bit)} \\
 \hline
-$00\,0000\,0000\,0010$ & $1100\,0001\,0010$ & $10\,1101$ \\
+$00\,0000\,0000\,0000$ & $1011\,0000\,0100$ & $10\,1101$ \\
 \hline
-$0000\,0000\,0000\,10_2 = 2_{10}$ & $1100\,0001\,0010_2 = 3090_{10}$ & $101101_2 = 45_{10}$ \\
+$0000\,0000\,0000\,00_2 = 0_{10}$ & $1011\,0000\,0100_2 = 2820_{10}$ & $101101_2 = 45_{10}$ \\
 \hline
 \end{tabular}
 \end{center}
@@ -209,11 +209,11 @@ $0000\,0000\,0000\,10_2 = 2_{10}$ & $1100\,0001\,0010_2 = 3090_{10}$ & $101101_2
 \text{Block number} = \lfloor \frac{180525}{64} \rfloor = \lfloor 2820.70 \rfloor = \boxed{2820}
 \]
 
-\textbf{Vùng nhớ chính:} Tag = 2 $\Rightarrow$ Thuộc \textbf{vùng 2}.
+\textbf{Vùng nhớ chính:} Tag = 0 $\Rightarrow$ Thuộc \textbf{vùng 0}.
 
 \textbf{Bước 4: Xác định line trong cache (với Direct Mapping):}
 \[
-\text{Cache line} = \text{Index} = \boxed{3090}
+\text{Cache line} = \text{Index} = \boxed{2820}
 \]
 
 % ============================================
@@ -374,20 +374,21 @@ Hiệu quả giảm power & Rất cao ($\propto V^2$) & Cao (30-60\%) \\
 \begin{tikztimingtable}[%
     timing/dslope=0.1,
     timing/slope=0.1,
-    xscale=3.5,yscale=1.5
+    xscale=1.2,yscale=1.5
 ]
-\textbf{SCL} & H L 18{C} 18{C} H \\
-\textbf{SDA} & H L 2D{1} 2D{0} 2D{0} 2D{1} 2D{1} 2D{0} 2D{0} 2D{{\tiny R/W}} 2L
-                 2D{0} 2D{0} 2D{0} 2D{1} 2D{0} 2D{0} 2D{1} 2D{0} 2L H \\
+\textbf{SCL} & H L 27{C} L H \\
+\textbf{SDA} & H L 2D{1} 2D{0} 2D{0} 2D{1} 2D{1} 2D{0} 2D{0} 2D{0} 2L
+                 2D{0} 2D{0} 2D{0} 2D{1} 2D{0} 2D{0} 2D{1} 2D{0} 2L
+                 2D{0} 2D{0} 2D{1} 2D{1} 2D{0} 2D{1} 2D{0} 2D{0} 2L L H \\
 \extracode
 \begin{pgfonlayer}{background}
-\vertlines[help lines]{1.0,3.0,...,37.0}
+\vertlines[help lines]{1.0,3.0,...,57.0}
 \end{pgfonlayer}
 \tablerules
 \end{tikztimingtable}
 \end{center}
 \begin{center}
-    \small \textit{Sơ đồ thời gian: Start $\to$ Addr(0x4C) + W $\to$ ACK $\to$ Data(0x12) $\to$ ACK $\to$ Stop}
+    \small \textit{Sơ đồ thời gian: Start $\to$ Addr(0x4C) + W $\to$ ACK $\to$ Data(0x12) $\to$ ACK $\to$ Data(0x34) $\to$ ACK $\to$ Stop}
 \end{center}
 
 \textbf{Tổng số bit truyền:}
@@ -484,14 +485,13 @@ G --- X --- H \\
 \textbf{T = 5:}
 \begin{itemize}
     \item 'c' $\rightarrow$ F; 'd' $\rightarrow$ Y
-    \item 'h' $\rightarrow$ D
+    \item 'h' $\rightarrow$ D (Gói 2 hoàn thành!)
     \item 'i' $\rightarrow$ X; 'j' $\rightarrow$ Y; Buffer E: 'k'
 \end{itemize}
 
 \textbf{T = 6:}
 \begin{itemize}
     \item 'd' $\rightarrow$ F (Gói 1 hoàn thành!)
-    \item Gói 2: 'h' đã đến D (Gói 2 hoàn thành!)
     \item 'i' $\rightarrow$ H; 'j' $\rightarrow$ X; 'k' $\rightarrow$ Y; Buffer E: 'l'
 \end{itemize}
 
@@ -522,7 +522,7 @@ G --- X --- H \\
 \hline
 Gói 1 (A$\rightarrow$F) & T = 6 & 6T \\
 \hline
-Gói 2 (C$\rightarrow$D) & T = 6 & 6T \\
+Gói 2 (C$\rightarrow$D) & T = 5 & 5T \\
 \hline
 Gói 3 (E$\rightarrow$H) & T = 9 & 9T \\
 \hline
