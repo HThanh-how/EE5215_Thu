@@ -220,7 +220,7 @@ Số hop: 3
 
 \subsection{Trạng thái theo từng thời điểm}
 
-\begin{tcolorbox}[colback=white,title=T = 0 (Khởi tạo)]
+\begin{tcolorbox}[colback=white,title={T = 0 (Khởi tạo)}]
 \begin{center}
 \begin{tabular}{|l|l|l|l|}
 \hline
@@ -237,7 +237,7 @@ Số hop: 3
 Tất cả header flits ('a', 'e', 'i') đang tại buffer nguồn.
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet1!20,title=T = 1]
+\begin{tcolorbox}[colback=packet1!20,title={T = 1}]
 \begin{itemize}
     \item 'a' di chuyển A $\rightarrow$ Z; 'b' vào buffer A
     \item 'e' di chuyển C $\rightarrow$ W; 'f' vào buffer C
@@ -254,7 +254,7 @@ Flit & b & a & f & e & j & i & \\
 \end{center}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet1!20,title=T = 2]
+\begin{tcolorbox}[colback=packet1!20,title={T = 2}]
 \begin{itemize}
     \item 'a' di chuyển Z $\rightarrow$ Y; 'b' Z $\rightarrow$ Z (chờ); 'c' vào A
     \item 'e' di chuyển W $\rightarrow$ D; 'f' $\rightarrow$ W; 'g' vào C
@@ -269,7 +269,7 @@ Flit & b & a & f & e & j & i & \\
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet1!20,title=T = 3]
+\begin{tcolorbox}[colback=packet1!20,title={T = 3}]
 \begin{itemize}
     \item 'a' di chuyển Y $\rightarrow$ F; 'b' $\rightarrow$ Y; 'c' $\rightarrow$ Z; 'd' vào A
     \item 'f' di chuyển W $\rightarrow$ D; 'g' $\rightarrow$ W; 'h' vào C
@@ -288,7 +288,7 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \end{center}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet1!20,title=T = 4]
+\begin{tcolorbox}[colback=packet1!20,title={T = 4}]
 \begin{itemize}
     \item 'a' đến F (first flit of packet 1 arrives!)
     \item 'b' $\rightarrow$ F; 'c' $\rightarrow$ Y; 'd' $\rightarrow$ Z
@@ -297,7 +297,7 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet1!20,title=T = 5]
+\begin{tcolorbox}[colback=packet1!20,title={T = 5}]
 \begin{itemize}
     \item 'b' đến F
     \item 'c' $\rightarrow$ F; 'd' $\rightarrow$ Y
@@ -306,7 +306,7 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet2!20,title=T = 6]
+\begin{tcolorbox}[colback=packet2!20,title={T = 6}]
 \begin{itemize}
     \item 'c' đến F
     \item 'd' $\rightarrow$ F (Gói 1 hoàn thành!)
@@ -314,21 +314,21 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet3!20,title=T = 7]
+\begin{tcolorbox}[colback=packet3!20,title={T = 7}]
 \begin{itemize}
     \item 'd' đến F
     \item 'i' $\rightarrow$ H; 'j' $\rightarrow$ X; 'k' $\rightarrow$ Y; 'l' vào E
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=packet3!20,title=T = 8]
+\begin{tcolorbox}[colback=packet3!20,title={T = 8}]
 \begin{itemize}
     \item 'i' đến H (first flit of packet 3 arrives!)
     \item 'j' $\rightarrow$ H; 'k' $\rightarrow$ X; 'l' $\rightarrow$ Y
 \end{itemize}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=resultbox,title=T = 9]
+\begin{tcolorbox}[colback=resultbox,title={T = 9}]
 \begin{itemize}
     \item 'j' đến H
     \item 'k' $\rightarrow$ H; 'l' $\rightarrow$ X
