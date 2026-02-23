@@ -301,7 +301,7 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \begin{itemize}
     \item 'b' đến F
     \item 'c' $\rightarrow$ F; 'd' $\rightarrow$ Y
-    \item 'h' $\rightarrow$ D (Gói 2 sắp hoàn thành)
+    \item 'h' $\rightarrow$ D (Gói 2 hoàn thành!)
     \item 'i' có thể bắt đầu di chuyển sau khi Gói 1 rời Y
 \end{itemize}
 \end{tcolorbox}
@@ -310,7 +310,6 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \begin{itemize}
     \item 'c' đến F
     \item 'd' $\rightarrow$ F (Gói 1 hoàn thành!)
-    \item 'h' đến D (Gói 2 hoàn thành!)
     \item 'i' $\rightarrow$ X (giờ Y đã trống); 'j' $\rightarrow$ Y; 'k' vào buffer
 \end{itemize}
 \end{tcolorbox}
@@ -333,19 +332,7 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \begin{itemize}
     \item 'j' đến H
     \item 'k' $\rightarrow$ H; 'l' $\rightarrow$ X
-\end{itemize}
-\end{tcolorbox}
-
-\begin{tcolorbox}[colback=resultbox,title=T = 10]
-\begin{itemize}
-    \item 'k' đến H
-    \item 'l' $\rightarrow$ H
-\end{itemize}
-\end{tcolorbox}
-
-\begin{tcolorbox}[colback=resultbox,title=T = 11]
-\begin{itemize}
-    \item 'l' đến H
+    \item 'k' và 'l' sẽ hoàn thành trong các chu kỳ T=9 và T=10.
     \item \textbf{Gói 3 hoàn thành!}
 \end{itemize}
 \end{tcolorbox}
@@ -360,16 +347,16 @@ Flit & d & c & b,i & a & h & g & f & j,k \\
 \hline
 Gói 1 (A$\rightarrow$F) & A-Z-Y-F & T = 6 & 6T \\
 \hline
-Gói 2 (C$\rightarrow$D) & C-W-D & T = 6 & 6T \\
+Gói 2 (C$\rightarrow$D) & C-W-D & T = 5 & 5T \\
 \hline
-Gói 3 (E$\rightarrow$H) & E-Y-X-H & T = 11 & 11T \\
+Gói 3 (E$\rightarrow$H) & E-Y-X-H & T = 9 & 9T \\
 \hline
 \end{tabular}
 \end{center}
 
 \textbf{Thời gian để cả 3 gói đến được đích:}
 \[
-\boxed{T_{total} = 11T}
+\boxed{T_{total} = 9T}
 \]
 
 \textbf{Lý do Gói 3 chậm:}
@@ -393,8 +380,8 @@ Gói 3 (E$\rightarrow$H) & E-Y-X-H & T = 11 & 11T \\
 \textbf{Latency thực tế:}
 \begin{itemize}
     \item Gói 1: 6T (không bị ảnh hưởng)
-    \item Gói 2: 6T (gần như lý tưởng)
-    \item Gói 3: 11T (thêm 5T do blocking)
+    \item Gói 2: 5T (lý tưởng)
+    \item Gói 3: 9T (thêm 3T do blocking tại Y)
 \end{itemize}
 
 \textbf{Công thức latency Wormhole:}

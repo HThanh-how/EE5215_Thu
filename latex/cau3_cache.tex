@@ -271,12 +271,12 @@ Tag ($t$) & 14 & $2^{14} = 16384$ vùng & $n - i - b$ \\
     
     % Tag
     \draw[fill=red!30] (0,0) rectangle (3.5,0.8);
-    \node at (1.75,0.4) {\texttt{00000000000010}};
+    \node at (1.75,0.4) {\texttt{00000000000000}};
     \node at (1.75,-0.3) {Tag (14 bit)};
     
     % Index
     \draw[fill=green!30] (3.5,0) rectangle (7.5,0.8);
-    \node at (5.5,0.4) {\texttt{110000010010}};
+    \node at (5.5,0.4) {\texttt{101100000100}};
     \node at (5.5,-0.3) {Index (12 bit)};
     
     % Offset
@@ -289,19 +289,19 @@ Tag ($t$) & 14 & $2^{14} = 16384$ vùng & $n - i - b$ \\
 
 \subsection{Bước 3: Chuyển đổi từng phần về thập phân}
 
-\textbf{Tag:} $00000000000010_2$
+\textbf{Tag:} $00000000000000_2$
 \begin{tcolorbox}[colback=formulabox]
 \[
-\text{Tag} = 0 \times 2^{13} + ... + 1 \times 2^1 + 0 \times 2^0 = 2_{10}
+\text{Tag} = 0 \times 2^{13} + ... + 0 \times 2^0 = 0_{10}
 \]
 \end{tcolorbox}
 
 \textbf{Index:} $110000010010_2$
 \begin{tcolorbox}[colback=formulabox]
 \begin{align*}
-\text{Index} &= 1 \times 2^{11} + 1 \times 2^{10} + 0 \times 2^9 + ... + 1 \times 2^4 + 0 \times 2^3 + 0 \times 2^2 + 1 \times 2^1 + 0 \times 2^0 \\
-&= 2048 + 1024 + 16 + 2 \\
-&= 3090_{10}
+\text{Index} &= 1 \times 2^{11} + 0 \times 2^{10} + 1 \times 2^9 + ... + 0 \times 2^1 + 0 \times 2^0 \\
+&= 2048 + 512 + 256 + 4 \\
+&= 2820_{10}
 \end{align*}
 \end{tcolorbox}
 
@@ -326,7 +326,7 @@ Tag ($t$) & 14 & $2^{14} = 16384$ vùng & $n - i - b$ \\
 \begin{tcolorbox}[colback=resultbox,title=Xác định Vùng nhớ]
 ``Vùng'' trong bài này tương ứng với giá trị Tag.
 
-\textbf{Vùng nhớ} = Tag = $\mathbf{2}$ (đánh số từ 0)
+\textbf{Vùng nhớ} = Tag = $\mathbf{0}$ (đánh số từ 0)
 
 Giải thích: Main memory được chia thành $2^{14} = 16384$ vùng, mỗi vùng có $2^{12} = 4096$ blocks.\\
 Block 2820 thuộc vùng $\lfloor 2820 / 4096 \rfloor = 0$ ???
@@ -346,19 +346,7 @@ Thực ra ``vùng'' ở đây có thể hiểu theo 2 cách:
 Với Direct Mapping, line được xác định trực tiếp từ Index:
 
 \[
-\text{Cache Line} = \text{Index} = \boxed{3090}
-\]
-
-Hoặc tính từ Block Number:
-\[
-\text{Cache Line} = \text{Block Number} \mod \text{Số Lines} = 2820 \mod 4096 = 2820
-\]
-
-\textbf{Hmm, có sự khác biệt!} Hãy kiểm tra lại...
-
-Thực ra Index từ địa chỉ chính là cách đúng:
-\[
-\text{Cache Line} = \mathbf{3090}
+\textbf{Cache Line} = \text{Index} = \boxed{2820}
 \]
 \end{tcolorbox}
 
@@ -371,15 +359,15 @@ Thực ra Index từ địa chỉ chính là cách đúng:
     \draw (0,0) rectangle (3,5.5);
     
     % Zones - drawn individually to avoid foreach parsing issues
-    \draw (0,0) rectangle (3,0.5);
-    \node at (1.5,0.25) {\tiny Vùng 0};
+    % Vùng 0 - highlighted
+    \draw[fill=yellow!50] (0,0) rectangle (3,0.5);
+    \node at (1.5,0.25) {\tiny \textbf{Vùng 0}};
     
     \draw (0,1.1) rectangle (3,1.6);
     \node at (1.5,1.35) {\tiny Vùng 1};
     
-    % Vùng 2 - highlighted
-    \draw[fill=yellow!50] (0,2.2) rectangle (3,2.7);
-    \node at (1.5,2.45) {\tiny \textbf{Vùng 2}};
+    \draw (0,2.2) rectangle (3,2.7);
+    \node at (1.5,2.45) {\tiny Vùng 2};
     
     \draw (0,4.4) rectangle (3,4.9);
     \node at (1.5,4.65) {\tiny ...};
@@ -405,9 +393,9 @@ Thực ra Index từ địa chỉ chính là cách đúng:
     \draw (6,1) rectangle (9,1.4);
     \node at (7.5,1.2) {\tiny ...};
     
-    % Line 3090 - highlighted
-    \draw[fill=green!50] (6,3) rectangle (9,3.4);
-    \node at (7.5,3.2) {\tiny \textbf{Line 3090}};
+    % Line 2820 - highlighted
+    \draw[fill=green!50] (6,2.8) rectangle (9,3.2);
+    \node at (7.5,3.0) {\tiny \textbf{Line 2820}};
     
     \draw (6,5) rectangle (9,5.4);
     \node at (7.5,5.2) {\tiny Line 4095};
@@ -431,8 +419,8 @@ Thực ra Index từ địa chỉ chính là cách đúng:
 
 \textbf{Phần 2:} Với địa chỉ 180525:
 \begin{itemize}
-    \item \textbf{Vùng nhớ (Tag):} 2
-    \item \textbf{Cache Line:} 3090
+    \item \textbf{Vùng nhớ (Tag):} 0
+    \item \textbf{Cache Line:} 2820
     \item \textbf{Block:} 2820
     \item \textbf{Byte trong block:} 45
 \end{itemize}
