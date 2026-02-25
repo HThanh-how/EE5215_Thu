@@ -147,6 +147,9 @@
         <button class="control-btn" id="btn-present" title="Presentation Mode (P)">
             <i class="fa-solid fa-play"></i>
         </button>
+        <button class="control-btn" id="btn-print" title="Print to PDF (Ctrl+P)">
+            <i class="fa-solid fa-print"></i>
+        </button>
     </div>
 
     <!-- Slides Container -->
@@ -352,6 +355,7 @@
         // Button event listeners
         document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
         document.getElementById('btn-present').addEventListener('click', togglePresentationMode);
+        document.getElementById('btn-print').addEventListener('click', () => window.print());
         document.getElementById('prev-arrow').addEventListener('click', prevSlide);
         document.getElementById('next-arrow').addEventListener('click', nextSlide);
 
