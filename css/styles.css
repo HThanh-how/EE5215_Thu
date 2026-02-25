@@ -1,4 +1,4 @@
-/* RISC-V Presentation Styles */
+﻿/* RISC-V Presentation Styles */
 
 /* 1. CORE RESET & LAYOUT */
 * {
@@ -915,14 +915,11 @@ td {
         background-color: #ffffff !important;
         margin: 0 !important;
         padding: 0 !important;
-        height: 100%;
-        overflow: visible !important;
-        gap: 0 !important;
     }
 
-    /* Override presentation mode hiding */
     .presentation-mode body {
         overflow: visible !important;
+        display: block !important;
     }
 
     #slides-container {
@@ -931,14 +928,11 @@ td {
 
     .slide-container {
         width: 297mm !important;
-        /* A4 Landscape width */
         height: 210mm !important;
-        /* A4 Landscape height */
         margin: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         display: flex !important;
-        /* Ensure all slides are shown */
         opacity: 1 !important;
         transform: none !important;
         page-break-after: always;
@@ -948,32 +942,27 @@ td {
         left: 0 !important;
     }
 
-    /* Hide UI Controls */
     #presentation-controls,
     .nav-arrow,
     #slide-counter {
         display: none !important;
     }
 
-    /* Ensure fragments are visible in print */
     .fragment {
         opacity: 1 !important;
         transform: none !important;
         visibility: visible !important;
     }
 
-    /* Ensure animated bars are filled to their targets */
     .speed-fill {
         width: var(--target-width) !important;
     }
 
-    /* Force background colors and images */
     * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }
 
-    /* Adjust typography for print clarity if needed */
     .slide-title {
         font-size: 48px !important;
     }
