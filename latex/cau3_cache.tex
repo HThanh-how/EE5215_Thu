@@ -296,7 +296,7 @@ Tag ($t$) & 14 & $2^{14} = 16384$ vùng & $n - i - b$ \\
 \]
 \end{tcolorbox}
 
-\textbf{Index:} $110000010010_2$
+\textbf{Index:} $101100000100_2$
 \begin{tcolorbox}[colback=formulabox]
 \begin{align*}
 \text{Index} &= 1 \times 2^{11} + 0 \times 2^{10} + 1 \times 2^9 + ... + 0 \times 2^1 + 0 \times 2^0 \\
@@ -331,13 +331,7 @@ Tag ($t$) & 14 & $2^{14} = 16384$ vùng & $n - i - b$ \\
 Giải thích: Main memory được chia thành $2^{14} = 16384$ vùng, mỗi vùng có $2^{12} = 4096$ blocks.\\
 Block 2820 thuộc vùng $\lfloor 2820 / 4096 \rfloor = 0$ ???
 
-\textbf{Chờ đã, cần xem lại!}
-
-Thực ra ``vùng'' ở đây có thể hiểu theo 2 cách:
-\begin{enumerate}
-    \item Tag value = 2 (đếm từ 0) $\Rightarrow$ \textbf{Vùng 2}
-    \item Block group theo Tag
-\end{enumerate}
+\textbf{Giải thích:} Với Tag = 0, địa chỉ này thuộc nhóm block đầu tiên được ánh xạ vào cache, tương ứng với vùng nhớ thấp nhất.
 \end{tcolorbox}
 
 \subsection{Bước 5: Xác định Line trong Cache}
